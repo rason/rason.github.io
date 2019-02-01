@@ -1,0 +1,128 @@
+title: Git分支-分支的新建与合并
+categories: Git
+date: 2015-09-02 08:45:34
+tags: Git分支 
+description: Git 分支 Git分支新建与合并
+---
+
+## 分支的新建与合并
+
+现在让我们来看一个简单的分支与合并的例子，实际工作中大体也会用到这样的工作流程：
+
+1. 开发某个网站。
+2. 为实现某个新的需求，创建一个分支。
+3. 在这个分支上开展工作。
+
+假设此时，你突然接到一个电话说有个很严重的问题需要紧急修补，那么可以按照下面的方式处理：
+
+1. 返回到原先已经发布到生产服务器上的分支。
+2. 为这次紧急修补建立一个新分支，并在其中修复问题。
+3. 通过测试后，回到生产服务器所在的分支，将修补分支合并进来，然后再推送到生产服务器上。
+4. 切换到之前实现新需求的分支，继续工作。
+
+<!--more-->
+
+* 开发某个网站。
+
+我们新建了一个仓库拥有一个master分支，为了简单起见，我们就直接在master分支上愉快地工作（实际上不建议直接在master上进行合作开发），提交了一些代码更新，测试稳定并发布到服务器了，现在的分支是这样子的：
+
+![图一](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch1.png)
+
+* 为实现某个新的需求，创建一个分支。
+
+```
+$ git checkout -b iss53
+Switched to a new branch 'iss53'
+```
+这个命令相当于
+```
+$ git branch iss53
+$ git checkout iss53
+```
+
+创建完分支之后的情况是这样子的：
+
+![图二](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch2.png)
+
+> Git 中的分支，其实本质上仅仅是个指向 commit 对象的可变指针。分支其实就是从某个提交对象往回看的历史。
+
+* 在这个分支上开展工作。
+
+我们在新的分支上进行开发并提交更新会大概变成这样子：
+
+![图三](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch3.png)
+
+### 突然发现一个紧急Bug，要赶紧回去擦屁股了
+
+* 返回到原先已经发布到生产服务器上的分支。
+
+```
+$ git checkout master
+Switched to branch 'master'
+```
+
+运行以上命令切换回之前稳定的master分支。
+
+> 此时工作目录中的内容和你在解决问题 #53 之前一模一样，你可以集中精力进行紧急修补。这一点值得牢记：Git 会把工作目录的内容恢复为检出某分支时它所指向的那个提交对象的快照。它会自动添加、删除和修改文件以确保目录的内容和你当时提交时完全一样。
+
+* 为这次紧急修补建立一个新分支，并在其中修复问题。
+
+```
+$ git checkout -b hotfix
+Switched to a new branch 'hotfix'
+```
+
+修完Bug提交之后分支的情况会变成这样子：
+
+![图四](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch4.png)
+
+* 通过测试后，回到生产服务器所在的分支，将修补分支合并进来，然后再推送到生产服务器上。
+
+```
+$ git checkout master
+$ git merge hotfix
+```
+
+合并完之后的工作状态是这样子的：
+
+![图五](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch5.png)
+
+然后hotfix分支已经没用的，运行以下命令将它删除掉：
+
+```
+$ git branch -d hotfix
+```
+
+* 切换到之前实现新需求的分支，继续工作。
+
+```
+$ git checkout iss53
+Switched to branch 'iss53'
+```
+
+继续开发提交更新之后是这样子的：
+
+![图六](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch6.png)
+
+开发完成之后可以合并回master分支了
+
+```
+$ git checkout master
+$ git merge iss53
+```
+
+请注意，这次合并操作的底层实现，并不同于之前 hotfix 的并入方式。因为这次你的开发历史是从更早的地方开始分叉的。由于当前 master 分支所指向的提交对象（C4）并不是 iss53 分支的直接祖先，Git 不得不进行一些额外处理。就此例而言，Git 会用两个分支的末端（C4 和 C5）以及它们的共同祖先（C2）进行一次简单的三方合并计算。下图用红框标出了 Git 用于合并的三个提交对象：
+
+![图七](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch7.png)
+
+这次，Git 没有简单地把分支指针右移，而是对三方合并后的结果重新做一个新的快照，并自动创建一个指向它的提交对象（C6），见下图。这个提交对象比较特殊，它有两个祖先（C4 和 C5）。
+
+![图八](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch8.png)
+
+之前的工作成果已经合并到 master 了，那么 iss53 也就没用了，你可以就此删除它。
+
+```
+$ git branch -d iss53
+```
+
+** 以上为Git-book学习笔记，详情请参考[Git-book](http://git-scm.com/book/zh/v1/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E7%9A%84%E6%96%B0%E5%BB%BA%E4%B8%8E%E5%90%88%E5%B9%B6)。**
