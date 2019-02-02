@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>网站的扩展性 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="网站的扩展性">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网站的扩展性">
+<meta property="og:url" content="http://yoursite.com/2016/04/07/The-extensibility-of-web/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="网站的扩展性">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-eda.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-work.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/dubbo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/columnfamily.png">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.252Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网站的扩展性">
+<meta name="twitter:description" content="网站的扩展性">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-eda.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-The-extensibility-of-web" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/07/The-extensibility-of-web/" class="article-date">
+  <time datetime="2016-04-07T05:29:59.000Z" itemprop="datePublished">2016-04-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      网站的扩展性
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>网站的扩展性是指对现有系统影响最小的情况下，系统功能可持续扩展或提升的能力。表现在系统基础设施稳定不需要经常变更，应用之间较少依赖和耦合，对需求变更可敏捷响应。它是系统架构设计层面的<strong>开闭原则</strong>。这跟网站的伸缩性不一样，伸缩性指的是系统能够通过增加自身资源规模的方式增强自己计算处理事务的能力。</p>
+<h2 id="可扩展的网站架构"><a href="#可扩展的网站架构" class="headerlink" title="可扩展的网站架构"></a>可扩展的网站架构</h2><p>我们知道低耦合的系统更容易扩展，低耦合的模块更容易复用，一个低耦合的系统设计也会让开发过程和维护变得更加轻松和容易管理。因此，<strong>设计网站可扩展架构的核心思想是模块化</strong>，并在此基础之上，降低模块间的耦合度，提高模块的复用性。</p>
+<p>在前面我们讨论过网站通过分层和分割的方式进行架构伸缩，这也是模块化设计的重要手段。<strong>利用分层和分割的方式将软件分割为若干个低耦合的独立组件模块，这些组件模块以消息传递及依赖调用的方式聚合成一个系统。</strong></p>
+<p>在大型网站中，这些模块通过分布式部署的方式，独立的模块部署在独立的服务器集群上，从物理上分离模块之间的耦合关系，进一步降低耦合性提高复用性。<strong>模块分布式部署以后具体聚合方式主要有分布式消息队列和分布式服务。</strong></p>
+<a id="more"></a>
+<h2 id="利用分布式消息队列降低系统耦合性"><a href="#利用分布式消息队列降低系统耦合性" class="headerlink" title="利用分布式消息队列降低系统耦合性"></a>利用分布式消息队列降低系统耦合性</h2><p><strong>事件驱动架构：</strong>通过在低耦合的模块之间传递事件消息，以保持模块的松散耦合，并借助事件消息的通信完成模块之间合作，典型案例就是生产者消费者模式。在大型网站架构中，<strong>最常用的是用分布式消息队列来实现</strong>，如图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-eda.png" alt="利用消息队列实现的事件驱动架构"></p>
+<p>消息队列利用<strong>发布-订阅模式</strong>工作，消息发送者发布消息，一个或者多个消息接收者订阅消息。他们直接没有直接耦合，实现网站的可扩展设计。</p>
+<p>队列是一种先进先出的数据结构，分布式消息队列可以看作将这种数据结构部署到独立的服务器上，应用程序可以通过远程访问接口使用分布式消息队列，进行消息存取操作，进而实现分布式的异步调用，基本原理如图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-work.png" alt="分布式消息队列架构原理"></p>
+<p>目前开源的和商业的分布式消息队列产品有很多，比如Apache ActiveMQ等，这些产品处理实现分布式消息队列的一般功能，在可用性、伸缩性、数据一致性、性能和可管理性方面也做了很多改善。</p>
+<h2 id="利用分布式服务打造可复用的业务平台"><a href="#利用分布式服务打造可复用的业务平台" class="headerlink" title="利用分布式服务打造可复用的业务平台"></a>利用分布式服务打造可复用的业务平台</h2><p><strong>使用分布式服务是降低系统耦合性的另一个重要手段。</strong>如果说分布式消息队列通过消息对象分解系统耦合性，不同子系统处理同一消息；那么分布式服务则通过接口分解系统耦合性，不同子系统通过相同的接口描述进行服务调用。</p>
+<p>回顾网站的发展历程，网站由小到大的演化过程，表现为整个网站是由单一的应用系统逐步膨胀发展成一个巨无霸，如图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility1.png" alt="巨无霸系统示意图"></p>
+<p>这样的一个巨无霸系统聚合了大量的应用和服务组件，给整个网站的开发、维护、部署带来了巨大的麻烦。</p>
+<p>因此，我们需要对其进行拆分，将模块独立部署，降低系统耦合性。拆分有两种方式：</p>
+<ul>
+<li><strong>将大应用拆分成多个小应用</strong></li>
+<li><strong>将可复用业务拆分出来，独立部署为分布式服务</strong></li>
+</ul>
+<p>经过拆分之后，巨无霸系统应该是变成以下样子：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility2.png" alt="业务及模块拆分独立部署的分布式服务架构"></p>
+<p>应用拆分相对比较简单，通过梳理业务，将较少相关的业务剥离，使其成为独立的Web应用。而对于可复用业务的拆分，不但需要识别哪些是可复用业务，设计服务接口，规范服务依赖关系，还需要一个完善的<strong>分布式服务管理框架。</strong></p>
+<p>这个分布式服务管理框架，不仅仅能提供<strong>服务的注册与发现，服务调用</strong>等标准功能，还应具有以下特性：</p>
+<ul>
+<li><strong>负载均衡</strong>:对于热门服务，需要独立部署在一个集群上。分布式服务框架能够支持服务请求者使用可配置的负载均衡算法访问服务。</li>
+<li><strong>失效转移</strong></li>
+<li><strong>高效的远程通信</strong>：没有高效的远程通信，服务调用会成为系统性能瓶颈。</li>
+<li><strong>整合异构系统</strong></li>
+<li><strong>对应用最少入侵</strong>：网站技术是为业务服务的，使用了分布式可能又会退回到集中式，分布式服务框架需要支持这种渐进式演化和反复。</li>
+<li><strong>版本管理</strong>：支持服务多版本发布。</li>
+<li><strong>实时监控</strong></li>
+</ul>
+<p>幸运的是，这样的一个分布式服务框架已经有了开源产品，这就是阿里巴巴的<strong>Dubbo</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/dubbo.png" alt="分布式服务框架Dubbo的架构原理"></p>
+<p>关于Dubbo的具体介绍就不陈列了，自行搜索了解。</p>
+<h2 id="可扩展的数据结构"><a href="#可扩展的数据结构" class="headerlink" title="可扩展的数据结构"></a>可扩展的数据结构</h2><p>传统的关系数据库需要指定表的schema-字段名称，数据类型等。可是在实际的开发中，这种僵硬的数据结构难以面对需求变更带来的挑战，有时候我们会通过冗余字段来应对，不过这显然是一种糟糕的数据库设计。</p>
+<p>那么有没有办法能够做到可扩展的数据结构设计，无需修改表结构就可以新增字段呢？许多NoSQL数据库使用的ColumnFamily（列族）设计就是一个解决方案。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/columnfamily.png" alt="ColumnFamily数据存储格式"></p>
+<p>使用支持ColumnFamily结构的NoSQL结构的NoSQL数据库，创建表的时候，只需指定ColumnFamily的名字，无需指定字段（Column），可以在数据写入时再指定，通过这种方式，使得应用程序的数据结构可以随意扩展。而在查询时，可以通过指定任意字段名称和值进行查询。</p>
+<h2 id="利用开放平台建设网站生态圈"><a href="#利用开放平台建设网站生态圈" class="headerlink" title="利用开放平台建设网站生态圈"></a>利用开放平台建设网站生态圈</h2><p>比如淘宝开放平台，微信公众账号开发平台等，此处不展开。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>通过这几章读书笔记，我们应当深知系统拆分的重要性，优秀的架构师就体现在是否具有优秀的拆分能力。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/07/The-extensibility-of-web/" data-id="cjrm61jxr004vj3jeydx67i7w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/04/13/Network-Basic/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          网络基础知识
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/03/30/scalable-web/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">网站的伸缩性</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

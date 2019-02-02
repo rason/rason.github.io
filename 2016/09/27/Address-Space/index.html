@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>地址空间 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="地址空间">
+<meta name="keywords" content="地址空间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="地址空间">
+<meta property="og:url" content="http://yoursite.com/2016/09/27/Address-Space/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="地址空间">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract-organization">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redirect-problem">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/swapping">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tracking-memery">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.172Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="地址空间">
+<meta name="twitter:description" content="地址空间">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Address-Space" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/27/Address-Space/" class="article-date">
+  <time datetime="2016-09-27T00:43:39.000Z" itemprop="datePublished">2016-09-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      地址空间
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>操作系统中管理分层存储器体系的部分称为<strong>存储管理器</strong>，它的任务是有效地管理内存，即记录哪些内存是正在使用的，哪些内存是空闲的；在进程需要时为其分配内存，在进程使用完后释放内存。那么，操作系统是怎么对内存创建抽象模型以及怎样管理内存的？</p>
+<p>由于内存管理方面的内容比较多，所以就准备拆分出来学习，本文学习内容为<strong>地址空间</strong>。通过本文，你应该会知道：</p>
+<ul>
+<li>如果没有存储的抽象，计算机应该是怎样管理内存的？</li>
+<li>如果没有存储的抽象，计算机如何实现多进程并行？</li>
+<li>为什么需要存储抽象？</li>
+<li>什么是交换技术？</li>
+<li>如何进行空闲内存的管理？</li>
+</ul>
+<h2 id="无存储抽象"><a href="#无存储抽象" class="headerlink" title="无存储抽象"></a>无存储抽象</h2><p>如果没有存储抽象，那么呈现给我们程序员的存储器模型就是简单的物理内存：从0到某个上限地址集合，每一个地址对应一个可容纳一定数目二进制位的存储单元，通常是8个。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract" alt="无存储抽象的简单物理内存模型"></p>
+<p>在这种情况下，每个程序直接访问物理内存。比如到一个程序执行如下指令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MOV REGISTER1,1000</span><br></pre></td></tr></table></figure>
+<p>计算机会将位置为1000的物理内存中的内容移到REGISTER1中。</p>
+<p>那么，没有存储抽象的情况下，计算机如何来组织内存？一般情况下可以有以下三种方式：</p>
+<a id="more"></a>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract-organization" alt="在只有操作系统和一个用户进程的情况下，组织内存的三种简单方法（也存在其他方案）"></p>
+<ul>
+<li>第一种方案一起被用于在大型机和小型个人计算机上，现在很少使用了。</li>
+<li>第二种方案被用于一些掌上电脑和嵌入式系统中。</li>
+<li>第三种方案用于早期的个人计算机中，在ROM中的系统部分成为BIOS。</li>
+</ul>
+<p>由于第一和第三中方案将操作系统放在了RAM中，所以有可能会因为用户程序出现错误而摧毁操作系统。</p>
+<h3 id="在不使用内存抽象的情况下运行多道程序"><a href="#在不使用内存抽象的情况下运行多道程序" class="headerlink" title="在不使用内存抽象的情况下运行多道程序"></a>在不使用内存抽象的情况下运行多道程序</h3><p>如果没有内存抽象，我们如何运行多道程序？</p>
+<ul>
+<li>如果内存不够大，只能运行一个程序，是不是可以将当前内存中的所有内容保存到磁盘中，然后把下一个程序读入到内存中运行即可。</li>
+<li>如果内存够大，是不是可以将内存分块，不同的程序装载在不同的内存块，这样就可以运行多道程序了。</li>
+</ul>
+<p>第一种方式就是交换的概念，将在后面讨论。第二种方式通过划分内存块，每个内存块都分配一个保护键，如果运行中的进行访问保护键与其程序状态字（PSW）码不同的内存，硬件会捕获到这一事件，这样可以防止用户进程之间、用户进程和操作系统之间的互相干扰。然而，第二种解决方法还是有一个严重的缺陷，如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redirect-problem" alt="重定位问题说明"></p>
+<p>上图中两个程序大小都为16KB，当我们将两个程序连续地装载到内存中，先运行第一个程序JMP24指令执行ADD操作，这时没有问题。然后CPU轮换到第二个程序，执行JMP28，然而地址28中装的是ADD指令，不是CMP指令。这样就导致了内存地址访问不正确，这个程序很可能在一秒内就崩溃了。</p>
+<p>因为这两个程序都引用了绝对的物理地址，所以就会出现这样的问题。一种补救的方法就是在第二个程序装载到内存的时候，使用<strong>静态重定位</strong>的技术修改它。它的工作方式如下：当一个程序被装载到地址16384时，常数被加到每一个程序地址上。但这个方式也不是一种通用的解决方法，而且还会减慢装载速度，还需要区分哪些内存中有存有（可重定位）地址，哪些没有。比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MOV REGISTER1,28</span><br></pre></td></tr></table></figure>
+<p>这样把数28送到REGISTER1的指令不可以被重定位。装载器需要一定的方法来辨别地址和常数。</p>
+<h2 id="一种存储抽象：地址空间"><a href="#一种存储抽象：地址空间" class="headerlink" title="一种存储抽象：地址空间"></a>一种存储抽象：地址空间</h2><p>从上面的分析得出，直接把物理地址暴露给进程会带来两个严重问题：</p>
+<ul>
+<li>如果用户程序可以寻址内存的每个字节，它们可以很容易地破坏操作系统</li>
+<li>使用这种模型，想要运行多个程序是很困难的</li>
+</ul>
+<p>要保证多个应用程序同时处于内存中并且胡不影响，则需要解决两个问题：<strong>保护和重定位</strong>。</p>
+<p>为此我们需要一个新的内存抽象：<strong>地址空间</strong>。就像进程是对运行中程序的抽象一样，地址空间为程序创造了一种对内存的抽象。</p>
+<p><strong>地址空间是一个进程可用于寻址内存的一套地址集合。每个进程都有一个自己的地址空间，并且这个地址空间独立于其他进程的地址空间（除了在一些特殊情况下进程需要共享它们的地址空间外）。</strong></p>
+<p>那么，回到之前两个16KB程序的问题，给每个程序一个自己的地址空间，怎么使得第一程序中的地址28所对应的物理地址与另一个程序中的地址28所对应的物理地址不同？</p>
+<h3 id="基址寄存器和界限寄存器"><a href="#基址寄存器和界限寄存器" class="headerlink" title="基址寄存器和界限寄存器"></a>基址寄存器和界限寄存器</h3><p>一个简单的方法就是使用<strong>动态重定位</strong>方式。在早期的计算机中所使用的经典方法就是给每个CPU配置两个特殊的寄存器，通常叫做<strong>基址寄存器和界限寄存器</strong>。</p>
+<p>通过这样方式，程序在装载时无需重定位，只是在程序运行时需要将程序的起始地址装载到基址寄存器中，而界限寄存器可以有两种方式：存储程序的长度或者上界限地址。每当进程访问内存，CPU硬件会在把地址发送到内存总线前，自动把基址寄存器加到进程发出的地址值上。同时，它检查程序提供的地址是否会超出界限。这样就达到了<strong>保护和重定位</strong>的作用。缺点就是每次访问内存都需要进行加法和比较运算。</p>
+<h2 id="交换技术"><a href="#交换技术" class="headerlink" title="交换技术"></a>交换技术</h2><p>上面说到，当内存不够大的时候可以使用<strong>交换技术</strong>达到并行的效果。然而，内存永远都是不够用的，因为程序会越来越多，程序占用的内存也越来越大，所以交换技术还是十分有必要的。解决内存不够用的问题除了<strong>交换技术</strong>外，还有另一种叫做*虚拟内存技术**，将在后面学习。</p>
+<p>使用交换技术，内存变化如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/swapping" alt="内存分配情况随着进程进出而变化，空白区域表示未使用的内存"></p>
+<p>上图中，进程A、B、C依次加载入内存；然后进程D想进入内存，发现内存不够用了，计算机将进程A先移出内存，然后将进程D加载入内存；最后，进程A又要进入内存，发现又不够用了，所以计算机把进程B移出，再将A重新加载入内存。</p>
+<p>你会发现，A再次移入内存是位置发生了变化，这时就可以很好地使用基址寄存器和界限寄存器解决地址重定位了。</p>
+<p>交换动作在内存中产生了多个空闲区，通过把所有进程尽可能向下移动，有可能将这些小的空闲区合并成一大块，这种技术成为<strong>内存紧缩</strong>。但是这个操作通常不进行，因为它要耗费大量的CPU时间。</p>
+<p>因此，使用交换技术，有两个问题需要我们去思考：</p>
+<ul>
+<li>当进程被创建或者换入时，我们应该为它分配多大的内存？</li>
+<li>如何对空闲区进行管理？</li>
+</ul>
+<p>对于第一个问题，如果进程的大小是固定的并且不会再改变，那分配就简单了。可现代的程序设计语言都允许从堆中动态分配内存，所以当进程空间试图增长时，就会出现问题了。如果一个进程需要增长空间，相邻的是空闲区那还好办，直接给加上就行了。如果相邻的空间是另一个程序，那就需要把一个或多个进程交换出去。</p>
+<p>如果大部分进程在运行时都要增长，为了减少因内存区域不够而引起的进程交换和移动所产生的开销，一种可用的方法是，当换入或移动进程时为它分配一些<strong>额外的内存</strong>。</p>
+<h2 id="空闲内存管理"><a href="#空闲内存管理" class="headerlink" title="空闲内存管理"></a>空闲内存管理</h2><p>在动态分配内存时，操作系统必须对其进行管理。一般而言，有两种方式跟踪内存使用情况：<strong>位图和空闲链表</strong>。</p>
+<h3 id="使用位图的存储管理"><a href="#使用位图的存储管理" class="headerlink" title="使用位图的存储管理"></a>使用位图的存储管理</h3><p>使用位图方法时，内存可能被划分成小到几个字或大到几千字节的分配单元。每个分配单元对应于位图中的一位，0表示空闲，1表示占用（或者相反）。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tracking-memery" alt="两种方式跟踪内存使用情况"></p>
+<p>使用位图方法时，我们需要思考两个问题：</p>
+<ul>
+<li>分配单元多大才合适？</li>
+<li>如何找出空闲区将进程调入内存？</li>
+</ul>
+<p>对于第一个问题，如果分配太小，那么位图就很大，就浪费内存了。如果分配单元大，那么位图就小，但如果进程的大小不是分配单元的整数倍，那么最后一个分配单元就会有一定数量的内存浪费了。</p>
+<p>对于第二个问题，如果把一个占k个分配单元的进程调入内存时，存储管理器必须搜索位图，在位图中找出有k个连续0的串。查找位图中指定长度的连续0是耗时操作，这也是位图的缺点。</p>
+<h3 id="使用链表的存储管理"><a href="#使用链表的存储管理" class="headerlink" title="使用链表的存储管理"></a>使用链表的存储管理</h3><p>另一种记录内存使用情况的方法是，维护一个记录已分配内存段和空闲内存段的链表。上图中的c)就是用链表来表示内存布局，链表中的每一个结点都包含以下域：空闲区（H）或进程（P）的指示标志、起始地址、长度和指向下一个结点的指针。</p>
+<p>在本例中，段链表是按照地址排序的，其好处是当进程终止或被换出时链表的更新非常直接。使用双向链表的话就更方便管理了。</p>
+<p>当按照地址顺序在链表中存放进程和空闲区时，有几种算法可以用来为创建的进程（或从磁盘换入的已存在进程）分配内存：</p>
+<ul>
+<li><strong>首次适配法</strong>：沿链表搜索找到第一个足够大的空闲区。</li>
+<li><strong>下次适配法</strong>：是对首次适配法的修改，每次找到合适的空闲区时都记录当时的位置，以便在下次寻找空区时从上次结束的地方开始搜索，而不是像首次适配法那样每次都从头开始，性能略低于首次适配法。</li>
+<li><strong>最佳适配法</strong>：搜索整个链表（从开始到结束），找出能够容纳进程的最小空闲区，会产生大量无用的小空间，竟然比前两种更浪费内存。</li>
+<li><strong>最差适配法</strong>：总是分配最大的可用空闲区，使新的空闲区比较大从而可以继续使用。 </li>
+</ul>
+<p>另外，还可以为进程和空闲区维护各自对立的链表，这四种算法速度都会得到提高，但是增加了复杂度和导致内存释放速度变慢。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文先从无存储抽象出发，了解计算机如何管理内存，如何实现多道程序并行，再分析了无存储抽象会存在什么问题；然后了解了为了解决出现的问题，引出了一种存储抽象：<strong>地址空间</strong>，解决问题的两个关键点就是<strong>保护和重定位</strong>;最后学习了交换技术和如何对交换进程时产生的空闲区进行管理的问题，有两种跟踪内存使用情况的方法：<strong>位图和空闲链表</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/09/27/Address-Space/" data-id="cjrm61k0500b9j3je3sfu3nzm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/地址空间/">地址空间</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/09/30/Virtual-Memery/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          虚拟内存
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/09/22/Progress-Thread/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">进程和线程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

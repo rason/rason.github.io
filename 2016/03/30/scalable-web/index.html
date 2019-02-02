@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>网站的伸缩性 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="网站的伸缩性">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网站的伸缩性">
+<meta property="og:url" content="http://yoursite.com/2016/03/30/scalable-web/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="网站的伸缩性">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-lb-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-hash-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-db-cluster-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-3.png">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.275Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网站的伸缩性">
+<meta name="twitter:description" content="网站的伸缩性">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-scalable-web" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/30/scalable-web/" class="article-date">
+  <time datetime="2016-03-30T00:48:19.000Z" itemprop="datePublished">2016-03-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      网站的伸缩性
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>所谓网站的伸缩性是指不需要改变网站的软硬件设计，仅仅通过改变部署的服务器数量就可以扩大或者缩小网站的服务处理能力。通过之前的学习，我们第一时间能想到的方法就是使用集群。所以，怎么才能做到只要向集群中添加服务器就能增强系统的处理能力是我们需要解决的问题。</p>
+<h2 id="网站的伸缩性架构"><a href="#网站的伸缩性架构" class="headerlink" title="网站的伸缩性架构"></a>网站的伸缩性架构</h2><p>集群的使用当然是伸缩性架构的重要手段。然而，在网站的一开始阶段，我们可能并不需要集群,只需按功能分离即可，如果还记得网站架构演变过程的话。</p>
+<p>因此，网站的伸缩性设计可以分为两类：</p>
+<ul>
+<li><strong>根据功能进行物理分离实现伸缩</strong>：不同服务器部署不同的服务</li>
+<li><strong>单一功能通过集群实现伸缩</strong>：多台服务器部署相同的服务</li>
+</ul>
+<p>在网站的早期，通常会使用第一种方式，如图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-1.png" alt="根据功能进行物理分离实现伸缩"></p>
+<a id="more"></a>
+<p>当然，根据功能分离也可以用于网站发展的任何阶段。具体还可以分为两种情况：</p>
+<ul>
+<li><strong>纵向分离（分层后分离）</strong>：将业务处理流程上的不同部分分离部署。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-2.png" alt="纵向分离部署实现伸缩"></p>
+<ul>
+<li><strong>横向分离（业务分割后分离）</strong>：将不同的业务模块分离部署。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-3.png" alt="横向分离部署实现伸缩"></p>
+<p>当然，将不同功能分离之后可以实现一定程度的伸缩性，但是随着网站的访问量增加，及时分离到最小力度的独立部署，单一的服务器也会成为瓶颈。此时，就需要使用集群了，即多台服务器部署相同的服务。</p>
+<p><strong>当一头牛拉不动车的时候，不要去寻找一头更强壮的牛，而是用两头牛来拉车</strong></p>
+<p>具体来说，集群伸缩性分为两种：</p>
+<ul>
+<li><strong>应用服务器集群伸缩性</strong></li>
+<li><strong>数据服务器集群伸缩性</strong><ul>
+<li><strong>缓存数据服务器集群</strong></li>
+<li><strong>存储数据服务器集群</strong></li>
+</ul>
+</li>
+</ul>
+<p>这几种集群的技术实现有着较大的区别，所以得分开讨论。</p>
+<h2 id="应用服务器集群的伸缩性设计"><a href="#应用服务器集群的伸缩性设计" class="headerlink" title="应用服务器集群的伸缩性设计"></a>应用服务器集群的伸缩性设计</h2><p>应用服务器集群伸缩性设计，重点就是负载均衡技术，将请求分发到不同的服务器来处理。</p>
+<p>实现负载均衡的基础技术包含以下几种：</p>
+<p><strong>1.HTTP重定向负载均衡</strong><br><strong>2.DNS域名解析负载均衡</strong><br><strong>3.反向代理负载均衡</strong><br><strong>4.IP负载均衡</strong><br><strong>5.数据链路层负载均衡</strong></p>
+<h3 id="HTTP重定向负载均衡"><a href="#HTTP重定向负载均衡" class="headerlink" title="HTTP重定向负载均衡"></a>HTTP重定向负载均衡</h3><p>HTTP重定向服务器是一台普通的应用服务器，其唯一功能就是根据用户的HTTP请求计算一台真实的Web服务器地址，并强该Web服务器地址写入HTTP重定向响应中（响应状态吗302）返回给用户浏览器。如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-1.png" alt="HTTP重定向负载均衡原理"></p>
+<p>HTTP重定向服务器是根据一定的负载均衡算法找到真实的服务器。实际上这种方案很少使用，两次请求才能完成一次访问，性能太差。</p>
+<h3 id="DNS域名解析负载均衡"><a href="#DNS域名解析负载均衡" class="headerlink" title="DNS域名解析负载均衡"></a>DNS域名解析负载均衡</h3><p>就是<strong>在DNS服务器中配置多条A记录</strong>，将一个域名映射到多个IP地址，每个IP地址就是一个应用服务器,这种方式将负载均衡的工作交给了DNS。优点是，DNS会将域名解析成距离用户最近的服务器地址，加快访问；缺点是：某台服务器下线，DNS没那么快生效，会导致访问失败，而且负载均衡的控制器在域名服务商哪里，自己无法做更多改善。如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-2.png" alt="DNS域名解析负载均衡原理"></p>
+<p>这种方式通常会用于作为<strong>一级负载均衡手段</strong>，即DNS解析出来的IP地址对应的服务器是一组负载均衡服务器，不是实际提供应用服务的服务器。</p>
+<h3 id="反向代理负载均衡"><a href="#反向代理负载均衡" class="headerlink" title="反向代理负载均衡"></a>反向代理负载均衡</h3><p>反向代理不仅可以缓存一下静态资源，还可以实现负载均衡，其工作原理如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-3.png" alt="反向代理负载均衡原理"></p>
+<p>在这种方式中，Web服务器不直接对外提供访问，因此Web服务器不需要使用外部IP地址，而<strong>反响代理服务器则需要配置双网卡和内部外部两套IP地址</strong>。</p>
+<p>由于反向代理服务器转发请求在HTTP协议层面，因此也叫应用层负载均衡。<strong>优点是部署简单，缺点是所有请求和响应的中转站，其性能可能会成为瓶颈</strong>。</p>
+<h3 id="IP负载均衡"><a href="#IP负载均衡" class="headerlink" title="IP负载均衡"></a>IP负载均衡</h3><p>所谓IP负载均衡，即<strong>在网络层通过修改目标地址进行负载均衡。</strong>如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-4.png" alt="IP负载均衡原理"></p>
+<p>在这里需要处理关键的地方就是如何将集群内部服务器处理完后的数据返回给负载均衡服务器。解决办法：</p>
+<ul>
+<li><p>负载均衡服务器使用双网卡，一个对内一个对外，在修改请求数据包的目的IP的同时也修改源地址，将源地址设为自身的IP，即源地址转换，这样内部集群服务器响应会再回到负载均衡服务器；</p>
+</li>
+<li><p>将负载均衡服务器作为真实物理服务器集群的网关服务器，这样所有的响应都将通过负载均衡服务器。</p>
+</li>
+</ul>
+<p>IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有更好的处理性能。但请求响应还是得经过负载均衡服务器，所以集群的最大响应数据吞吐量还是会受限于负载均衡服务器的网卡带宽。视频下载类网站就难以满足了。<strong>那么有没有方式让负载均衡服务器只转发请求，响应数据直接返回给用户？</strong></p>
+<h3 id="数据链路层负载均衡"><a href="#数据链路层负载均衡" class="headerlink" title="数据链路层负载均衡"></a>数据链路层负载均衡</h3><p><strong>数据链路层负载均衡是至在通信协议的数据链路层修改mac地址进行负载均衡</strong>，如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-5.png" alt="数据链路层负载均衡原理"></p>
+<p>这种数据传输方式又称作<strong>三角传输模式</strong>，可以避免负载均衡服务器网卡带宽成为瓶颈。这种负载均衡方式又称作<strong>直接路由方式（DR）</strong>。使用三角传输模式的链路层负载均衡是目前大型网站<strong>使用最广的一种负载均衡手段</strong>，在Linux平台上最好的链路层负载均衡开源产品是<strong>LVS</strong>。</p>
+<h3 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h3><p>前面描述了如何将请求数据发送到Web服务器，而具体的负载均衡算法通常有一下几种：</p>
+<ul>
+<li><strong>轮询</strong>:依次分发。</li>
+<li><strong>加权轮询</strong>：在轮询基础上，按照权重分发。</li>
+<li><strong>随机</strong>：随机数本身比较均衡，也可以加权随机。</li>
+<li><strong>最少连接</strong>：分发到最少连接的服务器，同样也可以加权最少连接。</li>
+<li><strong>源地址散列</strong>：根据请求IP进行Hash计算，同IP总会到同一服务器，可以实现会话粘滞。</li>
+</ul>
+<h2 id="分布式缓存集群的伸缩性设计"><a href="#分布式缓存集群的伸缩性设计" class="headerlink" title="分布式缓存集群的伸缩性设计"></a>分布式缓存集群的伸缩性设计</h2><p>和应用服务器集群不同，分布式缓存服务器集群中不同服务器缓存的数据是不一样的。这个特点会严重制约分布式缓存集群的伸缩性设计，因为新上线的缓存服务器没有缓存任何数据，而已下线的缓存服务器还缓存着网站的许多热点数据。</p>
+<p>所以，让新上线的缓存服务器对整个分布式缓存集群影响最小，也就是说<strong>新加入缓存服务器后应使整个缓存服务器集群中已经缓存的数据尽可能还被访问到</strong>,这是分布式缓存集群伸缩性设计的主要目标。</p>
+<h3 id="Memcached分布式缓存集群的访问模型"><a href="#Memcached分布式缓存集群的访问模型" class="headerlink" title="Memcached分布式缓存集群的访问模型"></a>Memcached分布式缓存集群的访问模型</h3><p>以Memcached为代表的分布式缓存，访问模型如图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-lb-1.png" alt="Memcached分布式缓存访问模型"></p>
+<p>该模型的简单路由算法可以<strong>使用KEY的Hash值求余得到一台服务器，然后进行读写操作</strong>。如果不考虑缓存服务器集群伸缩性，余数Hash几乎可以满足绝大多数的缓存路由需求。</p>
+<p>然后，当我们需要将缓存服务器扩容的时候，问题就来了。比如机器由3台变成4台，这样求余的话大约有75%的缓存不能命中了，这显然不能接受。所以我们需要改进路由算法，常用的就是<strong>分布式缓存的一致性Hash算法</strong>。</p>
+<p><strong>分布式缓存的一致性Hash算法</strong>：通过一个叫做一致性Hash环的数据结构实现KEY到缓存服务器的Hash映射。如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-hash-1.png" alt="一致性Hash算法原理"></p>
+<p>具体算法过程：先构造一个长度为0~2的32次方的整数环（这个环被称作一致性Hash环），根据节点名称的Hash值将缓存服务器节点放置在这个Hash环上。然后根据需要缓存的数据的KEY值计算得到其Hash值，然后在Hash环上顺时针查找距离这个KEY的Hash值最近的缓存服务器节点，完成KEY到服务器的Hash映射查找。</p>
+<p>这个算法，3台服务器扩容至4台，可以继续命中原有缓存数据的概率是75%，远高于余数Hash的25%，而且随着集群规模越大，继续命中原有缓存数据的概率也逐渐增大。</p>
+<p><strong>但是，上面描述的算法过程还存在点小问题，那就是负载均衡性还不够好。</strong></p>
+<p>解决负载均衡问题可以通过<strong>虚拟层</strong>的手段：将每台物理缓存服务器虚拟为一组虚拟缓服务器，将虚拟服务器的Hash值放置在Hash环上，KEY在环上先找到虚拟服务器节点，再得到物理服务器的信息。具体此处不展开，自行搜索一致性Hash即可。</p>
+<h2 id="数据存储服务器集群的伸缩性设计"><a href="#数据存储服务器集群的伸缩性设计" class="headerlink" title="数据存储服务器集群的伸缩性设计"></a>数据存储服务器集群的伸缩性设计</h2><p>相对与缓存服务器集群，数据存储服务器集群对数据的持久性和可用性提出了更高的要求。因为缓存部分丢失不会影响业务，数据存储服务器则必须保证数据的可靠存储。</p>
+<p>具体来说，数据存储集群伸缩性又分为两种：</p>
+<ul>
+<li><strong>关系数据库集群伸缩性</strong></li>
+<li><strong>NoSQL数据库集群伸缩性</strong></li>
+</ul>
+<h3 id="关系数据库集群伸缩性设计"><a href="#关系数据库集群伸缩性设计" class="headerlink" title="关系数据库集群伸缩性设计"></a>关系数据库集群伸缩性设计</h3><p>使用数据复制功能可以对数据库进行简单伸缩，如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-db-cluster-1.png" alt="MySQL集群伸缩性方案"></p>
+<p>这种架构中，主从复制，读写分离，另外前面提到的按业务分割模式也可以用在数据库，不同业务数据库表部署在不同的数据库集群上，俗称<strong>分库</strong>。分库方式的制约条件是跨库的表不能进行Join操作。</p>
+<p>可是，如果<strong>单表数据过大，还需要进行分片</strong>，将一张表拆开分别存储在多个数据库中。</p>
+<p>支持分片的分布式关系数据库产品主要有<strong>Amoeba</strong>和<strong>Cobar</strong>。</p>
+<p>以Cobar为例，部署模型如图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-1.png" alt="Cobar部署模型"></p>
+<p>Cobar是一个分布式关系<strong>数据库访问代理</strong>，介于应用服务器和数据库服务器之间。应用程序通过JDBC驱动访问Cobar集群，Cobar服务器根据SQL和分库规则分解SQL，分发到MySql集群不同的数据库实例上执行。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-2.png" alt="Cobar系统组件模型"></p>
+<p><strong>那么Cobar如何做集群的伸缩？</strong></p>
+<p>两种方式：</p>
+<ul>
+<li>Cobar服务器集群的伸缩</li>
+<li>MySQL服务器集群的伸缩</li>
+</ul>
+<p>Cobar服务器可以看作是无状态的应用服务器，因此其集群伸缩性可以简单使用负载均衡的手段实现。而MySQL中存储着数据，想要保证集群扩容后数据一致负载均衡，必须要做数据迁移，将集群中原来机器中的数据迁移到新添加的机器中。如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-3.png" alt="Cobar集群伸缩性原理"></p>
+<p>关于数据如何迁移问题，此处也不展开，自行搜索了解。</p>
+<h2 id="NoSQL数据库的伸缩性设计"><a href="#NoSQL数据库的伸缩性设计" class="headerlink" title="NoSQL数据库的伸缩性设计"></a>NoSQL数据库的伸缩性设计</h2><p>NoSQL，主要指非关系的、分布式的数据库设计模式。一般而已，NoSQL数据库产品放弃了关系数据库的两大重要基础：以关系代数为基础的结构化查询语言（SQL）和事务一致性保证（ACID）。而强化大型网站更关注的特点：高可用性和伸缩性。</p>
+<p>开源社区有各种的NoSQL产品，其支持的数据结构和伸缩特性也各不相同，目前看来，应用比较广泛的是Apache HBase。</p>
+<p>关于NoSQL的伸缩性设计就不展开了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一个具有良好伸缩性架构设计的网站，其设计总是走在业务发展的前面，在业务需要处理更多访问和服务之前，就已经做好充足的准备，当业务需要时，只需购买或者租用服务器简单部署实施就可以了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/03/30/scalable-web/" data-id="cjrm61k1e00emj3jege9pkt3v" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/04/07/The-extensibility-of-web/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          网站的扩展性
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/03/28/high-available-web/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">网站的高可用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

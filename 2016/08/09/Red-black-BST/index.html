@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>红黑树 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="红黑树">
+<meta name="keywords" content="Algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红黑树">
+<meta property="og:url" content="http://yoursite.com/2016/08/09/Red-black-BST/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="红黑树">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-encoding.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-1-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-color.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/rotate.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert2-node.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert3-node.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/color-flip.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert3-node-bottom.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/st-performance">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="红黑树">
+<meta name="twitter:description" content="红黑树">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-encoding.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Red-black-BST" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/09/Red-black-BST/" class="article-date">
+  <time datetime="2016-08-09T06:19:19.000Z" itemprop="datePublished">2016-08-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      红黑树
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在<a href="http://rason.me/2016/08/08/2-3-search-tree/" target="_blank" rel="noopener">上一篇</a>文章中我们学习了2-3查找树，并且留下了一个悬念：直接用2-3查找树实现符号表API相当复杂，但是我们只需要将其简单变换一下，则可在二叉查找树实现的符号表API的基础上做一些简单的改动即可。这中简单变换之后的数据结构就是<strong>红黑二叉查找树</strong>，我们今天要研究一些它的一些性质及如何利用它实现符号表API。</p>
+<h2 id="红黑二叉树"><a href="#红黑二叉树" class="headerlink" title="红黑二叉树"></a>红黑二叉树</h2><p>那么，首先我们要明白的是，如何将一棵2-3查找树转换成红黑二叉树。</p>
+<h3 id="替换3-结点"><a href="#替换3-结点" class="headerlink" title="替换3-结点"></a>替换3-结点</h3><blockquote>
+<p>红黑二叉查找树背后的基本思想是用标准的二叉查找树（完全由2-结点构成）和一些额外的信息（替换3-结点）来表示2-3树。</p>
+</blockquote>
+<p>我们将树中的链接分成两种类型：</p>
+<ul>
+<li><strong>红链接</strong>将两个2-结点连接起来构成一个3-结点。</li>
+<li><strong>黑链接</strong>则是2-3树中的普通链接。</li>
+</ul>
+<p>如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-encoding.png" alt="由一条红色链接相连的两个2-结点表示一个3-结点"></p>
+<p>这种表示法的一个优点是，我们<strong>无需修改</strong>就可以直接使用标准二叉查找树的get()方法。对于任意的2-3树，只要对结点进行转换，我们都可以立即派生出一棵对应的二叉查找树。</p>
+<a id="more"></a>
+<h3 id="一种等价的定义"><a href="#一种等价的定义" class="headerlink" title="一种等价的定义"></a>一种等价的定义</h3><p>红黑树的另一种定义是含有红黑链接并满足下列条件的二叉查找树：</p>
+<ul>
+<li>红链接均为左链接；</li>
+<li>没有任何一个结点同时和两条红链接相连；</li>
+<li>该树是<strong>完美黑色平衡</strong>的，即任意空链接到根结点的路径上的黑链接数量相同。</li>
+</ul>
+<p>满足这样定义的红黑树和相应的2-3树是一一对应的。</p>
+<h3 id="一一对应"><a href="#一一对应" class="headerlink" title="一一对应"></a>一一对应</h3><ul>
+<li>如果我们将一棵红黑树中的红链接画平，那么所有的空链接到根结点的距离都是相同的。</li>
+<li>如果我们将由红链接相连的结点合并，得到的就是一棵2-3树。</li>
+<li>相反，如果将一棵2-3树中的3-结点画作由红色左链接相连的两个2-结点，那么不会存在能够和两条红链接相连的结点，且树必然是完美黑色平衡的。</li>
+</ul>
+<p>如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-1-1.png" alt="红黑树和2-3树的一一对应关系"></p>
+<p>所以，<strong>红黑树既是二叉查找树，也是2-3树，能够满足二叉查找树中的简洁高效的查找算法和2-3树中的高效平衡插入算法。</strong></p>
+<h3 id="颜色表示"><a href="#颜色表示" class="headerlink" title="颜色表示"></a>颜色表示</h3><p>每个结点都智慧有一条指向自己的链接（从它的父结点指向它），我们将链接的颜色保存在表示结点的Node数据类型的布尔变量color中。如果指向它的链接是红色，那么该变量为true，黑色则为false。我们约定空链接为黑色，当我们提到一个结点的颜色时，我们指的是指向该结点的链接的颜色。代码如下：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-color.png" alt="红黑树的结点表示"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public static final boolean RED = true;</span><br><span class="line">public static final boolean BLACK = false;</span><br><span class="line"></span><br><span class="line">private class Node&#123;</span><br><span class="line">	Key k;</span><br><span class="line">	Value v;</span><br><span class="line">	Node left;</span><br><span class="line">	Node right;</span><br><span class="line">	int n;</span><br><span class="line">	boolean color;</span><br><span class="line">	public Node(Key k, Value v, int n, boolean color) &#123;</span><br><span class="line">		super();</span><br><span class="line">		this.k = k;</span><br><span class="line">		this.v = v;</span><br><span class="line">		this.n = n;</span><br><span class="line">		this.color = color;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public boolean isRed(Node node)&#123;</span><br><span class="line">	if(node == null) return false;</span><br><span class="line">	return node.color == RED;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h3><p>在我们实现的某些操作中可能会出现红色右链接或者两条连续的红链接，但在操作完成前这些情况都会被消息地<strong>旋转</strong>并修复。旋转操作会改变红链接的指向。</p>
+<ul>
+<li>假设有一条红色的右链接需要被转换为左链接，称为<strong>左旋转</strong>；</li>
+<li>假设有一条红色的左链接需要被转换为右链接，称为<strong>右旋转</strong>。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/rotate.png" alt="左旋转h的右链接和右旋转h的左链接"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public Node rotateLeft(Node h)&#123;</span><br><span class="line">	if(h == null) return null;</span><br><span class="line">	Node x = h.right;</span><br><span class="line">	h.right = x.left;</span><br><span class="line">	x.left = h;</span><br><span class="line">	x.color = h.color;</span><br><span class="line">	h.color = RED;</span><br><span class="line">	x.n = h.n;</span><br><span class="line">	h.n = size(h.left) + size(h.right) + 1</span><br><span class="line">	return x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Node rotateRight(Node h)&#123;</span><br><span class="line">	if(h == null) return null;</span><br><span class="line">	Node x = h.left;</span><br><span class="line">	h.left = x.right;</span><br><span class="line">	x.right = h;</span><br><span class="line">	x.color = h.color;</span><br><span class="line">	h.color = RED;</span><br><span class="line">	x.n = h.n;</span><br><span class="line">	h.n = size(h.left) + size(h.right) + 1</span><br><span class="line">	return x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在插入新的键时我们可以使用旋转操作帮助我们保证2-3树和红黑树之间的一一对应关系，因为旋转操作可以保持红黑树的两个重要性质：<strong>有序性和完美平衡性</strong>。</p>
+<p>那么，如何使用旋转来保持红黑树的另外两个重要性质（不存在两条连续的红链接和不存在红色的右链接）？这里会分几种情况：</p>
+<h3 id="向2-结点插入新键"><a href="#向2-结点插入新键" class="headerlink" title="向2-结点插入新键"></a>向2-结点插入新键</h3><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert2-node.png" alt="向2-结点插入新键"></p>
+<h3 id="向3-结点插入新键"><a href="#向3-结点插入新键" class="headerlink" title="向3-结点插入新键"></a>向3-结点插入新键</h3><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert3-node.png" alt="向3-结点插入新键"></p>
+<h3 id="颜色变换"><a href="#颜色变换" class="headerlink" title="颜色变换"></a>颜色变换</h3><p>上图中有涉及将一个结点的两个红色子结点转换成黑色，我们也将其用一个方法flipColor()来实现。除了将子结点的颜色由红变黑之外，我们同时还要将父结点的颜色由黑变红。这项操作最重要的性质在于和旋转操作一样是局部变换，不会影响<strong>整棵树的黑色平衡性</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/color-flip.png" alt="颜色变换"></p>
+<p>为什么父结点要由黑变红？其实就是和2-3树一样，不断地分解提升到父结点中，所以就是红色的。</p>
+<h3 id="根结点总是黑色"><a href="#根结点总是黑色" class="headerlink" title="根结点总是黑色"></a>根结点总是黑色</h3><p>在上面这种情况，颜色变换会使根结点变为红色。试想一下，如果根结点是红色的会是什么情况？因为红色的结点是一个3-结点的一部分，证明还有结点指向于它，那它就不是根结点了。因此我们在<strong>每次插入后都会将根结点设为黑色</strong>。注意，<strong>每当根节点由红色变黑时树的黑链接高度就会加1</strong>。因为需要颜色变换时根节点才会变成红色，插入后将根节点变成黑色，这就是由红变黑。这时其实就是一个分解根节点的情况，高度会加1。</p>
+<h3 id="向树底部的3-结点插入新键"><a href="#向树底部的3-结点插入新键" class="headerlink" title="向树底部的3-结点插入新键"></a>向树底部的3-结点插入新键</h3><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert3-node-bottom.png" alt="向树底部的3-结点插入新键"></p>
+<p>只要谨慎地使用左旋转、右旋转和颜色转换三种简单的操作，我们就能够保证插入操作后红黑树和2-3树的一一对应关系。在沿着插入点到根节点的路径向上移动时在所经过的每个结点中顺序完成一下操作，我们就能完成插入操作：</p>
+<ul>
+<li>如果右子节点是红色的而左子节点是黑色的，进行左旋转；</li>
+<li>如果左子节点是红色的且它的左子节点也是红色的，进行右旋转；</li>
+<li>如果左右子节点均为红色，进行颜色变黑。</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>因为保持树的平衡性所需的操作是由下向上在每个所经过的结点中进行的，将它们植入我们已有的实现中十分简单：只需要在递归调用之后完成这些操作即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public void put(Key k, Value v)&#123;</span><br><span class="line">	if(k == null) throw new NullPointerException(&quot;key is null&quot;);</span><br><span class="line">	if(v == null) &#123;</span><br><span class="line">		delete(k);</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	root = put(root, k, v);</span><br><span class="line">	root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node put(Node node, Key k,Value v)&#123;</span><br><span class="line">	if(node == null)&#123;</span><br><span class="line">		return new Node(k, v, 1, RED);</span><br><span class="line">	&#125;</span><br><span class="line">	int comp = k.compareTo(node.k);</span><br><span class="line">	if(comp &gt; 0)&#123;</span><br><span class="line">		node.right = put(node.right, k, v);</span><br><span class="line">	&#125;else if(comp &lt; 0)&#123;</span><br><span class="line">		node.left = put(node.left, k, v);</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		node.v = v;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// 修正红黑树</span><br><span class="line">	if(isRed(node.right) &amp;&amp; !isRed(node.left)) node = rotateLeft(node);</span><br><span class="line">	if(isRed(node.left) &amp;&amp; isRed(node.left.left)) node = rotateRight(node);</span><br><span class="line">	if(isRed(node.left) &amp;&amp; isRed(node.right)) flipColors(node);</span><br><span class="line">	</span><br><span class="line">	node.n = size(node.left) + size(node.right) + 1;</span><br><span class="line">	return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至于红黑树的删除操作，是比插入操作复杂得多的，由于篇幅关系此处就不做深入研究了。</p>
+<h2 id="红黑树的性质"><a href="#红黑树的性质" class="headerlink" title="红黑树的性质"></a>红黑树的性质</h2><blockquote>
+<p>所有基于红黑树的符号表实现都能保证操作的运行时间为对数级别（范围查找除外，它所需的额外时间和返回的键的数量成正比）。</p>
+</blockquote>
+<blockquote>
+<p>一棵大小为N的红黑树的高度不会超过2lgN，根结点到任意结点的平均路径长度为～1.00lgN。</p>
+</blockquote>
+<p>红黑树最吸引人的一点是它的实现中最复杂的代码仅限于插入和删除方法。二叉查找树中的查找最大和最小键、select()、rank()、floor()、ceiling()和范围查找方法<strong>不作任何改变</strong>即可继续使用，因为红黑树也是二叉查找树而这些操作也不会涉及结点的颜色。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/st-performance" alt="各种符号表实现性能总结"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到目前为止，我们把红黑树的基本特性和操作都熟悉了一遍。将2-3树的3-结点转换一下表示方式即可变成红黑树，红黑树的基本操作就是左右旋转和颜色变换，这些操作都是局部操作，不会影响红黑树的有序性和完美平衡性。并且简单地学习了一下红黑树实现的符号表及其性能总结比较。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/08/09/Red-black-BST/" data-id="cjrm61k0z00ddj3jebnnh3id4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/17/HashTable/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          散列表
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/08/2-3-search-tree/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">2-3查找树</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

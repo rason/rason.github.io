@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/13/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Tomcat-Architecture" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/19/Tomcat-Architecture/" class="article-date">
+  <time datetime="2015-11-19T05:31:31.000Z" itemprop="datePublished">2015-11-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/19/Tomcat-Architecture/">Tomcat架构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上两篇文章探讨了一下SpringMVC的架构，我们知道<code>DispatcherServlet</code>是它的核心入口，并且可以断言<strong>任何MVC框架都是已servlet技术为基础发展起来的</strong>。因此本来想是继续探讨一下servlet技术的工作原理，但是<code>servlet</code>技术又与servlet容器关系密切，所以只好先探讨一下servlet容器，以我们最熟悉的tomcat容器为例子。本文为tomcat8。</p>
+<h2 id="server-xml"><a href="#server-xml" class="headerlink" title="server.xml"></a>server.xml</h2><p>将项目部署到tomcat，我们必然需要配置<code>server.xml</code>。原来我们一直配置的这个文件，就已经把它的整体架构展示给我们了。只是很多时候我们只是谷歌了一下怎么配置，能跑起来就行了，并没有进行更深入的探究。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos;?&gt;</span><br><span class="line">&lt;Server port=&quot;8005&quot; shutdown=&quot;SHUTDOWN&quot;&gt;</span><br><span class="line">  &lt;Service name=&quot;Catalina&quot;&gt;</span><br><span class="line">    &lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;</span><br><span class="line">               connectionTimeout=&quot;20000&quot;</span><br><span class="line">               redirectPort=&quot;8443&quot; /&gt;</span><br><span class="line">    &lt;Connector port=&quot;8009&quot; protocol=&quot;AJP/1.3&quot; redirectPort=&quot;8443&quot; /&gt;</span><br><span class="line">    &lt;Engine name=&quot;Catalina&quot; defaultHost=&quot;localhost&quot;&gt;</span><br><span class="line">      &lt;Host name=&quot;localhost&quot;  appBase=&quot;webapps&quot;</span><br><span class="line">            unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;&gt;</span><br><span class="line">        &lt;Context path=&quot;xxx&quot; docBase=&quot;xxx&quot;/&gt;</span><br><span class="line">      &lt;/Host&gt;</span><br><span class="line">    &lt;/Engine&gt;</span><br><span class="line">  &lt;/Service&gt;</span><br><span class="line">&lt;/Server&gt;</span><br></pre></td></tr></table></figure>
+<p>由于篇幅关系上述配置文件有删减，可以看出配置文件主要由Server，Service，Connector，Engine，Host，Context组成，那么他们各自的作用是什么？</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/11/19/Tomcat-Architecture/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/11/19/Tomcat-Architecture/" data-id="cjrm61jxw0058j3jeg8rty09y" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SpringMVC-2" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/12/SpringMVC-2/" class="article-date">
+  <time datetime="2015-11-12T01:26:35.000Z" itemprop="datePublished">2015-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/12/SpringMVC-2/">从“请求-响应”问题出发看一下SpringMVC的架构（下）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上篇文章说到SpringMVC是由一个核心分发器DispatcherServlet来将请求分发到相应的controller进行处理，那么DispatcherServlet是怎么找到相应的controller和处理controller返回的信息呢？</p>
+<p>带着这个问题来思考，DispatcherServlet作为一个核心分发器，当然是会有一套完整的处理“请求-响应”问题的规范化流程，我们可以想到这个流程大概是这样的：</p>
+<ul>
+<li><strong>1.对请求进行初步的处理，然后找出相应的controller</strong></li>
+<li><strong>2.调用相应的controller进行逻辑处理</strong></li>
+<li><strong>3.对controller处理过程中发生的异常进行处理</strong></li>
+<li><strong>4.根据controller处理的返回结果，进行http响应处理</strong></li>
+</ul>
+<p>在SpringMVC中，对上述过程抽象出的接口就是：</p>
+<ul>
+<li><strong>1.HandlerMapping</strong></li>
+<li><strong>2.HandlerAdapter</strong></li>
+<li><strong>3.HandlerExceptionResolver</strong></li>
+<li><strong>4.ViewResolver</strong></li>
+</ul>
+<p>以上这些接口称之为组件，SpringMVC除了上述组件外还有其它的组件可以查看官方文档，所以说<strong>SpringMVC就是通过DispatcherServlet将一堆组件串联起来的Web框架</strong>。<br>那么DispatcherServlet是怎么把这些组件组合在一起完成这个“请求-响应”过程呢？我们看一下DispatcherServlet的数据结构：</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/11/12/SpringMVC-2/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/11/12/SpringMVC-2/" data-id="cjrm61k1700e1j3jegkj50vuv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SpringMVC-1" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/11/SpringMVC-1/" class="article-date">
+  <time datetime="2015-11-11T02:58:18.000Z" itemprop="datePublished">2015-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/11/SpringMVC-1/">从“请求-响应”问题出发看一下SpringMVC的架构（上）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天看到一句话令我印象深刻，大概意思是公司招聘程序员只是为了<strong>“增加收入，降低支出”</strong>，很具有现实意义。我们为什么需要程序，就是为了降低人力成本，增加工作效率。因此我们在应聘的过程中应该强调自己的代码给公司带来了多少价值，这才是根本。</p>
+<p>好吧，上面这段话跟本文没太大关系。提醒了我一下做事情还是得清楚根本的出发点，而用框架要理解框架出现的原因。最近看了点书，就来闲聊一下SpringMVC的架构，大概地弄清楚SpringMVC出现的原因和如何解决它所解决的问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">web开发的根本问题就是**请求-响应**的问题</span><br></pre></td></tr></table></figure>
+<p>人与人的沟通，简单来说是：我说一句，你回答一句，或者你说一句，我回答一句。人与机器的沟通，简单说来就是：我点一个链接，机器返回了一些内容给我。实际上发生的动作就是浏览器发送一个请求到服务器，服务器返回数据给浏览器呈现，这就是一个请求响应问题。</p>
+<p>人与人之间的沟通通过语言，只有共同的语言才能顺利进行沟通。那么浏览器和服务器之间的沟通是基于什么？很显然是http协议。因此web开发中的根本问题可以理解为：<br><strong>发起方通过http协议发送请求内容到接收方，接收方收到请求之后经过逻辑处理再通过http协议发送响应内容到接收方</strong>。</p>
+<p>那么，这一个过程，用java语言是怎么实现的呢？<br>
+        
+          </p><p class="article-more-link">
+            <a href="/2015/11/11/SpringMVC-1/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/11/11/SpringMVC-1/" data-id="cjrm61jxj004ej3jepb8i4alh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Java-TheadPool-CTO" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/30/Java-TheadPool-CTO/" class="article-date">
+  <time datetime="2015-10-30T02:50:24.000Z" itemprop="datePublished">2015-10-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/30/Java-TheadPool-CTO/">你们公司的CTO就是一个JAVA线程池</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上篇文章谈了一下多线程中Synchronized关键字的使用，但实际的开发中，不建议自己new一个线程来处理耗时比较长的业务。</p>
+<p>为什么不建议自己为耗时较长的任务开一个单独线程呢？假如我们每来一个任务都开一个线程来处理，那么如果任务很多而且耗时又长会带来什么问题？</p>
+<ul>
+<li>创建和销毁线程耗时耗资源</li>
+<li>活动的线程按时间片来调度，线程太多会对CPU和内存等资源造成压力</li>
+</ul>
+<p>举个简单的例子：<br>一家创业公司，做一个O2O项目。CEO会不会为开发任务中的每个任务都聘请一个程序员来写代码？显然是不会的。CEO当然会聘请一个CTO，让CTO把这个项目架构搭起来，任务按轻重缓急细化，假设细化成了100个子任务。此时CTO也不可能请100个程序员来完成这100个任务啊。真的这样做会带来什么问题？很明显是烧钱啊，烧钱还浪费资源啊，做完了之后哪需要那么多程序员。那么CTO会怎么做就是线程池的问题了。我们分步骤看一下这个问题：</p>
+<ul>
+<li>你就是CEO（写代码当然是你说了算，你怎么写你的事）</li>
+<li>你需要CTO（CTO就是线程池，就是你写代码创建一个线程池咯，当然你有钱任性可以不用线程池）</li>
+<li>CTO招聘五个全职程序员（程序员就是线程，五个就是线程池的大小）</li>
+<li>CTO把项目分成100个子任务列入项目管理系统（项目管理系统就是工作队列）</li>
+<li>五个程序员从羡慕管理系统中取出任务来完成（线程从队列中取出任务）</li>
+<li>程序员做完了任务继续在项目管理中领任务（苦逼的程序员啊）</li>
+</ul>
+<p>大体上应该按照上述的方式才算合理地使用线程，而不是每个任务都自己手动开启一个线程，那么用代码应该怎么实现这样的功能？JDK已经封装好了线程池的相关代码，我们来简单看一下应该怎么用。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/10/30/Java-TheadPool-CTO/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/10/30/Java-TheadPool-CTO/" data-id="cjrm61jwu002cj3jesdctdx6v" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Java-Synchronized" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/23/Java-Synchronized/" class="article-date">
+  <time datetime="2015-10-23T09:48:04.000Z" itemprop="datePublished">2015-10-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/23/Java-Synchronized/">Java多线程Synchronized小知识</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>还记得那个大名鼎鼎的多线程售票例子吗？让我们来复习一下：</p>
+<ul>
+<li>先来写个简单的售票服务类：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//售票服务器</span><br><span class="line">public class TicketService&#123;</span><br><span class="line">	//余票</span><br><span class="line">	private int remain;</span><br><span class="line">	public TicketService(int remain) &#123;</span><br><span class="line">		super();</span><br><span class="line">		this.remain = remain;</span><br><span class="line">	&#125;</span><br><span class="line">	public int sell()&#123;</span><br><span class="line">		if(remain &gt; 0)&#123;</span><br><span class="line">			remain -= 1;</span><br><span class="line">			try &#123;</span><br><span class="line">				Thread.sleep(100);//模拟实际复杂业务耗时</span><br><span class="line">			&#125; catch (InterruptedException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			return remain;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			return -1;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	public int getRemain() &#123;</span><br><span class="line">		return remain;</span><br><span class="line">	&#125;</span><br><span class="line">	public void setRemain(int remain) &#123;</span><br><span class="line">		this.remain = remain;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2015/10/23/Java-Synchronized/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/10/23/Java-Synchronized/" data-id="cjrm61jwv002fj3jetgcjzd02" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Synchronized/">Synchronized</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Why-we-need-dynamic-proxy" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/22/Why-we-need-dynamic-proxy/" class="article-date">
+  <time datetime="2015-10-22T01:38:56.000Z" itemprop="datePublished">2015-10-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/22/Why-we-need-dynamic-proxy/">我们为什么需要动态代理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>什么是代理？你可以理解为现实中的中介，比如房地产中介。你需要买套二手房，过户那个手续是需要自己做的，其余什么跟房东协商跑腿之类的工作交给中介去做，那么这个中介就是你的代理了。用代码来展示这个过程就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//买房的接口</span><br><span class="line">public interface HouseService &#123;</span><br><span class="line">	public void buy();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//你自己</span><br><span class="line">public class You implements HouseService &#123;</span><br><span class="line"></span><br><span class="line">	public void buy() &#123;</span><br><span class="line">		System.out.println(&quot;房产过户&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//房地产中介</span><br><span class="line">public class Proxy implements HouseService &#123;</span><br><span class="line">	private You you;</span><br><span class="line">	</span><br><span class="line">	public Proxy(You you) &#123;</span><br><span class="line">		this.you = you;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void buy() &#123;</span><br><span class="line">		System.out.println(&quot;跟房东沟通扯淡&quot;);</span><br><span class="line">		you.buy();</span><br><span class="line">		System.out.println(&quot;交完房跟房东喝酒继续扯淡，不关我的事了&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码很简单而又似曾相识，就是自己做核心的实际，其它杂事交给其他人来做。这话听起来是不是有点熟悉，你猜对了，这就是AOP。那么动态代理又是怎样的，为什么会存在动态代理？且让我再举个例子：</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/10/22/Why-we-need-dynamic-proxy/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/10/22/Why-we-need-dynamic-proxy/" data-id="cjrm61jy80063j3jerhzsfwnh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态代理/">动态代理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-UNIX-command" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/14/UNIX-command/" class="article-date">
+  <time datetime="2015-10-14T08:01:48.000Z" itemprop="datePublished">2015-10-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/14/UNIX-command/">Linux常用命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>简单记录一下自己最常用到的几个命令</p>
+<h2 id="vi"><a href="#vi" class="headerlink" title="vi"></a>vi</h2><p><strong>注意：以下命令大小写敏感</strong></p>
+<h3 id="进入离开vi"><a href="#进入离开vi" class="headerlink" title="进入离开vi"></a>进入离开vi</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">命令</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">vi filename</td>
+<td style="text-align:center">打开或新建文件</td>
+</tr>
+<tr>
+<td style="text-align:center">i</td>
+<td style="text-align:center">进入编辑模式</td>
+</tr>
+<tr>
+<td style="text-align:center">Esc</td>
+<td style="text-align:center">退出编辑模式</td>
+</tr>
+<tr>
+<td style="text-align:center">EscEsc</td>
+<td style="text-align:center">不清楚当前处于哪种模式，回到指令模式</td>
+</tr>
+<tr>
+<td style="text-align:center">:q</td>
+<td style="text-align:center">没有修改退出</td>
+</tr>
+<tr>
+<td style="text-align:center">:q!</td>
+<td style="text-align:center">不保存退出</td>
+</tr>
+<tr>
+<td style="text-align:center">:wq</td>
+<td style="text-align:center">保存退出</td>
+</tr>
+<tr>
+<td style="text-align:center">ZZ</td>
+<td style="text-align:center">保存退出</td>
+</tr>
+<tr>
+<td style="text-align:center">:set nu</td>
+<td style="text-align:center">在左侧显示行号</td>
+</tr>
+</tbody>
+</table>
+        
+          <p class="article-more-link">
+            <a href="/2015/10/14/UNIX-command/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/10/14/UNIX-command/" data-id="cjrm61jy3005mj3jex69cfoaz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux命令/">Linux命令</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Xml-To-Java-Bean" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/22/Xml-To-Java-Bean/" class="article-date">
+  <time datetime="2015-09-22T02:50:28.000Z" itemprop="datePublished">2015-09-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/22/Xml-To-Java-Bean/">利用注解、反射将Xml转JavaBean</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇文章谈到了javabean转xml的问题，现在反过来，利用反射将xml转javabean。这里主要用到两个技术点，一个是利用dom4j根据xpath来查找节点，另一个就是java reflect方面的知识点。</p>
+<ul>
+<li>关于xpath相关的知识点可以看一下<a href="http://www.w3school.com.cn/xpath/" target="_blank" rel="noopener">w3cschool</a>的教程</li>
+<li>关于java reflect方面的知识可以简单地看一下官方文档，我的建议是直接找个例子做一下，不会再查api文档，用多了就熟了。</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2015/09/22/Xml-To-Java-Bean/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/09/22/Xml-To-Java-Bean/" data-id="cjrm61k1a00e8j3jevw93u3vj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Java-Bean-To-Xml" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/14/Java-Bean-To-Xml/" class="article-date">
+  <time datetime="2015-09-14T06:46:45.000Z" itemprop="datePublished">2015-09-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/14/Java-Bean-To-Xml/">利用注解、反射将JavaBean转Xml</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近对接建行商贸通项目，遇到一个JavaBean和Xml互转的问题。大家通常用的的Bean转Xml应该都是直接将Bean的属性名作为Xml的标签，属性值作为Xml的标签值。比如微信公众平台的消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;xml&gt;</span><br><span class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</span><br><span class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt; </span><br><span class="line">&lt;CreateTime&gt;1348831860&lt;/CreateTime&gt;</span><br><span class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</span><br><span class="line">&lt;Content&gt;&lt;![CDATA[this is a test]]&gt;&lt;/Content&gt;</span><br><span class="line">&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;</span><br><span class="line">&lt;/xml&gt;</span><br></pre></td></tr></table></figure></p>
+<p>在这种情况下已经有一些现成的工具可以转化，比如说<code>org.simpleframework.xml.core.Persister.Persister()</code>，示例如下：</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/09/14/Java-Bean-To-Xml/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/09/14/Java-Bean-To-Xml/" data-id="cjrm61k0j00c7j3jeghloxs8j" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Git-theory" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/08/Git-theory/" class="article-date">
+  <time datetime="2015-09-08T09:07:18.000Z" itemprop="datePublished">2015-09-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/08/Git-theory/">Git内部原理-底层命令和对象</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="底层命令和高层命令"><a href="#底层命令和高层命令" class="headerlink" title="底层命令和高层命令"></a>底层命令和高层命令</h2><p>我们平时用到的命令比如<code>git init</code>，<code>git clone</code>其实是比较高层的命令，git还有一些设计成UNIX风格的底层命令供脚本来调用完成工作。实际上我们常用的高层命令只是底层命令的封装。这些底层命令并不面向最终用户，它们更适合作为新命令和自定义脚本的组成部分。</p>
+<p>当在一个新目录或已有目录执行 <code>git init</code> 时，Git 会创建一个 .git 目录。 这个目录包含了几乎所有 Git 存储和操作的对象。 如若想备份或复制一个版本库，只需把这个目录拷贝至另一处即可。该目录的结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HEAD</span><br><span class="line">config*</span><br><span class="line">description</span><br><span class="line">hooks/</span><br><span class="line">info/</span><br><span class="line">objects/</span><br><span class="line">refs/</span><br></pre></td></tr></table></figure>
+<p>objects 目录存储所有数据内容；refs 目录存储指向数据（分支）的提交对象的指针；HEAD 文件指示目前被检出的分支；index 文件保存暂存区信息。这四个目录是核心文件，其余目录不需要关注。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/09/08/Git-theory/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/09/08/Git-theory/" data-id="cjrm61k0f00bwj3jeylbz2t2f" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

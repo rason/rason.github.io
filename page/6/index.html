@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Access-to-high-memery" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/05/Access-to-high-memery/" class="article-date">
+  <time datetime="2016-12-05T05:55:57.000Z" itemprop="datePublished">2016-12-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/05/Access-to-high-memery/">访问高区内存</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>32位系统最大的寻址范围是4GB，通常会将这4GB虚拟内存地址空间分成3GB的用户空间和1GB的内核空间。也就是说内核能直接映射到物理地址的最大范围是1GB的地址（实际上只有896MB直接映射），那么内核怎么访问超过1GB的物理地址？今天我们来学习Linux内核的解决方案。</p>
+<h2 id="Linux内核的解决方案"><a href="#Linux内核的解决方案" class="headerlink" title="Linux内核的解决方案"></a>Linux内核的解决方案</h2><ul>
+<li>高区内存页框只有在真正需要的时候才会被映射</li>
+<li>这些页框用完之后会被释放以便其它页框可以重用相同的虚拟地址</li>
+<li>当然这些共享只适用于高区内存</li>
+</ul>
+<h2 id="内存映射函数"><a href="#内存映射函数" class="headerlink" title="内存映射函数"></a>内存映射函数</h2><ul>
+<li><code>kmap()</code>函数可以创建一个新的页映射</li>
+<li><code>kunmap()</code>函数可以释放映射</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;linux/highmem.h&gt;</span><br><span class="line">void * kmap( struct page * page );</span><br><span class="line">void kunmap( struct page * page );</span><br></pre></td></tr></table></figure>
+<h2 id="内核空间可视化"><a href="#内核空间可视化" class="headerlink" title="内核空间可视化"></a>内核空间可视化</h2><ul>
+<li>896MB以下的内存直接映射</li>
+<li><code>phys_to_virt()</code>物理地址转虚拟地址直接加上0xC0000000</li>
+<li><code>virt_to_phys()</code>虚拟地址转物理地址直接减去0xC0000000</li>
+</ul>
+<h2 id="kmap-如何工作"><a href="#kmap-如何工作" class="headerlink" title="kmap()如何工作"></a>kmap()如何工作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">void * kmap( struct page * page )</span><br><span class="line">&#123;</span><br><span class="line">	if ( page &lt; highmem_start_page )</span><br><span class="line">		return  page-&gt;virtual;</span><br><span class="line">	return  kmap_high( page );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/05/Access-to-high-memery/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/05/Access-to-high-memery/" data-id="cjrm61jvr0001j3jes8wftb6s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HighMemery/">HighMemery</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Linux-memery-issue" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/25/Linux-memery-issue/" class="article-date">
+  <time datetime="2016-11-25T07:56:11.000Z" itemprop="datePublished">2016-11-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/25/Linux-memery-issue/">Linux内存问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天学习一些关于内存管理方面的知识。</p>
+<h2 id="一些处理器架构的历史"><a href="#一些处理器架构的历史" class="headerlink" title="一些处理器架构的历史"></a>一些处理器架构的历史</h2><ul>
+<li>8080 (late-1970s) 16-bit address (64-KB)</li>
+<li>8086 (early-1980s) 20-bit address (1-MB)</li>
+<li>80286 (mid-’80s) 24-bit address (16-MB)</li>
+<li>80386 (late-’80s) 32-bit address (4-GB)</li>
+<li>80686 (late-’90s) 36-bit address (64-GB)</li>
+<li>Core2 (mid-2000s) 40-bit address (1-TB)</li>
+</ul>
+<h2 id="向后兼容"><a href="#向后兼容" class="headerlink" title="向后兼容"></a>向后兼容</h2><ul>
+<li>新的处理器需要运行旧的程序</li>
+<li>比如80x86依然可以运行很多8086的程序</li>
+<li>当然也有一些不兼容的地方存在</li>
+</ul>
+<h2 id="Linux必须适配这些遗留问题"><a href="#Linux必须适配这些遗留问题" class="headerlink" title="Linux必须适配这些遗留问题"></a>Linux必须适配这些遗留问题</h2><ul>
+<li>遗留因素：硬件和固件</li>
+<li>CPU：复位地址和中断向量</li>
+<li>ROM-BIOS：数据区和boot位置</li>
+<li>DMA：24位内存地址总线</li>
+<li>其他</li>
+</ul>
+<h2 id="其他处理器架构"><a href="#其他处理器架构" class="headerlink" title="其他处理器架构"></a>其他处理器架构</h2><ul>
+<li>除了IA-32，Linux还可以运行在其他CPU中（比如IBM360，MC68000等）</li>
+<li><p>因此，Linux还需适配他们的不同点</p>
+<ul>
+<li>Memory-Mapped I/O</li>
+<li>Wider address-buses</li>
+<li>Non-Uniform Memory Access (NUMA)</li>
+</ul>
+<h2 id="Nodes-Zones-和-Pages"><a href="#Nodes-Zones-和-Pages" class="headerlink" title="Nodes, Zones, 和 Pages"></a>Nodes, Zones, 和 Pages</h2><ul>
+<li>Nodes：为了适配NUMA系统</li>
+<li>然而80x86系统不支持UNMA</li>
+<li>所以在80x86中只用了一个<code>node</code></li>
+<li>Zones：为了适配不同的区域</li>
+<li>80x86中的三个<code>zones</code></li>
+<li>ZONE_DMA         (memory below 16-MB)</li>
+<li>ZONE_NORMAL         (from 16-MB to 896-MB)</li>
+<li>ZONE_HIGHMEM     (memory above 896-MB)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Zones被切分为Pages"><a href="#Zones被切分为Pages" class="headerlink" title="Zones被切分为Pages"></a>Zones被切分为Pages</h2><ul>
+<li>80x86支持4KB的页框</li>
+<li>Linux使用页描述符数组<code>mem_map[]</code>跟踪物理内存页</li>
+<li>物理内存是由CPU来映射匹配的</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/25/Linux-memery-issue/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/25/Linux-memery-issue/" data-id="cjrm61k0m00cej3jel8smzmhp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux内存/">Linux内存</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Concurrent-programming" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/22/Concurrent-programming/" class="article-date">
+  <time datetime="2016-11-22T02:02:41.000Z" itemprop="datePublished">2016-11-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/22/Concurrent-programming/">并发编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天来简单地学习Linux中的编发编程，介绍一下互斥和线程同步。</p>
+<h2 id="stash-c的问题"><a href="#stash-c的问题" class="headerlink" title="stash.c的问题"></a>stash.c的问题</h2><ul>
+<li>上一篇博客我们写了一个简单的公共剪切板设备驱动来演示进程的睡眠和唤醒</li>
+<li>细心的同学应该能够发现，当多个进程同时读或者写可能会出现问题</li>
+</ul>
+<h2 id="竞争条件"><a href="#竞争条件" class="headerlink" title="竞争条件"></a>竞争条件</h2><ul>
+<li>当两个或多个进程试图在同一时刻访问共享内存，或读写某 些共享数据，而最后的结果取决于线程执行的顺序(线程运行时序)，就称为竞争条件</li>
+<li>如果没有同步机制，多道程序设计很容易因为竞争条件而出现不是我们所期待或者是错误的结果</li>
+</ul>
+<h2 id="临界区"><a href="#临界区" class="headerlink" title="临界区"></a>临界区</h2><ul>
+<li>对共享变量，共享内存，共享资源进行访问的程序片度叫做临界区</li>
+</ul>
+<h2 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h2><p>在某些提供<code>test-and-set</code>指令的机器可以用于解决临界区互斥的问题，这个指令能检查并设置内存的值，而不会被打断。工作原理大致是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">boolean TestAndSet(boolean *lock)&#123;</span><br><span class="line">	boolean rv = *lock;</span><br><span class="line">	*lock = TRUE;</span><br><span class="line">	return rv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong>这个函数中三条指令是<code>原子</code>执行的，也就是说不会被打断。</p>
+<p>使用方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">boolean lock = false;</span><br><span class="line"></span><br><span class="line">while(TestAndSet(&amp;lock))&#123;</span><br><span class="line">	;// 啥也不干</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">临界区；</span><br><span class="line"></span><br><span class="line">lock = false;</span><br><span class="line"></span><br><span class="line">其他代码；</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/22/Concurrent-programming/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/22/Concurrent-programming/" data-id="cjrm61jw9000uj3jer738rbdw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Process-blocking-sleeping-waking" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/17/Process-blocking-sleeping-waking/" class="article-date">
+  <time datetime="2016-11-17T05:25:34.000Z" itemprop="datePublished">2016-11-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/17/Process-blocking-sleeping-waking/">简单介绍进程的阻塞和Linux内核对进程睡眠和唤醒的支持</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天简单学习一下进程的阻塞和Linux内核对进程睡眠和唤醒的支持，并编写一个环形缓存应用来演示睡眠和唤醒。</p>
+<h2 id="设备可能会空转"><a href="#设备可能会空转" class="headerlink" title="设备可能会空转"></a>设备可能会空转</h2><ul>
+<li>比如键盘，程序可能在等待键盘的输入</li>
+<li>这时，我们希望程序等到输入再运行，而不是放弃等待</li>
+</ul>
+<h2 id="设备可能会繁忙"><a href="#设备可能会繁忙" class="headerlink" title="设备可能会繁忙"></a>设备可能会繁忙</h2><ul>
+<li>比如打印机，多个程序调用打印，打印机可能暂时没法接收更多的数据</li>
+<li>这个时候，我们希望等到打印机可以接收更多的数据，而不是放弃打印</li>
+</ul>
+<h2 id="使用忙等待"><a href="#使用忙等待" class="headerlink" title="使用忙等待"></a>使用忙等待</h2><ul>
+<li>针对上面的情况，我们可让设备驱动不断轮询一个状态位，直到数据准备好或者设备不再繁忙</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">do &#123;</span><br><span class="line">	status = inb( 0x64 );</span><br><span class="line">&#125;</span><br><span class="line">while ( ( status &amp; READY ) == 0 );</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这种技术称为<code>忙等待</code></li>
+<li>但是这样做会浪费宝贵的CPU时间</li>
+</ul>
+<h2 id="避免忙等待"><a href="#避免忙等待" class="headerlink" title="避免忙等待"></a>避免忙等待</h2><ul>
+<li>在多任务系统中我们希望尽可能地避免使用<code>忙等待</code>策略，因为这会成为性能的瓶颈</li>
+<li>所以现代的操作系统支持一个可选择的策略，使得任务可以这样处理</li>
+</ul>
+<h3 id="空转时阻塞"><a href="#空转时阻塞" class="headerlink" title="空转时阻塞"></a>空转时阻塞</h3><ul>
+<li>如果一个任务尝试从一个暂时没有数据的设备文件读取，但又希望新的数据到来；这时操作系统通过将这个任务进入<code>睡眠</code>进行阻塞，避免在等待期间浪费宝贵CPU时间；但是会在数据一到来的时候就将任务<code>唤醒</code>。</li>
+</ul>
+<h3 id="繁忙时阻塞"><a href="#繁忙时阻塞" class="headerlink" title="繁忙时阻塞"></a>繁忙时阻塞</h3><ul>
+<li>同样地，如果一个任务尝试写一个设备文件，但是设备在忙于先去写的数据；操作系统会使这个任务睡眠，避免它浪费宝贵的CPU时间，以便其他任务可以做一些有用的工作；当设备可能接收更多数据时会第一时间将任务唤醒。</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/17/Process-blocking-sleeping-waking/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/17/Process-blocking-sleeping-waking/" data-id="cjrm61jx5003aj3jeq3l4gax5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-tasklist" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/15/tasklist/" class="article-date">
+  <time datetime="2016-11-15T08:01:11.000Z" itemprop="datePublished">2016-11-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/15/tasklist/">Linux任务列表</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天简单地学习一下Linux的进程描述符及其相关的数据结构，并编写一个内核模块将所有进程的简单信息用伪文件读取出来。</p>
+<h2 id="多任务"><a href="#多任务" class="headerlink" title="多任务"></a>多任务</h2><ul>
+<li>现代操作系统允许多用户共享计算机资源</li>
+<li>每个用户都允许运行多个任务</li>
+<li>操作系统内核必须保证每个任务不受其他任务干扰</li>
+</ul>
+<h2 id="栈和任务描述符"><a href="#栈和任务描述符" class="headerlink" title="栈和任务描述符"></a>栈和任务描述符</h2><ul>
+<li>为了管理多任务，操作系统需要一个数据结构来跟踪每个任务的进展和对计算机资源的使用情况（物理内存、打开的文件、挂起信号等）</li>
+<li>这样的一个数据结构称为<strong>进程描述符</strong>——每个活动中的任务都有一个</li>
+<li>每个任务都需要有自己私有的栈</li>
+</ul>
+<h2 id="一个程序的栈里面有什么？"><a href="#一个程序的栈里面有什么？" class="headerlink" title="一个程序的栈里面有什么？"></a>一个程序的栈里面有什么？</h2><h3 id="进入main-函数时"><a href="#进入main-函数时" class="headerlink" title="进入main()函数时"></a>进入main()函数时</h3><ul>
+<li>程序的退出地址在用户栈中</li>
+<li>命令行参数在用户栈中</li>
+<li>环境变量在用户栈中</li>
+</ul>
+<h3 id="执行main-期间"><a href="#执行main-期间" class="headerlink" title="执行main()期间"></a>执行main()期间</h3><ul>
+<li>方法参数和返回地址</li>
+<li>本地变量</li>
+</ul>
+<h2 id="进入内核"><a href="#进入内核" class="headerlink" title="进入内核"></a>进入内核</h2><p>用户进程进入内核模式的几种情况：</p>
+<ul>
+<li>执行系统调用</li>
+<li>发生中断</li>
+<li>发生异常</li>
+</ul>
+<h2 id="切换到一个不同的栈"><a href="#切换到一个不同的栈" class="headerlink" title="切换到一个不同的栈"></a>切换到一个不同的栈</h2><ul>
+<li>进入内核模式不仅会引起权限等级的变化，还会进行栈的切换</li>
+<li>这对于健壮性很有必要，比如用户栈可能会被耗尽</li>
+<li>也是出于安全的原因，因为有些权限数据可能会被访问</li>
+</ul>
+<h2 id="内核栈中有什么？"><a href="#内核栈中有什么？" class="headerlink" title="内核栈中有什么？"></a>内核栈中有什么？</h2><p>进入内核模式时：</p>
+<ul>
+<li>任务的寄存器会保存在内核栈中（比如任务的用户栈地址）</li>
+</ul>
+<p>执行内核方法期间：</p>
+<ul>
+<li>方法参数和返回地址</li>
+<li>本地变量</li>
+</ul>
+<h2 id="支撑结构"><a href="#支撑结构" class="headerlink" title="支撑结构"></a>支撑结构</h2><ul>
+<li>所以每个任务，除了有自己的代码和数据，还会有一个在用户空间的栈加上另一个在内核空间的栈</li>
+<li>每个任务都有一个只能在内核空间访问的进程描述符</li>
+</ul>
+<h2 id="任务在虚拟内存中的布局"><a href="#任务在虚拟内存中的布局" class="headerlink" title="任务在虚拟内存中的布局"></a>任务在虚拟内存中的布局</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/task-layout-in-vm.png" alt="任务在虚拟内存中的布局"></p>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/15/tasklist/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/15/tasklist/" data-id="cjrm61jyu007tj3jejm3ps7us" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/任务列表/">任务列表</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Character-device-driver" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/14/Character-device-driver/" class="article-date">
+  <time datetime="2016-11-14T07:52:02.000Z" itemprop="datePublished">2016-11-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/14/Character-device-driver/">一个查看所有内存的字符设备驱动</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>用户程序是无法访问直接访问物理内存的，使用的地址也只是逻辑地址，而不是物理地址。如果我们想直接通过物理地址来访问内存，可以通过内核模块来实现。</p>
+<h2 id="物理内存分区"><a href="#物理内存分区" class="headerlink" title="物理内存分区"></a>物理内存分区</h2><p>假设一台32位的计算机，2G的内存，会分为如下三个区域：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/ram-zone.png" alt="物理内存分区"></p>
+<h3 id="遗留DMA"><a href="#遗留DMA" class="headerlink" title="遗留DMA"></a>遗留DMA</h3><ul>
+<li>许多旧的设备依赖PC/AT的DMA控制器来进行数据传输</li>
+<li>这些芯片只能使用24位的地址</li>
+<li>所以这些设备只能访问到16MB的物理内存</li>
+<li>因此Linxu将ZONE_LOW区域保留使用</li>
+</ul>
+<h3 id="Normal-zone"><a href="#Normal-zone" class="headerlink" title="Normal zone"></a>Normal zone</h3><ul>
+<li>该区域的范围从16MB到896MB</li>
+<li>该区域的低位部分保存了一个重要的数据结构用来跟踪物理内存的使用情况</li>
+<li>该数据结构就是<strong>mem_map[]</strong></li>
+<li>该区域的剩余空间可以让操作系统内核动态地开辟空间</li>
+</ul>
+<h3 id="High-zone"><a href="#High-zone" class="headerlink" title="High zone"></a>High zone</h3><ul>
+<li>32位计算机虚拟地址空间为4G，一般低3G为用户空间，高1G位内核空间</li>
+<li>如果物理内存为1G，则内核可以直接映射</li>
+<li>如果物理内存大于1G，则无法进行直接映射</li>
+<li>所以内核要访问物理内存的高位区域，需要进行临时的映射，如下图</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/kmap.png" alt="物理内存高位区域映射"></p>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/14/Character-device-driver/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/14/Character-device-driver/" data-id="cjrm61jw4000fj3jepub56wbj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-make-hardware-device-appear-to-be-a-file" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/09/make-hardware-device-appear-to-be-a-file/" class="article-date">
+  <time datetime="2016-11-09T08:23:10.000Z" itemprop="datePublished">2016-11-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/09/make-hardware-device-appear-to-be-a-file/">Linux是如何将硬件设备呈现为文件的</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Linux给我们最大的错觉就是一切皆文件，那么它是如何将硬件设备也呈现为文件的呢？</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>要理解Linux驱动程序设计，需要了解正常的应用程序如何获得对操作系统提供的服务的访问</li>
+<li>应用程序是间接访问的——通过特别的受保护的接口（比如系统调用）——通常由库函数来实现</li>
+</ul>
+<h2 id="标准的文件I-O方法"><a href="#标准的文件I-O方法" class="headerlink" title="标准的文件I/O方法"></a>标准的文件I/O方法</h2><ul>
+<li>int open( char *pathname, int flags, … );</li>
+<li>int read( int fd, void *buf, size_t count );</li>
+<li>int write( int fd, void *buf, size_t count );</li>
+<li>int lseek( int fd, loff_t offset, int whence ); </li>
+<li>int close( int fd );</li>
+<li>我们可以使用<code>$ man 2 &lt;方法名&gt;</code>来查看用法说明。</li>
+</ul>
+<h2 id="一个标准文件I-O方法用例"><a href="#一个标准文件I-O方法用例" class="headerlink" title="一个标准文件I/O方法用例"></a>一个标准文件I/O方法用例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;fcntl.h&gt;	// for open() </span><br><span class="line">#include &lt;stdio.h&gt;	// for printf(), perror() </span><br><span class="line">#include &lt;unistd.h&gt;	// for read(), close() </span><br><span class="line">#include &lt;string.h&gt;	// for strncmp()</span><br><span class="line"></span><br><span class="line">char buf[4];</span><br><span class="line"></span><br><span class="line">int main( int argc, char **argv )</span><br><span class="line">&#123;</span><br><span class="line">	if ( argc == 1 ) return -1;</span><br><span class="line"></span><br><span class="line">	int	fd = open( argv[1], O_RDONLY );</span><br><span class="line">	if ( fd &lt; 0 ) &#123; perror( argv[1] ); return -1; &#125;</span><br><span class="line"></span><br><span class="line">	int nbytes = read( fd, buf, 4 );</span><br><span class="line">	if ( nbytes &lt; 0 ) &#123; perror( argv[1] ); return -1; &#125;</span><br><span class="line"></span><br><span class="line">	if ( strncmp( buf, &quot;\177ELF&quot;, 4 ) == 0 )</span><br><span class="line">		printf( &quot;File \&apos;%s\&apos; has an ELF signature \n&quot;, argv[1] );</span><br><span class="line">	else	printf( &quot;File \&apos;%s\&apos; is not an ELF file \n&quot;, argv[1] );</span><br><span class="line">	close( fd );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="特殊的“设备”文件"><a href="#特殊的“设备”文件" class="headerlink" title="特殊的“设备”文件"></a>特殊的“设备”文件</h2><ul>
+<li>Unix系统把硬件设备看做特殊的文件，这样的话编程人员就是用上面那些熟悉的方法来访问设备了</li>
+<li>系统管理员必须要创建这些设备文件（在/dev目录下）</li>
+<li>编写设备驱动</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/09/make-hardware-device-appear-to-be-a-file/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/09/make-hardware-device-appear-to-be-a-file/" data-id="cjrm61jyn007bj3jey0y2pwkx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Use-LKM-to-export-privileged-kernel-imformation" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/07/Use-LKM-to-export-privileged-kernel-imformation/" class="article-date">
+  <time datetime="2016-11-07T02:45:22.000Z" itemprop="datePublished">2016-11-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/07/Use-LKM-to-export-privileged-kernel-imformation/">使用LKM将特权内核信息展示给用户</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天的学习目标是编写一个内核模块，访问CMOS内存中的内容，读取出实时时钟的时间。</p>
+<h2 id="特权内核信息"><a href="#特权内核信息" class="headerlink" title="特权内核信息"></a>特权内核信息</h2><ul>
+<li>用户通常是禁止看到运行中的内核内部正在发生什么</li>
+<li>但是我们可以通过内核模块来重写内核数据的普通访问限制</li>
+<li>最方便的机制就是实现所谓的“/proc”文件系统</li>
+</ul>
+<h2 id="proc目录"><a href="#proc目录" class="headerlink" title="/proc目录"></a>/proc目录</h2><ul>
+<li><p>除了普通文件存储在硬盘之外，UNIX系统还支持几种特殊类型文件</p>
+<ul>
+<li>目录和子目录</li>
+<li>符号链接</li>
+<li>设备文件</li>
+<li>伪文件</li>
+</ul>
+</li>
+<li><p>这些伪文件通常都是在/proc下</p>
+</li>
+</ul>
+<h2 id="cat命令"><a href="#cat命令" class="headerlink" title="cat命令"></a>cat命令</h2><ul>
+<li>标准的UNIX命令中提供用户的一个快捷查看/proc文件内容方式</li>
+<li>这个命令可以将多个文件内容连接起来然后输送到标准输出</li>
+<li>比如：$ cat /proc/version</li>
+</ul>
+<h2 id="自己编写一个cat命令"><a href="#自己编写一个cat命令" class="headerlink" title="自己编写一个cat命令"></a>自己编写一个cat命令</h2><ul>
+<li>要想知道一个命令是如何工作的最好方式就是自己去重新实现一个</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;fcntl.h&gt;	// for open() </span><br><span class="line">#include &lt;stdio.h&gt;	// for perror() </span><br><span class="line">#include &lt;unistd.h&gt;	// for read(), write(), close() </span><br><span class="line"></span><br><span class="line">int main( int argc, char *argv[] )</span><br><span class="line">&#123;</span><br><span class="line">	int	i, fd, ch;	// declare local variables</span><br><span class="line"></span><br><span class="line">	for (i = 1; i &lt; argc; i++)</span><br><span class="line">		&#123;</span><br><span class="line">		fd = open( argv[i], O_RDONLY );</span><br><span class="line">		if ( fd &lt; 0 ) &#123; perror( argv[i] ); continue; &#125;</span><br><span class="line">		while ( read( fd, &amp;ch, 1 ) == 1 ) </span><br><span class="line">			write( STDOUT_FILENO, &amp;ch, 1 );</span><br><span class="line">		close( fd );</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编译：<code>$ gcc mycat.c -o mycat</code></li>
+<li>执行：<code>$ ./mycat &lt;filename&gt;</code><br>-当然这只是一个最简单的实现，需要实现支持更多可选参数可以参考手册：<code>$ man cat</code></li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/07/Use-LKM-to-export-privileged-kernel-imformation/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/07/Use-LKM-to-export-privileged-kernel-imformation/" data-id="cjrm61jy4005rj3jevc343xs3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LKM/">LKM</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-a-simple-kernel-module" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/03/a-simple-kernel-module/" class="article-date">
+  <time datetime="2016-11-03T07:51:49.000Z" itemprop="datePublished">2016-11-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/03/a-simple-kernel-module/">编写一个简单的Linux内核模块</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Linux的可扩展性体现在两个方面：</p>
+<ul>
+<li>开源</li>
+<li>可加载的内核模块（LKMs, Loadable kernel module）</li>
+</ul>
+<p>今天我们来认识一下LKM并编写一个简单的内核模块。</p>
+<h2 id="可加载的内核模块"><a href="#可加载的内核模块" class="headerlink" title="可加载的内核模块"></a>可加载的内核模块</h2><ul>
+<li>是一项方便扩展操作系统的技术</li>
+<li>同时让我们了解到内核是如何工作的</li>
+<li>内核运行时也可以进行修改</li>
+<li>不需要重新编译和重启</li>
+<li>因而它也是不安全的，有bug的话容易造成系统崩溃</li>
+</ul>
+<h2 id="超级用户权限"><a href="#超级用户权限" class="headerlink" title="超级用户权限"></a>超级用户权限</h2><ul>
+<li>修改运行中的内核是很危险的</li>
+<li>只有授权的系统管理员才可以安装内核模块</li>
+</ul>
+<h2 id="‘insmod’-and-‘rmmod’"><a href="#‘insmod’-and-‘rmmod’" class="headerlink" title="‘insmod’ and ‘rmmod’"></a>‘insmod’ and ‘rmmod’</h2><p>安装内核模块：<code>$  /sbin/insmod  myLKM.ko</code></p>
+<p>移除内核模块：<code>$  /sbin/rmmod  myLKM</code></p>
+<p>列出已安装的内核模块：<code>$  /sbin/lsmod</code></p>
+<h2 id="创建一个新的内核模块"><a href="#创建一个新的内核模块" class="headerlink" title="创建一个新的内核模块"></a>创建一个新的内核模块</h2><ul>
+<li>可以用任何文本编辑器编写Linux内核源码</li>
+<li>内核模块和普通的C程序有点不一样，比如没有main()方法</li>
+<li>内核模块不能调用标准C运行库的方法</li>
+<li>对于任何的LKM，必须要有两个切入点，一个用于initialization，一个用于cleanup</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/03/a-simple-kernel-module/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/03/a-simple-kernel-module/" data-id="cjrm61jy90068j3jelj60dh15" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Welcome-Linux" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/31/Welcome-Linux/" class="article-date">
+  <time datetime="2016-10-31T08:56:28.000Z" itemprop="datePublished">2016-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/31/Welcome-Linux/">欢迎来到Linux</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文将快速学习一些Linux的设计理念和常用命令。</p>
+<h2 id="两种界面选择"><a href="#两种界面选择" class="headerlink" title="两种界面选择"></a>两种界面选择</h2><h3 id="图形界面"><a href="#图形界面" class="headerlink" title="图形界面"></a>图形界面</h3><ul>
+<li>由彩色图标代表对象</li>
+<li>用户主要通过图标来进行操作</li>
+</ul>
+<h3 id="传统命令行界面"><a href="#传统命令行界面" class="headerlink" title="传统命令行界面"></a>传统命令行界面</h3><ul>
+<li>通过文件名来访问对象</li>
+<li>用户通过命令来进行操作</li>
+</ul>
+<h3 id="两种界面之间的切换"><a href="#两种界面之间的切换" class="headerlink" title="两种界面之间的切换"></a>两种界面之间的切换</h3><p>图形界面–&gt;命令行：ctrl + alt + fn (n = 1, 2, 3, 4, 5, 6)</p>
+<p>命令行–&gt;图形界面：ctrl + alt + f7</p>
+<h2 id="一切皆文件"><a href="#一切皆文件" class="headerlink" title="一切皆文件"></a>一切皆文件</h2><ul>
+<li>所有的普通文件都是字节序列</li>
+<li>一切存储数据，其他的存储程序</li>
+<li>也有一些特殊的文件，比如文件夹，设备文件和伪文件</li>
+<li>每个文件都有唯一的名字（利用了目录层次结构）</li>
+<li>每个文件都有具体的所有者</li>
+<li>每个文件都有一系列的访问权限</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/file-permissions.png" alt="文件访问权限"></p>
+<p>比如：rw-r–r–</p>
+<h2 id="目录树"><a href="#目录树" class="headerlink" title="目录树"></a>目录树</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/directory-tree.png" alt="目录树"></p>
+<p>Linux将成千上万的文件组织成树状的层次结构，顶层目录“/”称为根目录，通常包括大约二十来个子目录。</p>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/31/Welcome-Linux/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/31/Welcome-Linux/" data-id="cjrm61jy70061j3jerhhbhxv7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

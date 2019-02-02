@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>二叉查找树 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="二叉查找树">
+<meta name="keywords" content="二叉查找树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉查找树">
+<meta property="og:url" content="http://yoursite.com/2016/07/27/BST/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="二叉查找树">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST2">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST3">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST4">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二叉查找树">
+<meta name="twitter:description" content="二叉查找树">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-BST" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/27/BST/" class="article-date">
+  <time datetime="2016-07-27T01:40:09.000Z" itemprop="datePublished">2016-07-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      二叉查找树
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上篇文章<a href="http://rason.me/2016/07/21/SymbolTable/" target="_blank" rel="noopener">符号表</a>中谈到了符号表的两种基础实现方式——链表和数组，但都无法同时满足高效的插入和查找操作。<strong>二叉查找树</strong>结合了二分查找的效率和链表的灵活性，今天就学习一下如何实现基于二叉查找树的符号表。</p>
+<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><h3 id="什么是二叉查找树？"><a href="#什么是二叉查找树？" class="headerlink" title="什么是二叉查找树？"></a>什么是二叉查找树？</h3><blockquote>
+<p>一棵二叉查找树（BST）是一棵二叉树，其中每个结点都含有一个Comparable的键（以及相关联的值）且每个结点的键都大于其左子树中的任意结点的键而小于右子树的任意结点的键。</p>
+</blockquote>
+<p>所以，当我们<strong>中序遍历</strong>一棵二叉查找树的键时结果应该是<strong>有序</strong>的。即如果我们将一棵二叉查找树的所有键投影到一条直线上，那么我们一定可以得到一条有序的键列。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST" alt="二叉查找树"></p>
+<h3 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h3><p>和链表一样，我们用一个私有类来表示二叉查找树上的一个结点。每个结点都含有一个键、一个值、一条左链接、一条右链接和一个结点计数器。左链接指向一棵由小于该结点的所有键组成的二叉查找树，右链接指向一棵由大于该结点的所有键组成的二叉查找树。变量n给出了以该结点为根的子树的结点总数。数据结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">private class Node&#123;</span><br><span class="line">	Key k;</span><br><span class="line">	Value v;</span><br><span class="line">	Node left;</span><br><span class="line">	Node right;</span><br><span class="line">	int n;</span><br><span class="line">	public Node(Key k, Value v, int n) &#123;</span><br><span class="line">		super();</span><br><span class="line">		this.k = k;</span><br><span class="line">		this.v = v;</span><br><span class="line">		this.n = n;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="基于二叉查找树的符号表实现"><a href="#基于二叉查找树的符号表实现" class="headerlink" title="基于二叉查找树的符号表实现"></a>基于二叉查找树的符号表实现</h2><h3 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h3><p>根据二叉查找树的定义，我们很容易想到实现查找的方法和二分查找算法应该是差不多的。先与根结点对比，相等则直接返回，小于则递归左子数，大于则递归右子树，没有命中则返回空。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public Value get(Key k)&#123;</span><br><span class="line">	return get(root, k);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Value get(Node node, Key k)&#123;</span><br><span class="line">	if(node == null) return null;</span><br><span class="line">	int comp = k.compareTo(node.k);</span><br><span class="line">	if(comp == 0)&#123;</span><br><span class="line">		return node.v;</span><br><span class="line">	&#125;else if(comp &gt; 0)&#123;</span><br><span class="line">		return get(node.right, k);</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		return get(node.left, k);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>如何选择合适的位置插入？细想应该应该和查找的方式是差不多的，因为它实际上就相当于查找一个不存在于树的结点并结束于一条空链接，我们只需要做的就是将链接指向一个含有被查找的键的新结点即可。因此，过程也是先与根结点比较，相等则替换根结点的值，如果小于则递归左子树插入，大于则递归右子树插入，如果结点为空则代表我们需要在此位置插入该结点。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">public void put(Key k, Value v)&#123;</span><br><span class="line">	if(k == null) throw new NullPointerException(&quot;key is null&quot;);</span><br><span class="line">	if(v == null) &#123;</span><br><span class="line">		delete(k);</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	root = put(root, k, v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node put(Node node, Key k,Value v)&#123;</span><br><span class="line">	if(node == null)&#123;</span><br><span class="line">		return new Node(k, v, 1);</span><br><span class="line">	&#125;</span><br><span class="line">	int comp = k.compareTo(node.k);</span><br><span class="line">	if(comp &gt; 0)&#123;</span><br><span class="line">		node.right = put(node.right, k, v);</span><br><span class="line">	&#125;else if(comp &lt; 0)&#123;</span><br><span class="line">		node.left = put(node.left, k, v);</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		node.v = v;</span><br><span class="line">	&#125;</span><br><span class="line">	node.n = size(node.left) + size(node.right) + 1;</span><br><span class="line">	return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong>添加了新结点需要沿搜索路径向上增加结点计算器的值。</p>
+<h3 id="递归思想"><a href="#递归思想" class="headerlink" title="递归思想"></a>递归思想</h3><p>在查找和插入方法中我们都使用了递归的方式，递归的思想可能会有点复杂。要写出递归的代码，首先要化繁为简，不要将一棵树想得太复杂，否则思维会越陷越深；我们可以先以三个结点的树为例来思考，这样就不难实现单个非递归的代码了，然后再左右子树扩展递归即可。</p>
+<p>关于二叉查找树的查找和插入的递归代码，我们可以将递归前的代码想象成<strong>沿着树向下走</strong>：它会将给定的键和每个结点的键相比较并根据结果向左或向右移动到下一个结点。然后可以将递归调用后的代码想象成<strong>沿着树向上爬</strong>。对于get()方法，这对应着一系列的返回指令（return），但是对于put()方法，这意味着重置搜索路径上每个父结点指向子结点的链接，并增加路径上每个结点中的计算器的值。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>使用二叉查找树的算法的运行时间取决于树的形状，而树的形状又取决于键被插入的先后顺序。最好的情况下，一棵含有N个结点的数是完全平衡的，每条空链接和根结点的距离都为～lgN。在最坏情况下，搜索路径上可能有N个结点。但在一般情况下树的形状和最好情况更接近。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST2" alt="最好和一般情况"><br><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST3" alt="最坏情况"></p>
+<p>在大多数情况下我们可以假设键的分布是随机的，或者说它们的插入顺序是随机的。这样的模型，二叉查找树和快速排序几乎就是”双胞胎”。树的根结点就是快速排序中的第一个切分元素，这和快速排序中对子数组的递归排序完全对应。这使我们能够分析得到二叉查找树的一些性质。</p>
+<blockquote>
+<p>在由N个随机键构造的二叉查找树中，查找命中平均所需的比较次数为～2lnN(约1.39lgN)。<br>在由N个随机键构造的二叉查找树中插入操作和查找未命中平均所需的比较次数为～2lnN(约1.39lgN)。</p>
+</blockquote>
+<p>说明在二叉查找树中查找随机键的成本比二分查找高约39%，但这些成本是值得的，因为插入一个新键的成本是对数级别的——这是基于二分查找的有序数组所不具备的灵活性。</p>
+<h2 id="有序性相关方法和删除操作"><a href="#有序性相关方法和删除操作" class="headerlink" title="有序性相关方法和删除操作"></a>有序性相关方法和删除操作</h2><p>二叉查找树得以广泛应用的一个重要原因就是它能够<strong>保持键的有序性</strong>，因此它可以作为实现有序符号表API中的众多方法的基础。</p>
+<h3 id="最大键和最小键"><a href="#最大键和最小键" class="headerlink" title="最大键和最小键"></a>最大键和最小键</h3><p>很显然，最左端的结点键最小，最右端的结点键最大。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public Key min()&#123;</span><br><span class="line">	if(root == null) return null;</span><br><span class="line">	return min(root).k;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node min(Node node)&#123;</span><br><span class="line">	if(node.left == null)</span><br><span class="line">		return node;</span><br><span class="line">	return min(node.left);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="向上取整和向下取整"><a href="#向上取整和向下取整" class="headerlink" title="向上取整和向下取整"></a>向上取整和向下取整</h3><p>向下取整时：</p>
+<ul>
+<li>如果给定的键key小于二叉查找树的根结点的键，那么小于等于key的最大键（floor）一定在根结点的左子树中；</li>
+<li>如果给定的键key大于二叉查找树的根结点，那么只有当根结点右子树中存在小于等于key的结点时，小于等于key的最大键才会出现在右子树中，否则根结点就是小于等于key的最大键。</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public Key floor(Key k) &#123;</span><br><span class="line">	if(k == null) throw new NullPointerException(&quot;key is null&quot;);</span><br><span class="line">	Node floor = floor(root, k);</span><br><span class="line">	if(floor == null) return null;</span><br><span class="line">	return floor.k;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node floor(Node node, Key k)&#123;</span><br><span class="line">	if(node == null) return null;</span><br><span class="line">	int comp = k.compareTo(node.k);</span><br><span class="line">	if(comp == 0) return node;</span><br><span class="line">	if(comp &lt; 0) return floor(node.left, k);</span><br><span class="line">	Node t = floor(node.right, k);</span><br><span class="line">	if(t != null) return t;</span><br><span class="line">	else return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>向上取整则相反，左变右，小于变大于。</p>
+<h3 id="选择操作"><a href="#选择操作" class="headerlink" title="选择操作"></a>选择操作</h3><p>在选择操作中，结点中的n就发挥重大作用了。假设一棵有15个结点的平衡二叉查找树，则根结点的n为15，根结点的左结点n为7，根结点的右结点n也为7。当我们选择排序为9的结点时，判断根结点的左结点的n为7，比9小，所以还要加上两个结点，根结点一个和右子树的一个。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public Key select(int k)&#123;</span><br><span class="line">	Node node = select(root, k);</span><br><span class="line">	if(node == null) return null;</span><br><span class="line">	return node.k;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node select(Node node, int k)&#123;</span><br><span class="line">	if(node == null) return null;</span><br><span class="line">	int t = size(node.left);</span><br><span class="line">	if(t &gt; k) return select(node.left, k);</span><br><span class="line">	else if(t &lt; k) return select(node.right, k-t-1);</span><br><span class="line">	else return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="排名"><a href="#排名" class="headerlink" title="排名"></a>排名</h3><p>rank()是select()的逆方法，它会返回给定键的排名。它的实现和select()类似：如果给定的键和根结点的键相等，我们返回左子树中的结点总数t;如果给定的键小于根结点，我们会反hi该键在左子树中的排名（递归计算）；如果给定的键大于根结点，我们会返回t+1（根结点）加上它在右子树中的排名（递归计算）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public int rank(Key k)&#123;</span><br><span class="line">	if(k == null) throw new NullPointerException(&quot;key is null&quot;);</span><br><span class="line">	return rank(root, k);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private int rank(Node node, Key k)&#123;</span><br><span class="line">	if(node == null) return 0;</span><br><span class="line">	int comp = k.compareTo(node.k);</span><br><span class="line">	if(comp &lt; 0) return rank(node.left, k);</span><br><span class="line">	else if(comp &gt; 0) return  1 + size(node.left) + rank(node.right, k);</span><br><span class="line">	else return size(node.left);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除最大键最小键"><a href="#删除最大键最小键" class="headerlink" title="删除最大键最小键"></a>删除最大键最小键</h3><p>前面说过，最小键就是最左边的结点，因此一直递归到结点的左结点为空，那么这个结点就是最小结点，将其删除。需要注意的是需要将指向该结点的链接指向该结点的右子树。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public void deleteMin()&#123;</span><br><span class="line">	root = deleteMin(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node deleteMin(Node node)&#123;</span><br><span class="line">	if(node == null) return null;</span><br><span class="line">	if(node.left == null)&#123;</span><br><span class="line">		return node.right;</span><br><span class="line">	&#125;</span><br><span class="line">	node.left = deleteMin(node.left);</span><br><span class="line">	node.n = size(node.left) + size(node.right) + 1;</span><br><span class="line">	return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h3><p>删除操作比较复杂，需要将删除元素的右子树的最小键结点移动到删除元素的位置，并重新链接左右子树。试想一下，删除元素的右子树的最小键是不是比删除元素左子树的所有结点的键都大，因此将其替换删除元素的位置保持了有序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public void delete(Key k)&#123;</span><br><span class="line">	root = delete(root, k);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Node delete(Node node, Key k)&#123;</span><br><span class="line">	if(node == null) return null;</span><br><span class="line">	int comp = k.compareTo(node.k);</span><br><span class="line">	if(comp &gt; 0)&#123;</span><br><span class="line">		node.right = delete(node.right, k);</span><br><span class="line">	&#125;else if(comp &lt; 0)&#123;</span><br><span class="line">		node.left = delete(node.left, k);</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		if(node.right == null) return node.left;</span><br><span class="line">		if(node.left == null) return node.right;</span><br><span class="line">		Node t = node;</span><br><span class="line">		node = min(t.right);</span><br><span class="line">		node.right = deleteMin(t.right);</span><br><span class="line">		node.left = t.left;</span><br><span class="line">	&#125;</span><br><span class="line">	node.n = size(node.left) + size(node.right) + 1;</span><br><span class="line">	return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="范围查找"><a href="#范围查找" class="headerlink" title="范围查找"></a>范围查找</h3><p>范围查找其实就是二叉查找树的<strong>中序遍历</strong>,只不过加上了范围的限制，因此将中序遍历的方法稍微改造一下即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public Iterable&lt;Key&gt; keys()&#123;</span><br><span class="line">	return keys(min(), max());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Iterable&lt;Key&gt; keys(Key lo, Key hi)&#123;</span><br><span class="line">	Queue&lt;Key&gt; queue = new Queue&lt;Key&gt;();</span><br><span class="line">	keys(root, queue, lo, hi);</span><br><span class="line">	return queue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void keys(Node node, Queue&lt;Key&gt; queue, Key lo, Key hi)&#123;</span><br><span class="line">	if(node == null) return;</span><br><span class="line">	int complo = lo.compareTo(node.k);</span><br><span class="line">	int comphi = hi.compareTo(node.k);</span><br><span class="line">	if(complo &lt; 0) keys(node.left, queue, lo, hi);</span><br><span class="line">	if(complo &lt;= 0 &amp;&amp; comphi &gt;= 0) queue.enqueue(node.k);</span><br><span class="line">	if(comphi &gt; 0) keys(node.right, queue, lo, hi);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h3><p>二叉查找树中和有序性相关的操作效率如何？要研究这个问题，我们首先要知道<strong>树的高度</strong>(即树中任意结点的最大深度)。给定一棵树，树的高度决定了所有操作在最坏情况下的性能（范围查找除外，因为它的额外成本和返回的键的数量成正比）。</p>
+<blockquote>
+<p>在一棵二叉查找树中，所有操作在最坏情况下所需的时间都和树的高度成正比。</p>
+</blockquote>
+<p>二叉查找树在键随机分布时各种操作性能都还可以，只是在最坏的情况下（比如所有键按顺序插入或逆序插入）性能就较差，这也是我们需要寻找更好的算法和数据结构的原因。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文学习了二叉查找树数据结构，并基于二叉查找树实现了符号表相关操作。二叉查找树结合了二分查找的效率和链表的灵活性，是一种比较高效的实现方式。符号表的三种实现性能对比如下图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST4" alt="简单的符号表实现的成本总结"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/07/27/BST/" data-id="cjrm61k0700bbj3jemp9phqfn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/08/2-3-search-tree/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          2-3查找树
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/21/SymbolTable/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">符号表</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>IP协议 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="IP协议">
+<meta name="keywords" content="Network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP协议">
+<meta property="og:url" content="http://yoursite.com/2016/04/19/IP/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="IP协议">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-transfer.png">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IP协议">
+<meta name="twitter:description" content="IP协议">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-transfer.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IP" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/19/IP/" class="article-date">
+  <time datetime="2016-04-19T05:54:25.000Z" itemprop="datePublished">2016-04-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Network/">Network</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IP协议
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>连续看了《图解TCP/IP》中的两章书，数据链路与IP协议。看的我云里雾里的，真实难啃的骨头，大学里欠下的知识债终究还是要还的。难懂归难懂，懂多少就要记下来多少，不懂的以后继续翻看。</p>
+<p>数据链路层的读书笔记就不打算写了，因为看得不是很懂，只是知道个大概，直接记录一下IP协议方面的知识。这也是OSI模型分层的好处啊，我可以不太理解下层的知识，直接了解上层，反正就知道上层通过调用下层的接口就可以进行处理了。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>用一个小案例来总结一下数据链路层和IP协议这两章书，由于自己也是似懂非懂，如有不对请各位看官轻拍。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-transfer.png" alt="数据包发送"></p>
+<p>将IP数据包比如成一个小快递，由深圳某小渔村发送到帝都市某小渔村。我们梳理一下这个过程：</p>
+<a id="more"></a>
+<ul>
+<li><p>寄件人直接写明发件人地址（源IP）和收件人地址（目标IP）即可将快递寄到帝都的小渔村。</p>
+</li>
+<li><p>街道的快递小哥收件之后，看了一下是寄去帝都某小渔村（目标IP）的快递，然后骑电动车（某种数据链路）将快递送到福田区集散点（某个路由），其实文盲快递小哥不知道怎么送到帝都的小渔村，反正先送到距离自己最近的福田区集散点，让福田区集散点去配送。</p>
+</li>
+<li><p>福田区集散点收到快递之后，看了一下是寄去帝都某小渔村（目标IP）的快递，然后查一下地址表格（路由表），发现寄往帝都小渔村的快递要送到深圳市的集散点（下一个路由），然后就开车（另一种数据链路方式）送过去咯。</p>
+</li>
+<li><p>深圳市集散点收到快递之后，看了一下是寄去帝都某小渔村（目标IP）的快递，然后查一下地址表格（路由表），发现寄往帝都小渔村的快递要送到帝都市的集散点（下一个路由），发现比较远，就开飞机（另一种数据链路方式）送过去咯。</p>
+</li>
+<li><p>…</p>
+</li>
+<li><p>接下来的就不重复了，然后就到了帝都的某个小渔村了。</p>
+</li>
+</ul>
+<p>在这里，对应的知识点就是：</p>
+<ul>
+<li>网络层的作用就是“实现终端节点直接的通信”。</li>
+<li>网络层可以跨越不同的数据链路实现两端节点之间的数据包传输。</li>
+<li>数据链路层提供直连两个设备之间的通信功能。网络层负责在没有直连的两个网络之间进行通信传输。</li>
+</ul>
+<p>上述案例，先对网络层和数据链路层有所大概的了解，下面开始一些知识点。</p>
+<h2 id="IP基础知识"><a href="#IP基础知识" class="headerlink" title="IP基础知识"></a>IP基础知识</h2><p>IP大致分为三大作用模块：</p>
+<ul>
+<li><p><strong>IP寻址</strong>：数据链路层用MAC地址来标识同一个链路中不同计算机，而网络层中则用IP来标识连接到网络中的主机。在TCP/IP通信中所有主机或路由器必须设定自己的IP地址。</p>
+</li>
+<li><p><strong>路由</strong>：路由控制是指将分组数据发送到最终目的地址的功能。所有主机都维护着一张路由控制表，该表记录IP数据在下一步应该发给哪个路由器。</p>
+</li>
+<li><p><strong>IP分包与组包</strong>：IP是实现多个数据链路直接通信的协议，对不同的数据链路的相异特性进行了抽象化。但是不同的数据链路的最大传输单位（MTU）不同，所以需要对IP包进行分片处理，在线路上传送的包大小必须小于该条线路最小的MTU。分片的包到了对端木雕地址以后会再被组合起来传给上一层。</p>
+</li>
+</ul>
+<p>此外，<strong>IP属于面向无连接型</strong>,即在发包之前，不需要建立与对端目标地址直接的连接，这样做的目的是为了简化和提速。需要有连接时，可以委托上一层提供此项服务。</p>
+<h2 id="IP地址的基础知识"><a href="#IP地址的基础知识" class="headerlink" title="IP地址的基础知识"></a>IP地址的基础知识</h2><h3 id="IP地址的定义"><a href="#IP地址的定义" class="headerlink" title="IP地址的定义"></a>IP地址的定义</h3><p>IP地址（IPv4地址）由32位二进制数来表示。由于人类习惯，会将每8位为一组，分为4组，然后转成十进制数表示。比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">10101100  00010100  00000001  00000001  （二进制）</span><br><span class="line">172.      20.       1.        1         （十进制）</span><br></pre></td></tr></table></figure>
+<p>所以，理论上可以达到2的32次方=4294967296台计算机连接到网络，但实际情况还没那么多。</p>
+<h3 id="IP地址由网络和主机两部分标识组成"><a href="#IP地址由网络和主机两部分标识组成" class="headerlink" title="IP地址由网络和主机两部分标识组成"></a>IP地址由网络和主机两部分标识组成</h3><p>IP地址由“网络标识（网络地址）”和“主机标识（主机地址）”两部分组成。</p>
+<p>网络标识在数据链路的每个段配置不同的值。网络标识必须保证互相连接的每个段的地址不相重复。而相同段内相连的主机必须有相同的网络地址。IP地址的“主机标识”则不允许在同一个网段内重复出现。</p>
+<p>IP包被转发到图中的某个路由时，正是<strong>利用目标IP地址的网络标识进行路由</strong>。</p>
+<p>此处延伸一下网段的含义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">网段一般指一个计算机网络中使用同一物理层设备（传输介质、中继器、集线器等）能够直接通信的那一部分。</span><br><span class="line"></span><br><span class="line">通常使用同一物理层的设备之间必然通过相同的传输介质直接相连，如双绞线直接连接的两台主机。但是两组</span><br><span class="line">其传输介质并非直接相连的网络设备，如果它们的传输介质通过工作在物理层的扩展设备如中继器和集线器等</span><br><span class="line">转换连接，则仍然视为同一物理层的设备，是同一网段。</span><br><span class="line"></span><br><span class="line">工作在**数据链路层或更高层的设备如网桥、交换机、路由器等等，由它们连接起来的两组设备仍然分别处于</span><br><span class="line">各自独立的物理层，因此是两个网段。</span><br></pre></td></tr></table></figure>
+<p>那么，究竟从第几位到第几位算是网络标识，又从第几位开始到第几位算是主机标识？这是由<strong>子网掩码</strong>区分的。关于子网掩码后面会提到。</p>
+<h3 id="IP地址的分类"><a href="#IP地址的分类" class="headerlink" title="IP地址的分类"></a>IP地址的分类</h3><ul>
+<li><p><strong>A类地址</strong>:首位以“0”开头的地址，从第1位到第8位是它的网络标识。即0.0.0.0~127.255.255.255是A类的网络地址，地址的后24位相当于主机标识。</p>
+</li>
+<li><p><strong>B类地址</strong>:首位以“10”开头的地址，从第1位到第16位是它的网络标识。即128.0.0.0~191.255.255.255是B类的网络地址，地址的后16位相当于主机标识。</p>
+</li>
+<li><p><strong>C类地址</strong>:首位以“110”开头的地址，从第1位到第24位是它的网络标识。即192.0.0.0~223.255.255.255是C类的网络地址，地址的后8位相当于主机标识。</p>
+</li>
+<li><p><strong>D类地址</strong>:首位以“1110”开头的地址，网络标识和主机地址未定义，常用于多播，范围为224.0.0.0~239.255.255.255。</p>
+</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li><strong>主机地址全为“0”</strong>：不论哪一类网络，主机地址全为“0”表示指向本网，常用在路由表中。</li>
+<li><strong>主机地址全为“1”</strong>：主机地址全为“1”表示广播地址，向特定的所在网上的所有主机发送数据包。</li>
+<li><strong>网络号127</strong>：不可用于任何网络，其中有一个特别的地址127.0.0.1称之为回环地址。</li>
+</ul>
+<h3 id="广播地址"><a href="#广播地址" class="headerlink" title="广播地址"></a>广播地址</h3><p>上面说到主机地址全为“1”时表示广播地址。广播又分为本地广播和直接广播。</p>
+<ul>
+<li><p><strong>本地广播</strong>：在本网络内的广播。例如网络地址为192.168.0.0/24（此处24表示前24位为网络标识）的情况下，广播地址是192.168.0.255。这个广播地址的IP包会被路由器屏蔽，所以不会达到192.168.0.0/24意外的其它链路上。</p>
+</li>
+<li><p><strong>直接广播</strong>：在不同网络之间的广播。例如网络地址为192.168.0.0/24的主机向192.168.1.255/24的目标地址发送IP包。收到这个包的路由器，将数据转发给192.168.1.0/24，从而使得所有192.168.1.1~192.168.1.254的主机都能收到这个包。</p>
+</li>
+</ul>
+<h3 id="IP多播"><a href="#IP多播" class="headerlink" title="IP多播"></a>IP多播</h3><p>多播使用D类地址。因此，如果从首位开始到第4位是“1110”，就可以认为是多播地址，而剩下的28位可以成为多播的组编号。</p>
+<p>多播用于将包发送给特定组内的所有主机，相比广播而言具有更高的效率。</p>
+<h3 id="子网掩码"><a href="#子网掩码" class="headerlink" title="子网掩码"></a>子网掩码</h3><p>一个IP地址只要确定了其分类，也就确定了它的网络标识和主机标识。</p>
+<p>网络标识相同的计算机必须同属于一个链路。例如，架构B类IP网络时，理论上一个链路内允许6万5千多台计算机连接。然而，在实际网络架构当中，一般不会有在同一个链路上连接6万5千多台计算机的情况。所以直接使用A类或B类地址，会造成浪费。子网掩码的出现就是为了解决地址浪费的问题。</p>
+<p>引入子网以后，一个IP地址就有两种识别码。一是IP地址本身，另一个是表示网络不的子网掩码。子网掩码对应IP地址网络标识部分的位全部为“1”，对应IP地址主机标识的部分全部为“0”。由此，一个IP地址可以不再受限于自己的类别，而是可以用这样的子网掩码自由地定位自己的网络标识长度。以172.20.100.52的前26位是网络地址的情况为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IP地址     172.   20.   100.   52</span><br><span class="line">子网掩码    255.   255.  255.   192</span><br><span class="line"></span><br><span class="line">也可以用    172.   20.   100.   52   /26 这样的方式来表示前26位为网络地址</span><br></pre></td></tr></table></figure>
+<h3 id="全局地址与私有地址"><a href="#全局地址与私有地址" class="headerlink" title="全局地址与私有地址"></a>全局地址与私有地址</h3><p>起初，互联网中的任何一台主机或路由器必须配有一个唯一的IP地址。然而，IP地址不足的问题日趋显著，于是出现了私有网络的IP地址。它的范围如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.  0.  0.  0 ~ 10.  255.  255.  255 (10/8)       A类</span><br><span class="line">172. 16. 0.  0 ~ 172. 31.   255.  255 (172.16/12)  B类</span><br><span class="line">192. 168.0.  0 ~ 192. 168.  255.  255 (192.168/16) C类</span><br></pre></td></tr></table></figure>
+<p>包含在这个范围内的IP地址都属于私有IP，而在此之外的IP地址称为全局IP。</p>
+<p>配有私有IP地址的主机与配有全局地址的互联网主机通过NAT技术实现通信，现在很多学校、家庭、公司内部正采用每个终端设置私有IP，而在路由器或在必要的服务器上设置全局IP地址的方式。私有地址只要在同一个域里保证唯一即可。</p>
+<h2 id="路由控制"><a href="#路由控制" class="headerlink" title="路由控制"></a>路由控制</h2><p>在数据发送过程中需要路由控制表才能真正发往目标地址，路由控制表有两种形成方式：一种是管理员手动设置，另一种是路由器与其它路由器相互交换信息是自动刷新。前者也叫<strong>静态路由控制</strong>，后者叫做<strong>动态路由控制</strong>。</p>
+<p>路由控制表记录着网络地址与下一步应该发送至路由器的地址。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址。</p>
+<ul>
+<li><strong>默认路由</strong>：对IP数据包中的目的地址找不到存在的其它路由时，路由器所选择的路由。一般标记为0.0.0.0/0或default。</li>
+<li><strong>主机路由</strong>：一个有特定网络地址（<strong>网络地址和主机ID</strong>）的路由。主机路由通常用于创建用于控制和优化特定网络通信的定制路由。</li>
+<li><strong>网络路由</strong>：一个在网络中有特定<strong>网络ID</strong>的路由。</li>
+</ul>
+<h3 id="路由控制表的聚合"><a href="#路由控制表的聚合" class="headerlink" title="路由控制表的聚合"></a>路由控制表的聚合</h3><p>利用网络地址的比特分布可以有效地进行<strong>分层配置</strong>。对内及时有多个子网掩码，对外程序的也是同一个网络地址。这样可以更好地构建网络，通过路由信息的聚合可以有效地减少路由表的条目。</p>
+<p>比如，192.168.2.0/24与192.168.3.0/24的网络这一信息聚合成为192.168.2.0/23。</p>
+<h2 id="IP分割处理与再构成处理"><a href="#IP分割处理与再构成处理" class="headerlink" title="IP分割处理与再构成处理"></a>IP分割处理与再构成处理</h2><h3 id="数据链路不同，MTU则相异"><a href="#数据链路不同，MTU则相异" class="headerlink" title="数据链路不同，MTU则相异"></a>数据链路不同，MTU则相异</h3><p>MTU即数据链路的最大传输单元。比如以太网的MTU为1500字节，FDDI的MTU为4352字节。</p>
+<h3 id="路径MTU发现"><a href="#路径MTU发现" class="headerlink" title="路径MTU发现"></a>路径MTU发现</h3><p>由于数据链路不同，MTU是相异的，所以必须知道路径中的最小MTU才知道应该将数据包分成多大一片。</p>
+<p>路径MTU发现技术就是为了获取路径中存在的所有数据链路中最小的MTU。其工作原理如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">首先在发送端主机发送IP数据报时将其首部的分片禁止标志位设置为1。根据这个标志位，途中的路由器及时遇到</span><br><span class="line">需要分片才能处理的大包，也不会去分片，而是将包丢弃。随后，通过一个ICMP的不可达消息将数据链路上MTU的</span><br><span class="line">值给发送主机。</span><br><span class="line"></span><br><span class="line">下一次，发送主机根据这个MTU对数据包进行分片处理。如此反复，直到数据包被发送到目标主机为止没有再收到</span><br><span class="line">任何ICMP，就认为最后一个ICMP所通知的MTU即是一个合适的MTU值。当MTU的值比较多时，最少可以缓存约10分</span><br><span class="line">钟。过了就重新发现。</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文首先用一个小案例区分了网络层与数据链路层之间的关系，网络层通过IP地址实现终端点对点的数据传输，数据链路层则是通过MAC地址实现两个直连设备之间的数据传输。</p>
+<p>其次分别总结了一下IP的基础知识，主要包含三个方面：IP寻址，路由控制和IP分包与组包。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/19/IP/" data-id="cjrm61k0i00c5j3je0v8hvkp2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/04/21/relative-tech-of-ip/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IP协议相关技术
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/04/14/TCP-IP-Basic/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">TCP/IP基础知识</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

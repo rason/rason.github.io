@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-pig-and-hive" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/07/pig-and-hive/" class="article-date">
+  <time datetime="2017-07-07T05:20:19.000Z" itemprop="datePublished">2017-07-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/BigData/">BigData</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/07/pig-and-hive/">使用Pig结构化日志然后导入到Hive数据仓库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>接着上篇文章，我们已经将日志通过Flume收集到了HDFS中，那么接下来就是使用Pig将日志内容结构化，然后保存到Hive数据仓库中。</p>
+<h2 id="Pig安装"><a href="#Pig安装" class="headerlink" title="Pig安装"></a>Pig安装</h2><p>1.下载最近稳定版的Pig,<a href="http://hadoop.apache.org/pig/releases.html" target="_blank" rel="noopener">点这里</a>.</p>
+<p>2.解压，修改<code>/etc/profile</code>文件配置环境变量<code>$ export PATH=/&lt;my-path-to-pig&gt;/pig-n.n.n/bin:$PATH</code></p>
+<p>3.<code>$ source /etc/profile</code>使环境变量生效</p>
+<p>4.测试安装是否成功<code>$ pig -help</code></p>
+<h2 id="运行Pig"><a href="#运行Pig" class="headerlink" title="运行Pig"></a>运行Pig</h2><p>本例子接着之前的教程，前提需要已经部署好的Hadoop并且配置好其环境变量。</p>
+<p>1.运行Pig</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pig</span><br></pre></td></tr></table></figure>
+<p>2.进入HDFS文件系统根目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grunt&gt; cd hdfs://10.16.1.24/</span><br></pre></td></tr></table></figure>
+<p>该目录是我前面教程中搭建的HDFS文件系统根目录。</p>
+<p>3.查看根目录有哪些文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">grunt&gt; ls</span><br><span class="line">hdfs://10.16.1.24/flume	&lt;dir&gt;</span><br><span class="line">hdfs://10.16.1.24/output	&lt;dir&gt;</span><br><span class="line">hdfs://10.16.1.24/test	&lt;dir&gt;</span><br><span class="line">hdfs://10.16.1.24/tmp	&lt;dir&gt;</span><br><span class="line">hdfs://10.16.1.24/user	&lt;dir&gt;</span><br></pre></td></tr></table></figure>
+<p>上篇文章中通过Flume收集的日志在<code>/flume</code>文件夹中。</p>
+<p>4.结构化日志文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grunt&gt; content = LOAD &apos;/flume/qhee/net/*&apos; USING PigStorage(&apos;\t&apos;) AS(domain:chararray,host:chararray,user:chararray,time:chararray,method:chararray,path:chararray,protocol:chararray,status:chararray,size:chararray,refer:chararray,agent:chararray,response_time:chararray,cookie:chararray,set_cookie:chararray,upstream_addr:chararray,upstream_cache_status:chararray,upstream_reponse_time:chararray);</span><br><span class="line"></span><br><span class="line">grunt&gt; DUMP content;</span><br><span class="line"></span><br><span class="line">grunt&gt; STORE content INTO &apos;output&apos; USING PigStorage (&apos;,&apos;);</span><br></pre></td></tr></table></figure>
+<p>相关命令解析就不展开了，可以自行查看官方文档。</p>
+<p>结构化之后的日志保存到了<code>output</code>目录中，所以上面的HDFS根目录中会有<code>output</code>这个文件夹，因为我之前已经执行过了。</p>
+<p>可以将结构化的文件下载下来看看结果，发现其实就是将每个属性用逗号隔开了而已。做这项工作的主要目的就是为了方便导入到Hive仓库中，后面将会看到我们会以逗号为分隔符导入。</p>
+<p>接下来该轮到Hive登场了。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/07/pig-and-hive/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/07/pig-and-hive/" data-id="cjrm61jyp007ij3jebb2vqe0p" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pig/">Pig</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-flume-log-collect" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/06/flume-log-collect/" class="article-date">
+  <time datetime="2017-07-06T02:28:10.000Z" itemprop="datePublished">2017-07-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/BigData/">BigData</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/06/flume-log-collect/">使用Flume将日志收集到HDFS</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本着从日志分析这个实际案例来学习Hadoop相关大数据技术，搜索了相关的日志分析方案，决定采用下图的方式：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Log-Analysis-in-Hadoop.jpg" alt="Hadoop log analysis"></p>
+<p>那么第一步当然就是将日志收集到HDFS中，前面两篇博客已经简单地入门了Flume和Hadoop的部署，那么就在此基础上进行日志收集工作。</p>
+<h2 id="Nginx-日志格式配置"><a href="#Nginx-日志格式配置" class="headerlink" title="Nginx 日志格式配置"></a>Nginx 日志格式配置</h2><p>本文以Nginx为例，采集其Access Log，因此为了后续工作的进行，先配置Nginx日志记录格式，如下所示：</p>
+<p>定义格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">log_format  main  &apos;$host\t&apos;</span><br><span class="line">                      &apos;$remote_addr\t&apos;</span><br><span class="line">                      &apos;$remote_user\t&apos;</span><br><span class="line">                      &apos;$time_local\t&apos;</span><br><span class="line">                      &apos;$request_method\t&apos;</span><br><span class="line">                      &apos;$request_uri\t&apos;</span><br><span class="line">                      &apos;$server_protocol\t&apos;</span><br><span class="line">                      &apos;$status\t&apos;</span><br><span class="line">                      &apos;$body_bytes_sent\t&apos;</span><br><span class="line">                      &apos;$http_referer\t&apos;</span><br><span class="line">                      &apos;$http_user_agent\t&apos;</span><br><span class="line">                      &apos;$request_time\t&apos;</span><br><span class="line">                      &apos;$http_cookie\t&apos;</span><br><span class="line">                      &apos;$sent_http_set_cookie\t&apos;</span><br><span class="line">                      &apos;$upstream_addr\t&apos;</span><br><span class="line">                      &apos;$upstream_cache_status\t&apos;</span><br><span class="line">                      &apos;$upstream_response_time&apos;;</span><br></pre></td></tr></table></figure>
+<p>使用格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">access_log  logs/xxx.access.log main;</span><br></pre></td></tr></table></figure>
+<h2 id="Flume配置"><a href="#Flume配置" class="headerlink" title="Flume配置"></a>Flume配置</h2><p>在Nginx机器上部署Flume，修改Flume按照目录下的<code>conf/example.conf</code>文件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># Name the components on this agent</span><br><span class="line">a1.sources = r1 </span><br><span class="line">a1.sinks = k1 </span><br><span class="line">a1.channels = c1</span><br><span class="line">         </span><br><span class="line"># Describe/configure the source</span><br><span class="line">a1.sources.r1.type = exec</span><br><span class="line">a1.sources.r1.command = tail -F /usr/local/nginx/logs/www.qhee.net.access.log</span><br><span class="line"></span><br><span class="line"># Describe the sink </span><br><span class="line">a1.sinks.k1.type = hdfs</span><br><span class="line">a1.sinks.k1.hdfs.fileType = DataStream</span><br><span class="line">a1.sinks.k1.hdfs.path = hdfs://10.16.1.24:8020/flume/qhee/net</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory </span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line">    </span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p>数据源使用<code>exec</code>类型来获取最新的访问日志，然后将其保存到HDFS中,保存路径是上篇文章中部署的HDFS。然后启动Flume:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ nohup bin/flume-ng agent --conf conf --conf-file conf/example.conf --name a1 &amp;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/06/flume-log-collect/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/06/flume-log-collect/" data-id="cjrm61jyd006hj3jex41y0b2y" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flume/">Flume</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hadoop-cluster-setup" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/03/hadoop-cluster-setup/" class="article-date">
+  <time datetime="2017-07-03T07:17:17.000Z" itemprop="datePublished">2017-07-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/BigData/">BigData</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/03/hadoop-cluster-setup/">Hadoop集群部署</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一篇文章学习了Hadoop的单机部署和伪分布式部署，今天来学习一个集群式部署。本文不包含高级主题，比如安全和高可用。</p>
+<p>通常，集群中的一个机器被指定为NameNode，另一台机器被指定为ResourceManager。 这些是Master。 其他服务（如Web App Proxy Server和MapReduce Job History server）通常在专用硬件或共享基础架构上运行，具体取决于负载。</p>
+<p>集群中的其余机器充当DataNode和NodeManager。 这些是Slaves。</p>
+<h2 id="机器分配"><a href="#机器分配" class="headerlink" title="机器分配"></a>机器分配</h2><p>为了简单起见，我用三台机器来演示集群部署。如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>10.16.1.24</th>
+<th>10.16.1.25</th>
+<th>10.16.2.28</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主机名：QHEE-T-Crawler</td>
+<td>主机名：QHEE-T-Crawler2</td>
+<td>主机名：QHEE-T-CrawlerDB</td>
+</tr>
+<tr>
+<td>NameNode</td>
+<td>ResourceManager</td>
+<td>SecondaryNameNode</td>
+</tr>
+<tr>
+<td>DateNode</td>
+<td>DateNode</td>
+<td>DateNode</td>
+</tr>
+<tr>
+<td>NodeManager</td>
+<td>NodeManager</td>
+<td>NodeManager</td>
+</tr>
+<tr>
+<td>MRHistroyServer</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>在配置文件 <code>/etc/hosts</code> 中添加主机名映射</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.16.1.24 QHEE-T-Crawler</span><br><span class="line">10.16.1.25 QHEE-T-Crawler2</span><br><span class="line">10.16.2.28 QHEE-T-CrawlerDB</span><br></pre></td></tr></table></figure>
+<h2 id="Hadoop集群配置"><a href="#Hadoop集群配置" class="headerlink" title="Hadoop集群配置"></a>Hadoop集群配置</h2><p>1.为了管理方便，将集群中的组件都安装配置在相同的目录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@QHEE-T-Crawler /home/laixs/hadoop-2.8.0]#</span><br></pre></td></tr></table></figure>
+<p>我使用的hadoop是2.8.0版本，都解压到<code>/home/laixs</code>目录中。</p>
+<p>2.配置JDK。</p>
+<p>修改<code>etc/hadoop/hadoop-env.shZ</code>， <code>etc/hadoop/mapred-env.sh</code> 和 <code>etc/hadoop/yarn-env.sh</code>三个配置文件指定JAVA_HOME</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=&quot;/usr/java/jdk1.8.0_131&quot;</span><br></pre></td></tr></table></figure>
+<p>3.配置相关服务组件XML。</p>
+<ul>
+<li><code>etc/hadoop/core-site.xm</code>配置NameNode</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;hdfs://10.16.1.24:8020&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;/home/laixs/hadoop-2.8.0/data/tmp&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>etc/hadoop/slaves</code>文件配置DataNode</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.16.1.24 QHEE-T-Crawler</span><br><span class="line">10.16.1.25 QHEE-T-Crawler2</span><br><span class="line">10.16.2.28 QHEE-T-CrawlerDB</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>etc/hadoop/hdfs-site.xml</code>文件配置SecondaryNameNode</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">       &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;</span><br><span class="line">       &lt;value&gt;10.16.2.28:50090&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>etc/hadoop/yarn-site.xml</code>文件配置YARN</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;10.16.1.25&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;yarn.log.aggregation-enable&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;yarn.log-aggregation.retain-seconds&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;18000&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>具体每项配置解析可以看<a href="https://hadoop.apache.org/docs/r2.4.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml" target="_blank" rel="noopener">yarn-default.xml</a>。</p>
+<ul>
+<li><code>etc/hadoop/mapred-site.xml</code>文件配置MapReduce</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;mapreduce.framework.name&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;yarn&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;10.16.1.24:10020&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">           &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;</span><br><span class="line">           &lt;value&gt;10.16.1.24:19888&lt;/value&gt;</span><br><span class="line">   &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/03/hadoop-cluster-setup/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/03/hadoop-cluster-setup/" data-id="cjrm61jyf006pj3je90d8hx27" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hadoop-learning-1" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/29/hadoop-learning-1/" class="article-date">
+  <time datetime="2017-06-29T06:01:48.000Z" itemprop="datePublished">2017-06-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/BigData/">BigData</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/29/hadoop-learning-1/">Hadoop初体验</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>上篇文章学习了Flume框架，可以用于日志的收集，收集之后的日志需要有一个地方来存储。HDFS就是其中的一种方式，所以，顺着路线我需要学习一下HDFS。</p>
+<p>HDFS只是Hadoop的一部分，解决分布式文件存储问题；另外重要的一部分就是MapReduce，解决分布式计算的问题。</p>
+<p>今天这篇文章介绍如何设置和配置单节点Hadoop安装，以便你可以使用Hadoop MapReduce和Hadoop分布式文件系统（HDFS）快速执行简单的操作。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul>
+<li>系统：windows或者linux都可以，我的机器是linux</li>
+<li>JDK7以上</li>
+<li>ssh </li>
+<li>rsync</li>
+<li><a href="http://www.apache.org/dyn/closer.cgi/hadoop/common/" target="_blank" rel="noopener">hadoop</a></li>
+</ul>
+<h2 id="运行Hadoop"><a href="#运行Hadoop" class="headerlink" title="运行Hadoop"></a>运行Hadoop</h2><p>解压下载的Hadoop发行版。修改<code>etc/hadoop/hadoop-env.sh</code>文件，添加JAVA_HOME路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># set to the root of your Java installation</span><br><span class="line">export JAVA_HOME=/usr/java/latest</span><br></pre></td></tr></table></figure>
+<p>然后运行一下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin/hadoop</span><br></pre></td></tr></table></figure>
+<p>会展示hadoop脚本的使用文档。</p>
+<h2 id="运行模式"><a href="#运行模式" class="headerlink" title="运行模式"></a>运行模式</h2><p>现在，你可以使用三种支持的模式之一启动Hadoop集群：</p>
+<ul>
+<li>单机模式</li>
+<li>伪分布式</li>
+<li>完全分布式</li>
+</ul>
+<p>今天我们先学习前两种，后一种将在以后学习。</p>
+<h2 id="单机模式"><a href="#单机模式" class="headerlink" title="单机模式"></a>单机模式</h2><p>默认情况下，Hadoop作为单一的Java进程以非分布式的模式运行。在Debug的时候很有用。</p>
+<p>下面的例子将复制配置文件目录的内容作为输入，查找并显示匹配给定正则表达式的条目。输出写入到指定的 output 目录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir input</span><br><span class="line">$ cp etc/hadoop/*.xml input</span><br><span class="line">$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.8.0.jar grep input output &apos;dfs[a-z.]+&apos;</span><br><span class="line">$ cat output/*</span><br></pre></td></tr></table></figure>
+<p>第三行命令是一个MapReduce 作业，查找匹配的内容输出。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/06/29/hadoop-learning-1/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/29/hadoop-learning-1/" data-id="cjrm61jyg006uj3jeeeqivjv8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Flume-Learning-1" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/27/Flume-Learning-1/" class="article-date">
+  <time datetime="2017-06-27T06:24:48.000Z" itemprop="datePublished">2017-06-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/BigData/">BigData</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/27/Flume-Learning-1/">Flume初体验</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>最近想学点大数据，大概浏览了一下所涉及的框架知识，就先从数据收集框架开始学习。</p>
+<p>Apache Flume是一种分布式，可靠和可用的系统，用于高效收集，聚合和将大量日志数据，从许多不同的来源移动到集中式数据存储。</p>
+<p>使用Apache Flume不仅限于日志数据聚合。 由于数据源是可定制的，因此可以使用Flume 来传输大量事件数据，包括但不限于网络流量数据，社交媒体生成数据，电子邮件消息以及几乎任何数据源。</p>
+<h2 id="数据流模型"><a href="#数据流模型" class="headerlink" title="数据流模型"></a>数据流模型</h2><p><strong>Flume事件</strong>被定义为具有字节有效载荷和可选的一组字符串属性的数据流的单位。 Flume Agent是一个（JVM）进程，它承载事件从外部源传递到下一个目标（跳）的组件。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/flume1.png" alt="Flume"></p>
+<p>Flume 消费由外部Source（如Web服务器）传递给它的事件。外部源将Flume 的事件以目标Flume Source识别的格式发送到Flume。</p>
+<p>例如，可以使用Avro Flume Source 从Avro客户端或其他Flume Agent 发送的Avro事件。</p>
+<p>类似的流程可以使用Thrift Flume Source 来定义，以接收来自Thrift Sink或Flume Thrift Rpc客户端的事件，或者使用从Flume thrift 协议生成的任何语言编写的Thrift客户端。</p>
+<p>当Flume Source 接收到事件时，它将其存储到一个或多个Channel。该Channel是一个被动存储，保持事件，直到它被Flume Sink 消费。文件Channel 是一个例子 - 它由本地文件系统支持。Sink 从通道中删除事件，并将其放入外部存储库，如HDFS（通过Flume HDFS Sink）或将其转发到流中下一个Flume Agent（下一跳）的Flume Source。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/06/27/Flume-Learning-1/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/27/Flume-Learning-1/" data-id="cjrm61jwk001kj3jea0qwqri4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flume/">Flume</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Review-Classloader" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/07/Review-Classloader/" class="article-date">
+  <time datetime="2017-06-07T09:01:47.000Z" itemprop="datePublished">2017-06-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/07/Review-Classloader/">温故Classloader</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><p>之前写过关于类加载器的文章，今天再次回顾一下。</p>
+<p>类加载器的作用就是读取编译好的<code>.class</code>文件，并转化成<code>java.lang.Class</code>类的一个实例。</p>
+<p>类加载器(ClassLoader)的主要三个方法：</p>
+<ul>
+<li>findClass(String name) 直接由本加载器查找类文件并对其进行定义</li>
+<li>loadClass(String name) 具有委托关系的加载，会调用defineClass来对类进行定义</li>
+<li>defineClass(String name, byte[] b, int off, int len) 对类进行定义</li>
+</ul>
+<p>需要关注的几点：</p>
+<h3 id="1-通常自己实现一个ClassLoader的话是通过重写findClass方法，找到-class文件然后调用defineClass方法对类进行定义。"><a href="#1-通常自己实现一个ClassLoader的话是通过重写findClass方法，找到-class文件然后调用defineClass方法对类进行定义。" class="headerlink" title="1.通常自己实现一个ClassLoader的话是通过重写findClass方法，找到.class文件然后调用defineClass方法对类进行定义。"></a>1.通常自己实现一个ClassLoader的话是通过重写findClass方法，找到<code>.class</code>文件然后调用defineClass方法对类进行定义。</h3><p>比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class NetworkClassLoader extends ClassLoader &#123;</span><br><span class="line">    String host;</span><br><span class="line">    int port;</span><br><span class="line"></span><br><span class="line">    public Class findClass(String name) &#123;</span><br><span class="line">      byte[] b = loadClassData(name);</span><br><span class="line">      return defineClass(name, b, 0, b.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private byte[] loadClassData(String name) &#123;</span><br><span class="line">      // load the class data from the connection</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2017/06/07/Review-Classloader/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/07/Review-Classloader/" data-id="cjrm61k1000dhj3jeva2ajtdp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Netflix-Ribbon" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/03/Netflix-Ribbon/" class="article-date">
+  <time datetime="2017-05-03T06:59:54.000Z" itemprop="datePublished">2017-05-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/03/Netflix-Ribbon/">Netflix Ribbon</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用Ribbon-和-Spring-Cloud-实现客户端负载均衡"><a href="#使用Ribbon-和-Spring-Cloud-实现客户端负载均衡" class="headerlink" title="使用Ribbon 和 Spring Cloud 实现客户端负载均衡"></a>使用Ribbon 和 Spring Cloud 实现客户端负载均衡</h2><p>本文将学习使用Netflix Ribbon对微服务进行负载均衡访问。</p>
+<p>我们将会创建一个客户端应用和一个服务端应用，先演示单个服务端实例单点访问，再演示多个服务端实例负载均衡访问。</p>
+<h2 id="服务端应用"><a href="#服务端应用" class="headerlink" title="服务端应用"></a>服务端应用</h2><p>服务端应用相当简单，是一个REST控制器类，随机返回一个问候语。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.server;</span><br><span class="line"></span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line">import org.springframework.boot.SpringApplication;</span><br><span class="line">import org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Arrays;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by rason on 5/3/17.</span><br><span class="line"> */</span><br><span class="line">@SpringBootApplication</span><br><span class="line">@RestController</span><br><span class="line">public class ServerApplication &#123;</span><br><span class="line"></span><br><span class="line">    private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);</span><br><span class="line"></span><br><span class="line">    @RequestMapping(&quot;/greeting&quot;)</span><br><span class="line">    public String greet() &#123;</span><br><span class="line">        logger.info(&quot;Access /greeting&quot;);</span><br><span class="line"></span><br><span class="line">        List&lt;String&gt; greetings = Arrays.asList(&quot;Hi there&quot;, &quot;Greetings&quot;, &quot;Salutations&quot;);</span><br><span class="line">        Random rand = new Random();</span><br><span class="line"></span><br><span class="line">        int randomNum = rand.nextInt(greetings.size());</span><br><span class="line">        return greetings.get(randomNum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(value = &quot;/&quot;)</span><br><span class="line">    public String home() &#123;</span><br><span class="line">        logger.info(&quot;Access /&quot;);</span><br><span class="line">        return &quot;Hi!&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(ServerApplication.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此外，我们还需要配置服务端的启动端口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># application.yml</span><br><span class="line">server:</span><br><span class="line">  port: 8090</span><br><span class="line"></span><br><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: my-server</span><br></pre></td></tr></table></figure>
+<h2 id="客户端应用"><a href="#客户端应用" class="headerlink" title="客户端应用"></a>客户端应用</h2><p>客户端应用也相当简单，同样是REST控制器类。使用<code>RestTemplate</code>对服务端进行访问。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/05/03/Netflix-Ribbon/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/05/03/Netflix-Ribbon/" data-id="cjrm61k0o00ckj3jeeeoxdrfe" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ribbon/">Ribbon</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Netflix-Zuul" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/02/Netflix-Zuul/" class="article-date">
+  <time datetime="2017-05-02T02:51:18.000Z" itemprop="datePublished">2017-05-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/02/Netflix-Zuul/">Netflix Zuul</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Routing-and-Filtering"><a href="#Routing-and-Filtering" class="headerlink" title="Routing and Filtering"></a>Routing and Filtering</h2><p>本文将使用Netflix Zuul边缘服务库演示将请求路由和过滤到微服务应用程序的过程。</p>
+<p>我们将会创建一个简单的微服务应用，然后使用<a href="https://github.com/spring-cloud/spring-cloud-netflix" target="_blank" rel="noopener">Netflix Zuul</a>创建一个反向代理应用来将请求转发到服务应用。您还将了解如何使用Zuul的过滤器功能。</p>
+<h2 id="创建一个微服务"><a href="#创建一个微服务" class="headerlink" title="创建一个微服务"></a>创建一个微服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.book;</span><br><span class="line"></span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line">import org.springframework.boot.SpringApplication;</span><br><span class="line">import org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by rason on 5/2/17.</span><br><span class="line"> */</span><br><span class="line">@RestController</span><br><span class="line">@SpringBootApplication</span><br><span class="line">public class BookApplication &#123;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(&quot;/available&quot;)</span><br><span class="line">    public String available() &#123;</span><br><span class="line">        return &quot;Spring in Action&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(&quot;/check-out&quot;)</span><br><span class="line">    public String checkOut() &#123;</span><br><span class="line">         return &quot;Spring boot in Action&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(BookApplication.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Book</code>服务非常简单，就是一个REST控制器。为了不和反向代理应用端口冲突，我们配置一下<code>Book</code>服务的启动端口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># application.yml</span><br><span class="line"></span><br><span class="line">server:</span><br><span class="line">  port: 8090</span><br></pre></td></tr></table></figure>
+<h2 id="创建反向代理服务"><a href="#创建反向代理服务" class="headerlink" title="创建反向代理服务"></a>创建反向代理服务</h2><p>Spring Cloud Netflix 包含一个嵌入式的Zuul 代理，通过<code>@EnableZuulProxy</code>注解即可开启。这将使<code>Gateway</code>应用变成反向代理，将相关请求转发到其他服务（比如我们的<code>Book</code>服务）。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/05/02/Netflix-Zuul/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/05/02/Netflix-Zuul/" data-id="cjrm61jx10031j3je610mxrf9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Zuul/">Zuul</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Netflix-Hystrix" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/28/Netflix-Hystrix/" class="article-date">
+  <time datetime="2017-04-28T07:00:45.000Z" itemprop="datePublished">2017-04-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/28/Netflix-Hystrix/">Netflix Hystrix</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Circuit-Breaker-断路由"><a href="#Circuit-Breaker-断路由" class="headerlink" title="Circuit Breaker(断路由)"></a>Circuit Breaker(断路由)</h2><p>本文将简单介绍使用Netflix Hystrix容错库将断路器应用于潜在故障的方法调用。我们将会创建两个微服务，一个<code>Bookstore</code>服务和一个<code>Reading</code>服务。<code>Reading</code>服务会调用<code>Bookstore</code>服务读取书籍列表。使用Netflix Hystrix，如果服务调用成功则会返回正常的数据；如果服务调用失败，则会调用相应的失败方法。</p>
+<h2 id="Bookstore微服务"><a href="#Bookstore微服务" class="headerlink" title="Bookstore微服务"></a>Bookstore微服务</h2><p>Bookstore微服务很简单，只有一个endpoint，返回字符串格式的书籍列表。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.bookstore;</span><br><span class="line"></span><br><span class="line">import org.springframework.boot.SpringApplication;</span><br><span class="line">import org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by rason on 4/28/17.</span><br><span class="line"> */</span><br><span class="line">@SpringBootApplication</span><br><span class="line">@RestController</span><br><span class="line">public class BookstoreApplication &#123;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(&quot;/recommended&quot;)</span><br><span class="line">    public String readingList() &#123;</span><br><span class="line">        return &quot;Spring in Action (Manning), Cloud Native Java (O&apos;Reilly), Learning Spring Boot (Packt)&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(BookstoreApplication.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们还需要配置应用的端口，在resources文件夹下面创建<code>application.yml</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: 8090</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2017/04/28/Netflix-Hystrix/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/04/28/Netflix-Hystrix/" data-id="cjrm61jx0002zj3je9j0orvy6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hystrix/">Hystrix</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring-Cloud-Microservice" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/Spring-Cloud-Microservice/" class="article-date">
+  <time datetime="2017-04-20T02:16:23.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/Spring-Cloud-Microservice/">Spring Cloud Microservice</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇博客已经将<code>Eureka</code>和<code>ConfigServe</code>搭建起来了，今天将开发两个简单的微服务，一个<code>pong</code>服务和一个调用<code>pong</code>服务的<code>ping</code>服务。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Sample-ping-pong.png" alt="模型"></p>
+<h2 id="Sample-Pong-微服务"><a href="#Sample-Pong-微服务" class="headerlink" title="Sample-Pong 微服务"></a>Sample-Pong 微服务</h2><p><code>pong</code>服务接受<code>ping</code>服务的请求，是一个典型的Spring MVC端点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.pong.controller;</span><br><span class="line"></span><br><span class="line">import com.rason.pong.domain.Message;</span><br><span class="line">import com.rason.pong.domain.MessageAcknowledgement;</span><br><span class="line">import com.rason.pong.service.MessageHandlerService;</span><br><span class="line">import org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line">import org.springframework.hateoas.Resource;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestBody;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line">import org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by rason on 4/19/17.</span><br><span class="line"> */</span><br><span class="line">@RestController</span><br><span class="line">public class PongController &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private MessageHandlerService messageHandlerService;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(value = &quot;/message&quot;, method = RequestMethod.POST)</span><br><span class="line">    public Resource&lt;MessageAcknowledgement&gt; pongMessage(@RequestBody Message input) &#123;</span><br><span class="line">        return new Resource&lt;&gt;(this.messageHandlerService.handleMessage(input));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它接受一个消息然后响应一个确认信息。消息处理只是简单地返回一个确认信息，如下所示。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/04/20/Spring-Cloud-Microservice/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/04/20/Spring-Cloud-Microservice/" data-id="cjrm61k1300doj3jegre8xqfa" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

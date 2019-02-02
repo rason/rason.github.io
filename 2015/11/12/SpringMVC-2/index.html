@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>从“请求-响应”问题出发看一下SpringMVC的架构（下） | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="springmvc spring架构 SpringMVC原理">
+<meta name="keywords" content="SpringMVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从“请求-响应”问题出发看一下SpringMVC的架构（下）">
+<meta property="og:url" content="http://yoursite.com/2015/11/12/SpringMVC-2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="springmvc spring架构 SpringMVC原理">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcsnapshot2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcstruct.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcinit.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvccontext.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcspringmvc.png">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.246Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从“请求-响应”问题出发看一下SpringMVC的架构（下）">
+<meta name="twitter:description" content="springmvc spring架构 SpringMVC原理">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcsnapshot2.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SpringMVC-2" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/12/SpringMVC-2/" class="article-date">
+  <time datetime="2015-11-12T01:26:35.000Z" itemprop="datePublished">2015-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      从“请求-响应”问题出发看一下SpringMVC的架构（下）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上篇文章说到SpringMVC是由一个核心分发器DispatcherServlet来将请求分发到相应的controller进行处理，那么DispatcherServlet是怎么找到相应的controller和处理controller返回的信息呢？</p>
+<p>带着这个问题来思考，DispatcherServlet作为一个核心分发器，当然是会有一套完整的处理“请求-响应”问题的规范化流程，我们可以想到这个流程大概是这样的：</p>
+<ul>
+<li><strong>1.对请求进行初步的处理，然后找出相应的controller</strong></li>
+<li><strong>2.调用相应的controller进行逻辑处理</strong></li>
+<li><strong>3.对controller处理过程中发生的异常进行处理</strong></li>
+<li><strong>4.根据controller处理的返回结果，进行http响应处理</strong></li>
+</ul>
+<p>在SpringMVC中，对上述过程抽象出的接口就是：</p>
+<ul>
+<li><strong>1.HandlerMapping</strong></li>
+<li><strong>2.HandlerAdapter</strong></li>
+<li><strong>3.HandlerExceptionResolver</strong></li>
+<li><strong>4.ViewResolver</strong></li>
+</ul>
+<p>以上这些接口称之为组件，SpringMVC除了上述组件外还有其它的组件可以查看官方文档，所以说<strong>SpringMVC就是通过DispatcherServlet将一堆组件串联起来的Web框架</strong>。<br>那么DispatcherServlet是怎么把这些组件组合在一起完成这个“请求-响应”过程呢？我们看一下DispatcherServlet的数据结构：</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">@SuppressWarnings(&quot;serial&quot;)</span><br><span class="line">public class DispatcherServlet extends FrameworkServlet &#123;</span><br><span class="line"></span><br><span class="line">	/** Detect all HandlerMappings or just expect &quot;handlerMapping&quot; bean? */</span><br><span class="line">	private boolean detectAllHandlerMappings = true;</span><br><span class="line"></span><br><span class="line">	/** Detect all HandlerAdapters or just expect &quot;handlerAdapter&quot; bean? */</span><br><span class="line">	private boolean detectAllHandlerAdapters = true;</span><br><span class="line"></span><br><span class="line">	/** Detect all HandlerExceptionResolvers or just expect &quot;handlerExceptionResolver&quot; bean? */</span><br><span class="line">	private boolean detectAllHandlerExceptionResolvers = true;</span><br><span class="line"></span><br><span class="line">	/** Detect all ViewResolvers or just expect &quot;viewResolver&quot; bean? */</span><br><span class="line">	private boolean detectAllViewResolvers = true;</span><br><span class="line"></span><br><span class="line">	/** Throw a NoHandlerFoundException if no Handler was found to process this request? **/</span><br><span class="line">	private boolean throwExceptionIfNoHandlerFound = false;</span><br><span class="line"></span><br><span class="line">	/** Perform cleanup of request attributes after include request? */</span><br><span class="line">	private boolean cleanupAfterInclude = true;</span><br><span class="line"></span><br><span class="line">	/** MultipartResolver used by this servlet */</span><br><span class="line">	private MultipartResolver multipartResolver;</span><br><span class="line"></span><br><span class="line">	/** LocaleResolver used by this servlet */</span><br><span class="line">	private LocaleResolver localeResolver;</span><br><span class="line"></span><br><span class="line">	/** ThemeResolver used by this servlet */</span><br><span class="line">	private ThemeResolver themeResolver;</span><br><span class="line"></span><br><span class="line">	/** List of HandlerMappings used by this servlet */</span><br><span class="line">	private List&lt;HandlerMapping&gt; handlerMappings;</span><br><span class="line"></span><br><span class="line">	/** List of HandlerAdapters used by this servlet */</span><br><span class="line">	private List&lt;HandlerAdapter&gt; handlerAdapters;</span><br><span class="line"></span><br><span class="line">	/** List of HandlerExceptionResolvers used by this servlet */</span><br><span class="line">	private List&lt;HandlerExceptionResolver&gt; handlerExceptionResolvers;</span><br><span class="line"></span><br><span class="line">	/** RequestToViewNameTranslator used by this servlet */</span><br><span class="line">	private RequestToViewNameTranslator viewNameTranslator;</span><br><span class="line"></span><br><span class="line">	/** FlashMapManager used by this servlet */</span><br><span class="line">	private FlashMapManager flashMapManager;</span><br><span class="line"></span><br><span class="line">	/** List of ViewResolvers used by this servlet */</span><br><span class="line">	private List&lt;ViewResolver&gt; viewResolvers;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到DispatcherServlet包含了许多SpringMVC组件，这些组件就是实现DispatcherServlet核心逻辑的基础，我们看一下DispatcherServlet的核心源码，看看它是怎么把这些组件运用起来完成“请求-响应”这一过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception &#123;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	// Determine handler for the current request.</span><br><span class="line">	mappedHandler = getHandler(processedRequest);</span><br><span class="line">	if (mappedHandler == null || mappedHandler.getHandler() == null) &#123;</span><br><span class="line">		noHandlerFound(processedRequest, response);</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// Determine handler adapter for the current request.</span><br><span class="line">	HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());</span><br><span class="line"></span><br><span class="line">	// Process last-modified header, if supported by the handler.</span><br><span class="line">	String method = request.getMethod();</span><br><span class="line">	boolean isGet = &quot;GET&quot;.equals(method);</span><br><span class="line">	if (isGet || &quot;HEAD&quot;.equals(method)) &#123;</span><br><span class="line">		long lastModified = ha.getLastModified(request, mappedHandler.getHandler());</span><br><span class="line">		if (logger.isDebugEnabled()) &#123;</span><br><span class="line">			logger.debug(&quot;Last-Modified value for [&quot; + getRequestUri(request) + &quot;] is: &quot; + lastModified);</span><br><span class="line">		&#125;</span><br><span class="line">		if (new ServletWebRequest(request, response).checkNotModified(lastModified) &amp;&amp; isGet) &#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if (!mappedHandler.applyPreHandle(processedRequest, response)) &#123;</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// Actually invoke the handler.</span><br><span class="line">	mv = ha.handle(processedRequest, response, mappedHandler.getHandler());</span><br><span class="line"></span><br><span class="line">	if (asyncManager.isConcurrentHandlingStarted()) &#123;</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	applyDefaultViewName(request, mv);</span><br><span class="line">	mappedHandler.applyPostHandle(processedRequest, response, mv);</span><br><span class="line"></span><br><span class="line">	processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上述的源码注释可以清楚地了解到核心的处理步骤跟我们前面分析设想的处理步骤是一样的，就是简单地获取相应的组件并进行调用。那么问题来了，这些组件是哪里来的呢？此时我们应该能想到SpringMVC的核心配置文件<code>[servlet-name]-servlet.xml</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:p=&quot;http://www.springframework.org/schema/p&quot;</span><br><span class="line">	xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</span><br><span class="line">	xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot; xmlns:task=&quot;http://www.springframework.org/schema/task&quot;</span><br><span class="line">	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans  </span><br><span class="line">                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  </span><br><span class="line">                        http://www.springframework.org/schema/context  </span><br><span class="line">                        http://www.springframework.org/schema/context/spring-context-3.1.xsd  </span><br><span class="line">                        http://www.springframework.org/schema/mvc  </span><br><span class="line">                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd</span><br><span class="line">                        http://www.springframework.org/schema/task  </span><br><span class="line">						http://www.springframework.org/schema/task/spring-task-3.1.xsd &quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;context:component-scan base-package=&quot;com.rason.springmvc&quot; /&gt;</span><br><span class="line">	&lt;mvc:annotation-driven /&gt;</span><br><span class="line">	&lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;  </span><br><span class="line">        &lt;property name=&quot;prefix&quot; value=&quot;/&quot; /&gt;  </span><br><span class="line">        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;  </span><br><span class="line">    &lt;/bean&gt;  </span><br><span class="line"></span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p>springmvc就是通过读取这个配置文件来获取各个组件的实现方式并对其进行管理。我们上面说到每一个组件都定义为一个接口，那么接口肯定是可以有多种实现方式的，因此上面的核心配置文件配置的都是具体的实现类。SpringMVC各种不同的组件实现体系成为了SpringMVC行为模式扩展的有效途径。至于每个组件的各种实现行为模式有何不同，这里就不继续探讨了，可以自行查看源码的注释了解。</p>
+<p>到目前为止，我们应该可以大概地回答文章开头的问题了。DispatcherServlet的数据结构中就包含了各种组件的引用，通过核心配置文件读取到组件的具体实现方式，然后按照上面的四个处理步骤相继进行处理找到相应的controller进行处理并返回结果（<strong>见上面的核心源码doDispatch方法</strong>）。</p>
+<p>那么现在的疑惑应该是DispatcherServlet究竟是怎么读取核心配置文件获取具体的组件呢？让我们来了解DispatcherServlet的初始化过程：</p>
+<p>在了解DispatcherServlet初始化过程之前，我们首先得了解一下它的继承结构。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcsnapshot2.png" alt="DispatcherServlet继承结构"></p>
+<p>在这棵继承树中，我们可以看到<code>DispatcherServlet</code>继承成与<code>FrameworkServlet</code>，而<code>FrameworkServlet</code>继承于<code>HttpServletBean</code>，我们分别来了解一下这两个类。</p>
+<p>HttpServletBean是Spring对于Servlet最低层次的抽象。在这一层抽象中，Spring会将这个Servlet视作是一个Spring的bean，并将init-param中的值作为bean的属性注入进来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Map config parameters onto bean properties of this servlet, and</span><br><span class="line"> * invoke subclass initialization.</span><br><span class="line"> * @throws ServletException if bean properties are invalid (or required</span><br><span class="line"> * properties are missing), or if subclass initialization fails.</span><br><span class="line"> */</span><br><span class="line">@Override</span><br><span class="line">public final void init() throws ServletException &#123;</span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;Initializing servlet &apos;&quot; + getServletName() + &quot;&apos;&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// Set bean properties from init parameters.</span><br><span class="line">	try &#123;</span><br><span class="line">		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);</span><br><span class="line">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);</span><br><span class="line">		ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());</span><br><span class="line">		bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));</span><br><span class="line">		initBeanWrapper(bw);</span><br><span class="line">		bw.setPropertyValues(pvs, true);</span><br><span class="line">	&#125;</span><br><span class="line">	catch (BeansException ex) &#123;</span><br><span class="line">		logger.error(&quot;Failed to set bean properties on servlet &apos;&quot; + getServletName() + &quot;&apos;&quot;, ex);</span><br><span class="line">		throw ex;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// Let subclasses do whatever initialization they like.</span><br><span class="line">	initServletBean();</span><br><span class="line"></span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;Servlet &apos;&quot; + getServletName() + &quot;&apos; configured successfully&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从源码中，我们可以看到HttpServletBean利用了Servlet的init方法的执行特性，将一个普通的Servlet与Spring的容器联系在了一起。在这其中起到核心作用的代码是：<code>BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this)</code>;将当前的这个Servlet类转化为一个BeanWrapper，从而能够以Spring的方式来对init-param的值进行注入。BeanWrapper的相关知识属于Spring Framework的内容，我们在这里不做详细展开，可以具体参考HttpServletBean的注释获得更多的信息。 </p>
+<p><code>FrameworkServlet</code>则是在HttpServletBean的基础之上的进一步抽象。通过FrameworkServlet真正初始化了一个Spring的容器（WebApplicationContext），并引入到Servlet对象之中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Overridden method of &#123;@link HttpServletBean&#125;, invoked after any bean properties</span><br><span class="line"> * have been set. Creates this servlet&apos;s WebApplicationContext.</span><br><span class="line"> */</span><br><span class="line">@Override</span><br><span class="line">protected final void initServletBean() throws ServletException &#123;</span><br><span class="line">	getServletContext().log(&quot;Initializing Spring FrameworkServlet &apos;&quot; + getServletName() + &quot;&apos;&quot;);</span><br><span class="line">	if (this.logger.isInfoEnabled()) &#123;</span><br><span class="line">		this.logger.info(&quot;FrameworkServlet &apos;&quot; + getServletName() + &quot;&apos;: initialization started&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	long startTime = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">	try &#123;</span><br><span class="line">		this.webApplicationContext = initWebApplicationContext();</span><br><span class="line">		initFrameworkServlet();</span><br><span class="line">	&#125;</span><br><span class="line">	catch (ServletException ex) &#123;</span><br><span class="line">		this.logger.error(&quot;Context initialization failed&quot;, ex);</span><br><span class="line">		throw ex;</span><br><span class="line">	&#125;</span><br><span class="line">	catch (RuntimeException ex) &#123;</span><br><span class="line">		this.logger.error(&quot;Context initialization failed&quot;, ex);</span><br><span class="line">		throw ex;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if (this.logger.isInfoEnabled()) &#123;</span><br><span class="line">		long elapsedTime = System.currentTimeMillis() - startTime;</span><br><span class="line">		this.logger.info(&quot;FrameworkServlet &apos;&quot; + getServletName() + &quot;&apos;: initialization completed in &quot; +</span><br><span class="line">				elapsedTime + &quot; ms&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从这段代码可以看到这个FrameworkServlet将调用其内部的方法initWebApplicationContext()对Spring的容器（WebApplicationContext）进行初始化。同时，FrameworkServlet还暴露了<code>public final WebApplicationContext getWebApplicationContext()</code>可供子类DispatcherServlet调用。因此，<strong>DispatcherServlet的继承体系架起了DispatcherServlet与Spring容器进行沟通的桥梁</strong>。</p>
+<p>由此，我们可以总结得出<strong>SpringMVC的运行体系是由DispatcherServlet、组件和容器这三者共同构成的</strong>。在这个运行体系中，<strong>DispatcherServlet是逻辑处理的调度中心，组件则是被调度的操作对象。而容器在这里所起到的作用，是协助DispatcherServlet更好地对组件进行管理</strong>。引用spring官方的示意图简单描述三者关系：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcstruct.png" alt="SpringMVC运行体系"></p>
+<p>三者之间的两两关系可以归纳为：</p>
+<ul>
+<li><strong>DispatcherServlet - 容器 —— DispatcherServlet对容器进行初始化</strong></li>
+<li><strong>容器 - 组件 —— 容器对组件进行全局管理</strong></li>
+<li><strong>DispatcherServlet - 组件 —— DispatcherServlet对组件进行逻辑调用</strong></li>
+</ul>
+<p>明确了DispatcherServlet的继承体系和DispatcherServlet，容器，组件三者之间关系之后，用一张图来看看DispatcherServlet的初始化过程：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcinit.png" alt="DispatcherServlet初始化过程"></p>
+<p>细心的读者应该注意到了上图中左侧还有一个WebApplicationContext的初始化，应该会疑惑这个WebApplicationContext是干什么用的，如果你做过SpringMVC的开发应该曾经配置过这样一段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;context-param&gt;  </span><br><span class="line">    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;  </span><br><span class="line">    &lt;param-value&gt;classpath:context/applicationContext-*.xml&lt;/param-value&gt;  </span><br><span class="line">&lt;/context-param&gt;  </span><br><span class="line">      </span><br><span class="line">&lt;listener&gt;  </span><br><span class="line">    &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;  </span><br><span class="line">&lt;/listener&gt;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，我们定义了一个Listener，它会在整个Web应用程序启动的时候运行一次，并初始化传统意义上的Spring的容器。这也是一般情况下，当并不使用SpringMVC作为我们的表示层解决方案，却希望在我们的Web应用程序中使用Spring相关功能时所采取的一种配置方式(比如配置使用第三方框架mybatis,shiro等)。 <strong>ContextLoaderListener所初始化的容器，我们称之为Root WebApplicationContext；而DispatcherServlet所初始化的容器，是SpringMVC WebApplicationContext。</strong></p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvccontext.png" alt="Context"></p>
+<p>说到这里，SpringMVC的核心DispatcherServlet也差不多是了解了个大概了，再详细的就不再往下写了。简单地总结一下这篇文章，就是先介绍了DispatcherServlet的继承体系，然后从中道出了DispatcherServlet的初始化过程。而在初始化过程中最主要的就是在FrameworkServlet的初始化方法中初始化了WebApplicationContext，这个WebApplicationContext就是spring的容器，用于管理各个组件。最后缕清了一下WebApplicationContext，容器，组件这三者之间的关系。</p>
+<p>最后的最后，引用一个spring官方的图片来总结SpringMVC的架构来结束文章。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcspringmvc.png" alt="SpringMVC"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/11/12/SpringMVC-2/" data-id="cjrm61k1700e1j3jegkj50vuv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/11/19/Tomcat-Architecture/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Tomcat架构
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/11/11/SpringMVC-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">从“请求-响应”问题出发看一下SpringMVC的架构（上）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

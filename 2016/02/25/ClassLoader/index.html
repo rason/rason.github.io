@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>ClassLoader工作机制（一） | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ClassLoader工作机制">
+<meta name="keywords" content="ClassLoader">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ClassLoader工作机制（一）">
+<meta property="og:url" content="http://yoursite.com/2016/02/25/ClassLoader/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="ClassLoader工作机制">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-ClassLoaderLevel.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-JVM-load.png">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.178Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ClassLoader工作机制（一）">
+<meta name="twitter:description" content="ClassLoader工作机制">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-ClassLoaderLevel.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ClassLoader" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/25/ClassLoader/" class="article-date">
+  <time datetime="2016-02-25T01:14:24.000Z" itemprop="datePublished">2016-02-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ClassLoader工作机制（一）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>ClassLoader这个名字应该不算陌生，虽然我们经常会见到这个名字，但通常都简单地去了解它的工作机制。ClassLoader顾名思义就是类加载器，其作用包括：</p>
+<ul>
+<li>将Class加载到JVM中</li>
+<li>审查每个类应该由谁加载，父优先委托加载机制</li>
+<li>将Class字节码重新解析成JVM统一要求的对象格式</li>
+</ul>
+<p>这篇文章主要分析前面两点。</p>
+<h2 id="ClassLoader类结构"><a href="#ClassLoader类结构" class="headerlink" title="ClassLoader类结构"></a>ClassLoader类结构</h2><p>ClassLoader是一个抽象类，在扩展ClassLoader的时候我们通常会用到以下几个方法：</p>
+<ul>
+<li>defineClass(byte[],int,int)</li>
+<li>findClass(String)</li>
+<li>loadClass(String)</li>
+<li>resolveClass(Class&lt;?&gt;)</li>
+</ul>
+<p>defineClass方法用来将字节流解析成JVM能够识别的Class对象，可以从class文件或者网络的方式得到一个类的字节流，从而创建类的Class对象形式的实例化对象。</p>
+<p>findClass顾名思义就是根据类名字去找到相应的class文件，找到文件读取字节流再调用defineClass就可以得到类的类对象实例。该方法是的默认实现是抛出一个ClassNotFoundException，ClassLoader的子类应该重载该方法并且要遵循委托加载模式来加载class。我们要自定义类的加载规则通常鼓励重写findClass方法而不是下面的loadClass方法。</p>
+<p>loadClass是根据特定的类名字去加载class，它与findClass方法有所不同。findClass是根据名字直接查找相应的资源，而loadClass会先查找是否已经加载，没有的话会根据父优先委托加载机制来加载。</p>
+<a id="more"></a>
+<p>resolveClass方法用于<code>link</code>一个特定的class。关于什么是link，下面说谈到。</p>
+<p>如果你不想重新定义加载类的规则，也没有复杂的处理逻辑，只想在运行时能够加载自己指定的一个类而已，那么你可以用<code>this.getClass().getClassLoader().loadClass(&quot;class&quot;)</code>即可。如果要实现自己的ClassLoader,一般都会继承URLClassLoader这个子类，因为这个类已经帮我们实现了大部分工作，我们只需要在适当的地方做些修改好了。</p>
+<h2 id="ClassLoader的委托加载机制"><a href="#ClassLoader的委托加载机制" class="headerlink" title="ClassLoader的委托加载机制"></a>ClassLoader的委托加载机制</h2><p>什么是委托加载机制，我们看一下ClassLoader的<code>loadClass()</code>方法的实现就会一目了然。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">protected synchronized Class&lt;?&gt; loadClass(String name, boolean resolve)</span><br><span class="line">    throws ClassNotFoundException</span><br><span class="line">&#123;</span><br><span class="line">    // First, check if the class has already been loaded</span><br><span class="line">    Class c = findLoadedClass(name);</span><br><span class="line">    if (c == null) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            if (parent != null) &#123;</span><br><span class="line">                c = parent.loadClass(name, false);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                c = findBootstrapClass0(name);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">            // If still not found, then invoke findClass in order</span><br><span class="line">            // to find the class.</span><br><span class="line">            c = findClass(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (resolve) &#123;</span><br><span class="line">        resolveClass(c);</span><br><span class="line">    &#125;</span><br><span class="line">    return c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的方法实现我们可以看出，加载class会遵循以下顺序：</p>
+<ul>
+<li><strong>先调用findLoadedClass，检查这个class是否已经被加载过</strong></li>
+<li><strong>调用父加载器的loadClass方法，如果父加载器为null的话，则会调用JVM内部的类加载器加载，即BootstrapClassLoader</strong></li>
+<li><strong>如果都没有加载成功，那就自己调用findClass方法来加载</strong></li>
+</ul>
+<p>为了更清楚地理解loadClass和findClass的区别，这里把子类URLClassLoader的findClass方法实现也贴出来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">protected Class&lt;?&gt; findClass(final String name)</span><br><span class="line">     throws ClassNotFoundException</span><br><span class="line">&#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        return (Class)</span><br><span class="line">            AccessController.doPrivileged(new PrivilegedExceptionAction() &#123;</span><br><span class="line">                public Object run() throws ClassNotFoundException &#123;</span><br><span class="line">                    String path = name.replace(&apos;.&apos;, &apos;/&apos;).concat(&quot;.class&quot;);</span><br><span class="line">                    Resource res = ucp.getResource(path, false);</span><br><span class="line">                    if (res != null) &#123;</span><br><span class="line">                        try &#123;</span><br><span class="line">                            return defineClass(name, res);</span><br><span class="line">                        &#125; catch (IOException e) &#123;</span><br><span class="line">                            throw new ClassNotFoundException(name, e);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        throw new ClassNotFoundException(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;, acc);</span><br><span class="line">    &#125; catch (java.security.PrivilegedActionException pae) &#123;</span><br><span class="line">        throw (ClassNotFoundException) pae.getException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>findClass方法就是直接去查找资源，然后调用defineClass解析成JVM能够识别的Class对象。</p>
+<p>相信看完这两段代码，大家都应该大概清楚类加载的流程，但是还会有一些疑问：父加载器是哪个？JVM中有哪些类加载器？</p>
+<p>在JVM中提供了三个ClassLoader类：</p>
+<ol>
+<li><p><strong>Bootstrap ClassLoader</strong>，主要加载JVM自身工作需要的类，这个ClassLoader完全是JVM自己控制的，需要加载哪个类，怎么加载都由JVM控制，别人也访问不到这个类。所以这个ClassLoader是不遵循前面介绍的加载规则，仅仅是一个类加载工具而已，没有父加载器，也没有子加载器。</p>
+</li>
+<li><p><strong>ExtClassLoader</strong>，这个类加载器有点特殊，用于加载<code>System.getProperty(&quot;java.ext.dirs&quot;)</code>目录下的class。</p>
+</li>
+<li><p><strong>AppClassLoader</strong>，它的父类是ExtClassLoader，所有在<code>System.getProperty(&quot;java.class.path&quot;)</code>目录下的类都可以被这个类加载器加载，这个目录就是我们经常用到的classpath。</p>
+</li>
+</ol>
+<p>如果我们要实现自己的类加载器，不管是直接实现抽象类ClassLoader，还是继承URLClassLoader，或是其它子类，它的父加载器都是AppClassLoader。因为不管调用哪个父类的构造器，都是调用<code>getSystemClassLoader()</code>作为父加载器，这个方法获取到的正是AppClassLoader。比如ClassLoader的构造方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">protected ClassLoader() &#123;</span><br><span class="line">this(checkCreateClassLoader(), getSystemClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此，结合ClassLoader的loadClass方法和上面的委托关系可知，<strong>加载一个类时，首先BootStrap进行寻找，找不到再由Extension ClassLoader寻找，最后才是App ClassLoader。</strong></p>
+<p>将ClassLoader设计成委托模型的一个重要原因是出于安全考虑，比如在Applet中，如果编写了一个java.lang.String类并具有破坏性。假如不采用这种委托机制，就会将这个具有破坏性的String加载到了用户机器上，导致破坏用户安全。但采用这种委托机制则不会出现这种情况。因为要加载java.lang.String类时，系统最终会由Bootstrap进行加载，这个具有破坏性的String永远没有机会加载</p>
+<p>通常一个应用中类加载器的委托结构如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-ClassLoaderLevel.png" alt="应用中类加载器的委托层次"></p>
+<p>其中App1ClassLoader和App2ClassLoader是应用中自定义的类加载器。有些文章把Bootstrap ClassLoader列在ExtClassLoader的上一级中，其实Bootstrap ClassLoader并不属于JVM的类委托层次，因为Bootstrap ClassLoader并没有遵循ClassLoader的加载规则。另外它并没有子类，ExtClassLoader的父类也不是Bootstrap ClassLoader，ExtClassLoader并没有父类，我们应用中能取到的顶层父类是ExtClassLoader。</p>
+<p>如果java应用中没有定义其他ClassLoader，那么除了System.getProperty(“java.ext.dirs”)目录下的类是由ExtClassLoader加载外，其他类都由AppClassLoader来加载。</p>
+<p>JVM加载class文件到内存有两种方式。</p>
+<ul>
+<li><p>隐式加载：就是不通过代码里调用ClassLoader来加载需要的类，而是通过JVM来自动加载需要的类到内存中。例如，当我们在类中继承或者引用某个类时，JVM在解析当前这个类时发现引用的类不在内存中，那么就是自动将这些类加载到内存中。Java装载类使用“全盘负责委托机制”，即一个ClassLoader装载一个类时，除非显式使用另外一个ClassLoader，否则该类所依赖及引用的类也由这个ClassLoader载入。</p>
+</li>
+<li><p>显示加载：就是在代码中通过调用ClassLoader类来加载一个类的方式。例如，调用this.getClass.getClassLoader.loadClass()或者Class.forName()，或者我们自己实现的ClassLoader的findClass()方法等。</p>
+</li>
+</ul>
+<h2 id="如何加载class文件"><a href="#如何加载class文件" class="headerlink" title="如何加载class文件"></a>如何加载class文件</h2><p>ClassLoader加载一个class文件到JVM时需要经过以下步骤：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-JVM-load.png" alt="JVM加载类的阶段"></p>
+<ul>
+<li><strong>第一阶段：找到.class文件并把这个文件包含的字节码加载到内存中。</strong></li>
+<li><strong>第二阶段：分为三个步骤，分别是字节码验证，Class类数据结构分析及相应的内存分配和最后的符号表的链接。</strong></li>
+<li><strong>第三阶段：类中静态属性和初始化赋值，以及静态块的执行等。</strong></li>
+</ul>
+<h3 id="加载字节码到内存"><a href="#加载字节码到内存" class="headerlink" title="加载字节码到内存"></a>加载字节码到内存</h3><p>在抽象类ClassLoader中并没有定义如何去加载，如何去找到指定类并且将它的字节码加载到内存需要子类实现，也就是要实现findClass()方法。</p>
+<p>我们看一下子类URLClassLoader是如何实现findClass()的，在URLClassLoader中通过一个URLClassPath类帮助取得要加载的class文件字节流，这个URLClassPath定义了<strong>到哪里</strong>去找这个class文件,如果找到了这个class文件，再读取它的byte字节流通过调用defineClass()方法来创建类对象。</p>
+<p>URLClassLoader的构造函数必须要指定一个URL数据，也就是必须要指定这个ClassLoader默认到哪个目录下去查找class文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public URLClassLoader(URL[] urls) &#123;</span><br><span class="line">    super();</span><br><span class="line">    // this is to make the stack depth consistent with 1.1</span><br><span class="line">    SecurityManager security = System.getSecurityManager();</span><br><span class="line">    if (security != null) &#123;</span><br><span class="line">        security.checkCreateClassLoader();</span><br><span class="line">    &#125;</span><br><span class="line">    ucp = new URLClassPath(urls);</span><br><span class="line">    acc = AccessController.getContext();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从URLClassPath的名字中就可以发现它是通过URL的形式来表示ClassPath路径的。在创建URLClassPath对象时会根据传过来的URL数组中的路径来判断是<strong>文件</strong>还是<strong>jar包</strong>,根据路径的不同分别创建FileLoader或者JarLoader，或者使用默认的加载器（注意：此加载器非上面说的ClassLoader，它是实际加载class的加载器，是ClassLoader需要用到的）。当JVM调用findClass时由这几个加载器来将class文件中的字节码加载到内存中。</p>
+<p>这里还需要提到的是：<strong>ExtClassLoader和AppClassLoader继承于URLClassLoader</strong>，那么如何设置每个ClassLoader的搜索路径呢？下方表格所示是Bootstrap ClassLoader，ExtClassLoader和AppClassLoader的参数形式。</p>
+<table>
+<thead>
+<tr>
+<th>ClassLoader类型</th>
+<th style="text-align:center">参数选项</th>
+<th style="text-align:right">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bootstrap ClassLoader</td>
+<td style="text-align:center">-Xbootclasspath:</td>
+<td style="text-align:right">设置Bootstrap ClassLoader的搜索路径</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">-Xbootclasspath/a:</td>
+<td style="text-align:right">把路径添加到已存在Bootstrap ClassLoader搜索路径后面</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">-Xbootclasspath/p:</td>
+<td style="text-align:right">把路径添加到已存在Bootstrap ClassLoader搜索路径</td>
+</tr>
+<tr>
+<td>ExtClassLoader</td>
+<td style="text-align:center">-Djava.ext.dirs</td>
+<td style="text-align:right">设置ExtClassLoader的搜索路径</td>
+</tr>
+<tr>
+<td>AppClassLoader</td>
+<td style="text-align:center">-Djava.class.path=-cp或者-classpath</td>
+<td style="text-align:right">设置AppClassLoader的搜索路径</td>
+</tr>
+</tbody>
+</table>
+<p>上面的参数设置中，最常用到的就是设置classpath的环境变量，因为通常都是让java运行指定的程序。如果通过命令执行一个类时出现NoClassDefFoundError错误，那么很可能是没有指定classpath所致，或者指定了classpath但是没有指明包名。</p>
+<h3 id="验证与解析"><a href="#验证与解析" class="headerlink" title="验证与解析"></a>验证与解析</h3><ul>
+<li>字节码验证，类加载器对于类的字节码要做许多检测，以确保格式正确，行为正确。</li>
+<li>类准备，这个阶段准备代表每个类中定义的字段，方法和实现接口所必须的数据结构。</li>
+<li>解析，在这个阶段类加载器加载所引用的其他所有类。</li>
+</ul>
+<h3 id="初始化Class对象"><a href="#初始化Class对象" class="headerlink" title="初始化Class对象"></a>初始化Class对象</h3><p>类中包含的静态初始化器都被执行，在这一阶段末尾静态字段初始化成默认值。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><strong>ClassLoader的作用</strong></li>
+<li><strong>抽象类ClassLoader的一些方法的作用</strong></li>
+<li><strong>ClassLoader的委托加载机制</strong></li>
+<li><strong>JVM中的几种ClassLoader及其关系</strong></li>
+<li><strong>ClassLoader加载class的几个步骤</strong></li>
+<li><strong>如何设置ClassLoader的搜索路径</strong></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/02/25/ClassLoader/" data-id="cjrm61k0a00bjj3jesuxl4a2v" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/02/29/ClassLoader2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ClassLoader工作机制（二）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/02/13/Java-encode/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java Web编码问题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
