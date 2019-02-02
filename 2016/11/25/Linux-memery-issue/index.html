@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Linux内存问题 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Linux内存问题">
+<meta name="keywords" content="Linux内存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux内存问题">
+<meta property="og:url" content="http://yoursite.com/2016/11/25/Linux-memery-issue/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Linux内存问题">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Logical-to-Linear.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Linear-to-Physical.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/PageTable-Entry.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mm_struct.png">
+<meta property="og:updated_time" content="2019-02-01T14:36:21.210Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux内存问题">
+<meta name="twitter:description" content="Linux内存问题">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Logical-to-Linear.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Linux-memery-issue" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/25/Linux-memery-issue/" class="article-date">
+  <time datetime="2016-11-25T07:56:11.000Z" itemprop="datePublished">2016-11-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux内存问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天学习一些关于内存管理方面的知识。</p>
+<h2 id="一些处理器架构的历史"><a href="#一些处理器架构的历史" class="headerlink" title="一些处理器架构的历史"></a>一些处理器架构的历史</h2><ul>
+<li>8080 (late-1970s) 16-bit address (64-KB)</li>
+<li>8086 (early-1980s) 20-bit address (1-MB)</li>
+<li>80286 (mid-’80s) 24-bit address (16-MB)</li>
+<li>80386 (late-’80s) 32-bit address (4-GB)</li>
+<li>80686 (late-’90s) 36-bit address (64-GB)</li>
+<li>Core2 (mid-2000s) 40-bit address (1-TB)</li>
+</ul>
+<h2 id="向后兼容"><a href="#向后兼容" class="headerlink" title="向后兼容"></a>向后兼容</h2><ul>
+<li>新的处理器需要运行旧的程序</li>
+<li>比如80x86依然可以运行很多8086的程序</li>
+<li>当然也有一些不兼容的地方存在</li>
+</ul>
+<h2 id="Linux必须适配这些遗留问题"><a href="#Linux必须适配这些遗留问题" class="headerlink" title="Linux必须适配这些遗留问题"></a>Linux必须适配这些遗留问题</h2><ul>
+<li>遗留因素：硬件和固件</li>
+<li>CPU：复位地址和中断向量</li>
+<li>ROM-BIOS：数据区和boot位置</li>
+<li>DMA：24位内存地址总线</li>
+<li>其他</li>
+</ul>
+<h2 id="其他处理器架构"><a href="#其他处理器架构" class="headerlink" title="其他处理器架构"></a>其他处理器架构</h2><ul>
+<li>除了IA-32，Linux还可以运行在其他CPU中（比如IBM360，MC68000等）</li>
+<li><p>因此，Linux还需适配他们的不同点</p>
+<ul>
+<li>Memory-Mapped I/O</li>
+<li>Wider address-buses</li>
+<li>Non-Uniform Memory Access (NUMA)</li>
+</ul>
+<h2 id="Nodes-Zones-和-Pages"><a href="#Nodes-Zones-和-Pages" class="headerlink" title="Nodes, Zones, 和 Pages"></a>Nodes, Zones, 和 Pages</h2><ul>
+<li>Nodes：为了适配NUMA系统</li>
+<li>然而80x86系统不支持UNMA</li>
+<li>所以在80x86中只用了一个<code>node</code></li>
+<li>Zones：为了适配不同的区域</li>
+<li>80x86中的三个<code>zones</code></li>
+<li>ZONE_DMA         (memory below 16-MB)</li>
+<li>ZONE_NORMAL         (from 16-MB to 896-MB)</li>
+<li>ZONE_HIGHMEM     (memory above 896-MB)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Zones被切分为Pages"><a href="#Zones被切分为Pages" class="headerlink" title="Zones被切分为Pages"></a>Zones被切分为Pages</h2><ul>
+<li>80x86支持4KB的页框</li>
+<li>Linux使用页描述符数组<code>mem_map[]</code>跟踪物理内存页</li>
+<li>物理内存是由CPU来映射匹配的</li>
+</ul>
+<a id="more"></a>
+<h2 id="80x86如何寻址"><a href="#80x86如何寻址" class="headerlink" title="80x86如何寻址"></a>80x86如何寻址</h2><ul>
+<li>两个阶段：分段和分页<ul>
+<li>首先：逻辑地址-&gt;线性地址</li>
+<li>然后：线性地址-&gt;物理地址</li>
+</ul>
+</li>
+</ul>
+<h2 id="逻辑地址-gt-线性地址"><a href="#逻辑地址-gt-线性地址" class="headerlink" title="逻辑地址-&gt;线性地址"></a>逻辑地址-&gt;线性地址</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Logical-to-Linear.png" alt="逻辑地址-&gt;线性地址"></p>
+<h2 id="线性地址-gt-物理地址"><a href="#线性地址-gt-物理地址" class="headerlink" title="线性地址-&gt;物理地址"></a>线性地址-&gt;物理地址</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Linear-to-Physical.png" alt="线性地址-&gt;物理地址"></p>
+<ul>
+<li>CR3寄存器保存的是当前任务的页目录表的物理地址</li>
+</ul>
+<h2 id="页表项格式"><a href="#页表项格式" class="headerlink" title="页表项格式"></a>页表项格式</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/PageTable-Entry.png" alt="页表项"></p>
+<h2 id="分配任务内存"><a href="#分配任务内存" class="headerlink" title="分配任务内存"></a>分配任务内存</h2><ul>
+<li>每个Linux进程都有一个进程描述符，里面有一个名为mm的指针</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct task_struct &#123;</span><br><span class="line">	pid_t				pid;</span><br><span class="line">	char 				comm[16];</span><br><span class="line">	struct mm_struct		*mm;</span><br><span class="line">	...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="mm-struct结构体"><a href="#mm-struct结构体" class="headerlink" title="mm_struct结构体"></a>mm_struct结构体</h2><ul>
+<li>用于描述任务的内存映射</li>
+<li>代码段、数据段和堆栈段的位置</li>
+<li>共享库的位置</li>
+<li>每个内存区的属性</li>
+<li>有多少个不同的内存区</li>
+<li>任务的页目录位置</li>
+</ul>
+<h2 id="编写一个内核模块mm-c查看mm-struct内部属性"><a href="#编写一个内核模块mm-c查看mm-struct内部属性" class="headerlink" title="编写一个内核模块mm.c查看mm_struct内部属性"></a>编写一个内核模块mm.c查看mm_struct内部属性</h2><ul>
+<li>用来创建一个伪文件<code>/proc/mm</code></li>
+<li>让用来看到任务的mm_struct结构体的属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;linux/module.h&gt;	// for init_module() </span><br><span class="line">#include &lt;linux/proc_fs.h&gt;	// for create_proc_info_entry() </span><br><span class="line">#include &lt;linux/sched.h&gt;	// for &apos;struct task_struct&apos;</span><br><span class="line">#include &lt;linux/mm.h&gt;		// for &apos;struct mm_struct&apos;</span><br><span class="line">#include &lt;linux/seq_file.h&gt;</span><br><span class="line"></span><br><span class="line">char modname[] = &quot;mm&quot;;</span><br><span class="line"></span><br><span class="line">static int proc_show(struct seq_file *m, void *v)</span><br><span class="line">&#123;</span><br><span class="line">	struct task_struct	*tsk = current;</span><br><span class="line">	struct mm_struct	*mm = tsk-&gt;mm;</span><br><span class="line">	unsigned long		stack_size = (mm-&gt;stack_vm &lt;&lt; PAGE_SHIFT);</span><br><span class="line">	unsigned long		down_to = mm-&gt;start_stack - stack_size;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	seq_printf(m, &quot;\nInfo from the Memory Management structure &quot; );</span><br><span class="line">	seq_printf(m, &quot;for task \&apos;%s\&apos; &quot;, tsk-&gt;comm );</span><br><span class="line">	seq_printf(m, &quot;(pid=%d) \n&quot;, tsk-&gt;pid );</span><br><span class="line">	seq_printf(m, &quot;   pgd=%08lX  &quot;, (unsigned long)mm-&gt;pgd );</span><br><span class="line">	seq_printf(m, &quot;mmap=%08lX  &quot;, (unsigned long)mm-&gt;mmap );</span><br><span class="line">	seq_printf(m, &quot;map_count=%d  &quot;, mm-&gt;map_count );</span><br><span class="line">	seq_printf(m, &quot;mm_users=%d  &quot;, mm-&gt;mm_users.counter );</span><br><span class="line">	seq_printf(m, &quot;mm_count=%d  &quot;, mm-&gt;mm_count.counter );</span><br><span class="line">	seq_printf(m, &quot;\n&quot; );</span><br><span class="line">	seq_printf(m, &quot;    start_code=%08lX  &quot;, mm-&gt;start_code );</span><br><span class="line">	seq_printf(m, &quot; end_code=%08lX\n&quot;, mm-&gt;end_code );</span><br><span class="line">	seq_printf(m, &quot;    start_data=%08lX  &quot;, mm-&gt;start_data );</span><br><span class="line">	seq_printf(m, &quot; end_data=%08lX\n&quot;, mm-&gt;end_data );</span><br><span class="line">	seq_printf(m, &quot;     start_brk=%08lX  &quot;, mm-&gt;start_brk );</span><br><span class="line">	seq_printf(m, &quot;      brk=%08lX\n&quot;, mm-&gt;brk );</span><br><span class="line">	seq_printf(m, &quot;     arg_start=%08lX  &quot;, mm-&gt;arg_start );</span><br><span class="line">	seq_printf(m, &quot;  arg_end=%08lX\n&quot;, mm-&gt;arg_end );</span><br><span class="line">	seq_printf(m, &quot;     env_start=%08lX  &quot;, mm-&gt;env_start );</span><br><span class="line">	seq_printf(m, &quot;  env_end=%08lX\n&quot;, mm-&gt;env_end );</span><br><span class="line">	seq_printf(m, &quot;   start_stack=%08lX  &quot;, mm-&gt;start_stack );</span><br><span class="line">	seq_printf(m, &quot;  down_to=%08lX &quot;, down_to );</span><br><span class="line">	seq_printf(m, &quot; &lt;--- stack grows downward \n&quot; );</span><br><span class="line">	seq_printf(m, &quot;\n&quot; );</span><br><span class="line">	return	0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static int proc_open(struct inode *inode, struct  file *file) &#123;</span><br><span class="line">  return single_open(file, proc_show, NULL);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static const struct file_operations proc_file_fops = &#123;</span><br><span class="line">	.owner = THIS_MODULE,</span><br><span class="line">	.open = proc_open,</span><br><span class="line">	.read = seq_read,</span><br><span class="line">	.llseek = seq_lseek,</span><br><span class="line">	.release = single_release,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">static int __init my_init( void )</span><br><span class="line">&#123;</span><br><span class="line">	printk( &quot;&lt;1&gt;\nInstalling \&apos;%s\&apos; module\n&quot;, modname );</span><br><span class="line">    proc_create(modname, 0, NULL, &amp;proc_file_fops);</span><br><span class="line">	return	0;  //SUCCESS</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">static void __exit my_exit(void )</span><br><span class="line">&#123;</span><br><span class="line">	remove_proc_entry( modname, NULL );</span><br><span class="line"></span><br><span class="line">	printk( &quot;&lt;1&gt;Removing \&apos;%s\&apos; module\n&quot;, modname );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init( my_init );</span><br><span class="line">module_exit( my_exit );</span><br><span class="line">MODULE_LICENSE(&quot;GPL&quot;);</span><br></pre></td></tr></table></figure>
+<h2 id="Virtual-Memory-Areas"><a href="#Virtual-Memory-Areas" class="headerlink" title="Virtual Memory Areas"></a>Virtual Memory Areas</h2><ul>
+<li>在mm_struct中指向一个列表的指针</li>
+<li>这个指针的名字叫<code>mmap</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">struct mm_struct &#123;</span><br><span class="line">	struct vm_area_struct		*mmap;	</span><br><span class="line">	...	</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="VMAs链表"><a href="#VMAs链表" class="headerlink" title="VMAs链表"></a>VMAs链表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct vm_area_struct &#123;</span><br><span class="line">	unsigned long		vm_start;</span><br><span class="line">	unsigned long		vm_end;</span><br><span class="line">	unsigned long		vm_flags;</span><br><span class="line">	struct vm_area_struct	*vm_next;</span><br><span class="line">	...		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="结构关系"><a href="#结构关系" class="headerlink" title="结构关系"></a>结构关系</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mm_struct.png" alt="任务内存结构关系"></p>
+<h2 id="编写一个内核模块vma-c查看虚拟内存区链表属性"><a href="#编写一个内核模块vma-c查看虚拟内存区链表属性" class="headerlink" title="编写一个内核模块vma.c查看虚拟内存区链表属性"></a>编写一个内核模块vma.c查看虚拟内存区链表属性</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;linux/module.h&gt;	// for init_module() </span><br><span class="line">#include &lt;linux/proc_fs.h&gt;	// for create_proc_read_entry() </span><br><span class="line">#include &lt;linux/mm.h&gt;		// for &apos;struct vm_area_struct&apos;</span><br><span class="line">#include &lt;linux/sched.h&gt;	// for &apos;struct task_struct&apos;</span><br><span class="line">#include &lt;linux/seq_file.h&gt;</span><br><span class="line"></span><br><span class="line">char modname[] = &quot;vma&quot;;</span><br><span class="line"></span><br><span class="line">static int proc_show(struct seq_file *m, void *v)</span><br><span class="line">&#123;</span><br><span class="line">	struct task_struct	*tsk = current;</span><br><span class="line">	struct vm_area_struct	*vma;</span><br><span class="line">	unsigned long 		ptdb;</span><br><span class="line">	int			i = 0;</span><br><span class="line">	</span><br><span class="line">	// display title</span><br><span class="line">	seq_printf(m, &quot;\n\nList of the Virtual Memory Areas &quot; );</span><br><span class="line">	seq_printf(m, &quot;for task \&apos;%s\&apos; &quot;, tsk-&gt;comm );</span><br><span class="line">	seq_printf(m, &quot;(pid=%d)\n&quot;, tsk-&gt;pid );</span><br><span class="line"></span><br><span class="line">	// loop to traverse the list of the task&apos;s vm_area_structs</span><br><span class="line">	vma = tsk-&gt;mm-&gt;mmap;</span><br><span class="line">	while ( vma )</span><br><span class="line">		&#123;</span><br><span class="line">		char	ch;	</span><br><span class="line">		seq_printf(m, &quot;\n%3d &quot;, ++i );</span><br><span class="line">		seq_printf(m, &quot; vm_start=%08lX &quot;, vma-&gt;vm_start );</span><br><span class="line">		seq_printf(m, &quot; vm_end=%08lX  &quot;, vma-&gt;vm_end );</span><br><span class="line"></span><br><span class="line">		ch = ( vma-&gt;vm_flags &amp; VM_READ ) ? &apos;r&apos; : &apos;-&apos;;</span><br><span class="line">		seq_printf(m, &quot;%c&quot;, ch );</span><br><span class="line">		ch = ( vma-&gt;vm_flags &amp; VM_WRITE ) ? &apos;w&apos; : &apos;-&apos;;</span><br><span class="line">		seq_printf(m, &quot;%c&quot;, ch );</span><br><span class="line">		ch = ( vma-&gt;vm_flags &amp; VM_EXEC ) ? &apos;x&apos; : &apos;-&apos;;</span><br><span class="line">		seq_printf(m, &quot;%c&quot;, ch );</span><br><span class="line">		ch = ( vma-&gt;vm_flags &amp; VM_SHARED ) ? &apos;s&apos; : &apos;p&apos;;</span><br><span class="line">		seq_printf(m, &quot;%c&quot;, ch );</span><br><span class="line">		</span><br><span class="line">		vma = vma-&gt;vm_next;</span><br><span class="line">		&#125;</span><br><span class="line">	seq_printf(m, &quot;\n&quot; );</span><br><span class="line"></span><br><span class="line">	// display additional information about tsk-&gt;mm</span><br><span class="line">	ptdb = read_cr3();  </span><br><span class="line">	seq_printf(m, &quot;\nCR3=%08lX &quot;, ptdb );</span><br><span class="line">	seq_printf(m, &quot; mm-&gt;pgd=%p &quot;, tsk-&gt;mm-&gt;pgd );</span><br><span class="line">	seq_printf(m, &quot; mm-&gt;map_count=%d &quot;, tsk-&gt;mm-&gt;map_count );</span><br><span class="line">	seq_printf(m, &quot;\n\n&quot; );</span><br><span class="line"></span><br><span class="line">	return	0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">static int proc_open(struct inode *inode, struct  file *file) &#123;</span><br><span class="line">  return single_open(file, proc_show, NULL);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static const struct file_operations proc_file_fops = &#123;</span><br><span class="line">	.owner = THIS_MODULE,</span><br><span class="line">	.open = proc_open,</span><br><span class="line">	.read = seq_read,</span><br><span class="line">	.llseek = seq_lseek,</span><br><span class="line">	.release = single_release,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">static int __init my_init( void )</span><br><span class="line">&#123;</span><br><span class="line">	printk( &quot;&lt;1&gt;\nInstalling \&apos;%s\&apos; module\n&quot;, modname );</span><br><span class="line">    proc_create(modname, 0, NULL, &amp;proc_file_fops);</span><br><span class="line">	return	0;  //SUCCESS</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">static void __exit my_exit(void )</span><br><span class="line">&#123;</span><br><span class="line">	remove_proc_entry( modname, NULL );</span><br><span class="line"></span><br><span class="line">	printk( &quot;&lt;1&gt;Removing \&apos;%s\&apos; module\n&quot;, modname );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init( my_init );</span><br><span class="line">module_exit( my_exit );</span><br><span class="line">MODULE_LICENSE(&quot;GPL&quot;);</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文主要学习了物理内存的分区和内存寻址，并了解了进程的内存分配数据结构中的内容。</p>
+<h3 id="更多学习资料"><a href="#更多学习资料" class="headerlink" title="更多学习资料"></a>更多学习资料</h3><ul>
+<li><a href="https://www.cs.columbia.edu/~junfeng/13fa-w4118/lectures/l20-adv-mm.pdf" target="_blank" rel="noopener">哥伦比亚大学课程</a></li>
+<li><a href="https://vosamo.github.io/2016/01/VA2PA/" target="_blank" rel="noopener">逻辑地址、线性地址和物理地址</a></li>
+<li><a href="http://www.cnblogs.com/Rofael/archive/2013/04/13/3019153.html" target="_blank" rel="noopener">Linux进程地址管理之mm_struct</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/25/Linux-memery-issue/" data-id="cjrm61k0m00cej3jel8smzmhp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux内存/">Linux内存</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/12/05/Access-to-high-memery/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          访问高区内存
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/11/22/Concurrent-programming/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">并发编程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netword/">Netword</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/02/01/Serialization/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/12/Raft/">Raft</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/30/MVCC/">MVCC</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
