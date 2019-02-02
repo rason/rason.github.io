@@ -18,4 +18,4 @@ Email：rason2008@gmail.com
 
 或者关注我的公众号给我发消息
 
-![rason](http://7xlcir.com1.z0.glb.clouddn.com/rason.jpg)
+![rason](https://raw.githubusercontent.com/rason/rason.github.io/master/image/rason.png)
