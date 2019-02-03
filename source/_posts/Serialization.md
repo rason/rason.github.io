@@ -1,3 +1,10 @@
+title: 序列化
+categories: Network
+date: 2016-04-14 10:28:59
+tags: Serialization
+description: 序列化
+---
+
 ## 序列化
 
 |   方案   |  特点    |  适用场景 |
