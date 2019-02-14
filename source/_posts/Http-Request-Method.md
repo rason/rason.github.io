@@ -1,7 +1,7 @@
 ---
 title: Http Request Method
 date: 2017-11-23 09:35:58
-categories: Netword
+categories: Network
 tags: HTTP
 description: Http Request Method
 ---
