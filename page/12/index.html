@@ -1,766 +1,371 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="utf-8">
-  
-  <title>Rason&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Rason&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/page/12/index.html">
-<meta property="og:site_name" content="Rason&#39;s Blog">
-<meta property="og:locale" content="default">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rason&#39;s Blog">
-  
-    <link rel="alternative" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
-  
-</head></html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
 <body>
-<div id="container">
-  <div id="wrap">
-    <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Rason&#39;s Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-          <a class="main-nav-link" href="/about">About</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
-          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
-          <input type="submit" value="" class="search-form-submit">
-          <input name="tn" type="hidden" value="bds">
-          <input name="cl" type="hidden" value="3">
-          <input name="ct" type="hidden" value="2097152">
-          <input type="hidden" name="si" value="yoursite.com">
-        </form>
-      </div>
-    </div>
-  </div>
-</header>
-    <div class="outer">
-      <section id="main">
-  
-    <article id="post-How-do-IOC-work" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/31/How-do-IOC-work/" class="article-date">
-  <time datetime="2015-12-31T05:39:54.000Z" itemprop="datePublished">2015-12-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Spring/">Spring</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/31/How-do-IOC-work/">IOC容器如何工作</a>
-    </h1>
-  
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
 
-      </header>
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a href="http://rason.me/2015/12/28/Spring-Structure/" target="_blank" rel="noopener">上篇文章</a>大概地了解了Spring的基本结构，知道了Spring的三个核心组件：Context，Bean和Core。IOC容器实际上是Context结合其他两个组件共同构建一个Bean的关系网。今天这篇文章我们来了解一下Context是如何构建这张关系网。</p>
-<h2 id="基础的IOC容器"><a href="#基础的IOC容器" class="headerlink" title="基础的IOC容器"></a>基础的IOC容器</h2><p>我们知道BeanFactory是一个最基本的IOC容器，当然了Spring为我们准备了许多种IOC容器来使用，这样可以方便我们从不同的层面，不同的资源位置，不同的形式的定义信息来建立我们需要的IOC容器。而Context是在BeanFactory的基础上添加了访问资源，国际化和事件等功能。因此我们可以先从最基本的BeanFactory开始了解IOC容器，一个简单的IOC容器的创建过程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ClassPathResource res = new ClassPathResource(&quot;beans.xml&quot;);  </span><br><span class="line">DefaultListableBeanFactory factory = new DefaultListableBeanFactory();  </span><br><span class="line">XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);  </span><br><span class="line">reader.loadBeanDefinitions(res);</span><br></pre></td></tr></table></figure>
-<p>上面的过程可以表示为一下几个步骤：</p>
-<ul>
-<li>创建IOC配置文件的抽象资源</li>
-<li>创建一个BeanFactory</li>
-<li>把读取配置信息的XmlBeanDefinitionReader配置给BeanFactory</li>
-<li>从定义好的资源位置读入配置信息，完成整个载入bean定义的过程</li>
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li class="active">
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+<div class="post-preview-container" style="min-height: 580px">
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-31</div>
+        <div class="post-info">
+            <a href="/2015/12/31/How-do-IOC-work/">
+                <h3>
+                    IOC容器如何工作
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#IOC容器" title="IOC容器">IOC容器</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-28</div>
+        <div class="post-info">
+            <a href="/2015/12/28/Spring-Structure/">
+                <h3>
+                    初识Spring基本结构
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Spring基本结构" title="Spring基本结构">Spring基本结构</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-14</div>
+        <div class="post-info">
+            <a href="/2015/12/14/Distributed-session/">
+                <h3>
+                    分布式Session基本思路
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#distributed-session" title="distributed-session">distributed-session</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-10</div>
+        <div class="post-info">
+            <a href="/2015/12/10/Cookie-and-Session/">
+                <h3>
+                    Cookie and Session
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Cookie and Session" title="Cookie and Session">Cookie and Session</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-07</div>
+        <div class="post-info">
+            <a href="/2015/12/07/Tomcat-NIO-Structure/">
+                <h3>
+                    Tomcat NIO 基本架构
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Tomcat NIO" title="Tomcat NIO">Tomcat NIO</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-03</div>
+        <div class="post-info">
+            <a href="/2015/12/03/How-does-filter-work/">
+                <h3>
+                    Filter是如何工作的
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Filter" title="Filter">Filter</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-12-01</div>
+        <div class="post-info">
+            <a href="/2015/12/01/How-do-Tomcat-find-the-specific-servlet/">
+                <h3>
+                    Tomcat是怎么找到特定的Servlet来处理请求的
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Tomcat find Servlet" title="Tomcat find Servlet">Tomcat find Servlet</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-11-26</div>
+        <div class="post-info">
+            <a href="/2015/11/26/The-ServletContext-and-ServletConfig-relations-between-Tomcat-and-Servlet/">
+                <h3>
+                    Tomcat 和 Servlet 中ServletContext，ServletConfig之间的关系
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#ServletContext ServletConfig" title="ServletContext ServletConfig">ServletContext ServletConfig</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-11-25</div>
+        <div class="post-info">
+            <a href="/2015/11/25/Interface-between-Servlet-and-Tomcat/">
+                <h3>
+                    Tomcat与Servlet之间的接口
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Tomcat Servlet Interface" title="Tomcat Servlet Interface">Tomcat Servlet Interface</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2015-11-23</div>
+        <div class="post-info">
+            <a href="/2015/11/23/Tomcat-s-Container-Lifecycle/">
+                <h3>
+                    Tomcat的Container和Lifecycle
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Container Lifecycle" title="Container Lifecycle">Container Lifecycle</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+</div>
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/page/11/">&larr; Newer Posts</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/page/13/">Older Posts &rarr;</a>
+    </li>
+    
 </ul>
-<p>了解了上面几个步骤，基本上就对Spring IOC有了基础的了解。由于BeanFactory 是一个接口，在实际应用中我们一般使用ApplicationContext来使用IOC容器，它们也是IOC容器展现给应用开发者的使用接口。下面我们来看一下ApplicationContext是怎么建立一个IOC容器。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/31/How-do-IOC-work/#more">Read More</a>
-          </p>
-        
-      
+
     </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/31/How-do-IOC-work/" data-id="cjs45t47o00c6fn9fcys1j3qp" class="article-share-link" data-share="baidu" data-title="IOC容器如何工作">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IOC容器/">IOC容器</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Structure" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/28/Spring-Structure/" class="article-date">
-  <time datetime="2015-12-28T05:15:59.000Z" itemprop="datePublished">2015-12-28</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Spring/">Spring</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/28/Spring-Structure/">初识Spring基本结构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段实际研究了一下Tomcat的源码，对Tomcat的整体架构有了大概的了解。接下来准备研究一下另一个热门框架Spring的源码，这两天大致看了一下Spring的基本结构，现简单的记录分享一下以便加深记忆。</p>
-<h2 id="Spring架构"><a href="#Spring架构" class="headerlink" title="Spring架构"></a>Spring架构</h2><p>Spring的组件有十来个，但核心的组件只有几个，下面是Spring框架的总体架构图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springspring-structure.png" alt="Spring总体架构"></p>
-<p>由上图可以看出，Spring的核心组件只有三个：Bean，Context和Core组件。这三个组件是Spring框架的基础，没有它们不可能有AOP，WEB等上层特性功能。因此要了解Spring的整体架构，就要首先了解这三个组件存在的意义。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/28/Spring-Structure/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/28/Spring-Structure/" data-id="cjs45t44s003zfn9fw7nv3lvk" class="article-share-link" data-share="baidu" data-title="初识Spring基本结构">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Distributed-session" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/14/Distributed-session/" class="article-date">
-  <time datetime="2015-12-14T02:59:48.000Z" itemprop="datePublished">2015-12-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java-Web/">Java Web</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/14/Distributed-session/">分布式Session基本思路</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上篇文章说到Cookie和Session的原理和作用，Session可以解决Cookie存在的一些问题。由于Session是存在每一台应用服务器中，所以在分布式系统中,Tomcat中的Session管理方式就不能满足我们的需求了。因为每台机器都保存在不同的Session，所以随机访问不同的服务器不能解决身份识别问题。另外，在大型的系统中通常会有很多的独立子系统，而他们有可能是公用同一域名，所以当系统太多Cookie管理起来也是一个问题。抛给我们的问题就是：如何解决分布式系统中Session共享，并且能够对Cookie进行统一管理？</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>问题1：</strong>如何解决Session共享？</p>
-<p>很显然，现在的问题是每台应用服务器都保存和管理自身的Session，这是无法共享的。因此<strong>我们需要将Tomcat中Session管理这一块功能单独抽离出来自行实现保存和管理工作,</strong>。</p>
-<p>大概的思路应该是找一统一的地方保存Session，在<code>request.getSession()</code>方法中返回统一地方保存的地方即可。由于Cookie本身就是分布式的，根据客户端发送过来的JESSIONID到统一保存Session的地方获取Session，则可解决共享问题，这个统一的地方可以是分布式缓存，比如MemCache。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/14/Distributed-session/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/14/Distributed-session/" data-id="cjs45t43m0013fn9fnnn95hq3" class="article-share-link" data-share="baidu" data-title="分布式Session基本思路">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/distributed-session/">distributed-session</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Cookie-and-Session" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/10/Cookie-and-Session/" class="article-date">
-  <time datetime="2015-12-10T02:02:30.000Z" itemprop="datePublished">2015-12-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java-Web/">Java Web</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/10/Cookie-and-Session/">Cookie and Session</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>存在即合理，探究一样新东西，我们应当从根源出发。它为何存在，它的存在解决了什么问题？就这篇文章的主题来说，Cookie和Session解决了什么问题？我们知道HTTP协议是一种无状态的协议，也就是说，用户的两次访问，服务器不知道他们是不是同一个人。我们知道是不是同一个人有什么作用？这作用当然是很大的，你不可能动用我账户的钱吧？另外，服务器也不可能让你每次请求都得登录一下吧？还有访问一个模块的时候服务器不可能每次都查询数据库获取你的权限吧？</p>
-<h2 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h2><p>Cookie的作用正是可以解决上述问题，当用户通过HTTP协议访问服务器的时候，服务器会返回一些Key/Value给客户端浏览器，并对这些数据加上一些限制条件，在条件符合时用户再次访问这个服务器时，数据又被完成地返回服务器。因此，我们可以利用Cookie来记录一些用户的信息，这样就可以达到区分用户的作用了。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/10/Cookie-and-Session/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/10/Cookie-and-Session/" data-id="cjs45t47h00bnfn9fimy9egp1" class="article-share-link" data-share="baidu" data-title="Cookie and Session">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Tomcat-NIO-Structure" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/07/Tomcat-NIO-Structure/" class="article-date">
-  <time datetime="2015-12-07T12:53:05.000Z" itemprop="datePublished">2015-12-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/07/Tomcat-NIO-Structure/">Tomcat NIO 基本架构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上几篇文章梳理了下Tomcat容器的基本架构和请求处理流程，关于请求处理还有一个重要的组件——Connector组件。Tomcat8中的Connector组件默认是使用NIO来处理请求，这两天大概地研究了一下NIO在Tomcat中的使用，借此机会熟悉一下NIO编程。</p>
-<h2 id="Tomcat-NIO基本架构"><a href="#Tomcat-NIO基本架构" class="headerlink" title="Tomcat NIO基本架构"></a>Tomcat NIO基本架构</h2><p>这篇文章打算先从整体概括一下Tomcat NIO基本架构，然后再具体分析。先看一下基本的架构图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatnio-strcuture.png" alt="Tomcat NIO"></p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/07/Tomcat-NIO-Structure/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/07/Tomcat-NIO-Structure/" data-id="cjs45t459004zfn9f5ioxpv44" class="article-share-link" data-share="baidu" data-title="Tomcat NIO 基本架构">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-How-does-filter-work" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/03/How-does-filter-work/" class="article-date">
-  <time datetime="2015-12-03T01:46:54.000Z" itemprop="datePublished">2015-12-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/03/How-does-filter-work/">Filter是如何工作的</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在上篇文章<a href="http://rason.me/2015/12/01/How-do-Tomcat-find-the-specific-servlet/" target="_blank" rel="noopener">Tomcat是怎么找到特定的Servlet来处理请求</a>中谈到在请求正式进入Servlet之前，会先执行Filter链。那么这个Filter链究竟是什么东西？Filter是如何工作的？</p>
-<h2 id="Filter是什么"><a href="#Filter是什么" class="headerlink" title="Filter是什么"></a>Filter是什么</h2><p>正如名字一样，Filter是过滤器，过滤器的作用当然是过滤掉一些东西。比如，我们日常用的洗手盆，在排水处会有个滤网，就是为了避免大块的物品流水了下水管导致阻塞。同理，Servlet技术中的Filter作用也是一样的，就是在请求到达Servlet之前先对请求进行过滤。那么，这样的一个功能，用代码是如何实现的？请先看一个示意图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatFilterWork.png" alt="Filter工作示意图"></p>
-<p>从上图可以看出，请求在到达Servlet之前会经过若干个Filter，而这些Filter是保存在一个FilterChain里面。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/03/How-does-filter-work/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/03/How-does-filter-work/" data-id="cjs45t441001tfn9f6yfw7gcw" class="article-share-link" data-share="baidu" data-title="Filter是如何工作的">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Filter/">Filter</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-How-do-Tomcat-find-the-specific-servlet" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/12/01/How-do-Tomcat-find-the-specific-servlet/" class="article-date">
-  <time datetime="2015-12-01T06:22:00.000Z" itemprop="datePublished">2015-12-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/01/How-do-Tomcat-find-the-specific-servlet/">Tomcat是怎么找到特定的Servlet来处理请求的</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前面几篇文章讲解了Tomcat的架构，启动流程等内容，Tomcat整体有了个大概的认识。可是，我们还不是很清楚Tomcat接收到的请求是如何到达特定的Servlet，只是在<a href="http://rason.me/2015/11/19/Tomcat-Architecture/" target="_blank" rel="noopener">Tomcat架构</a>这篇文章中略略地提到了Tomcat请求的处理流程。现在，我们再来看一下Tomcat是如何接受处理请求并找到特定的Servlet。</p>
-<h2 id="Tomcat请求处理流程图"><a href="#Tomcat请求处理流程图" class="headerlink" title="Tomcat请求处理流程图"></a>Tomcat请求处理流程图</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatrequest-process.png" alt="Tomcat请求处理流程图"></p>
-<p>上图是Tomcat8请求处理的完整流程图，如看不清晰请在新窗口打开。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/12/01/How-do-Tomcat-find-the-specific-servlet/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/12/01/How-do-Tomcat-find-the-specific-servlet/" data-id="cjs45t443001yfn9fny7dxkfa" class="article-share-link" data-share="baidu" data-title="Tomcat是怎么找到特定的Servlet来处理请求的">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-The-ServletContext-and-ServletConfig-relations-between-Tomcat-and-Servlet" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/11/26/The-ServletContext-and-ServletConfig-relations-between-Tomcat-and-Servlet/" class="article-date">
-  <time datetime="2015-11-26T06:36:23.000Z" itemprop="datePublished">2015-11-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/26/The-ServletContext-and-ServletConfig-relations-between-Tomcat-and-Servlet/">Tomcat 和 Servlet 中ServletContext，ServletConfig之间的关系</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>刚从事一两年Java Web开发的同学们应该很多人都不是很理解ServletContext和ServletConfig究竟是干什么用的，更别说在Tomcat中他们是如何工作的。其实我也不是很理解哈哈，战斗力不足五的渣渣，只好一起来看看源码学习一下咯。</p>
-<h2 id="javax-servlet-ServletConfig"><a href="#javax-servlet-ServletConfig" class="headerlink" title="javax.servlet.ServletConfig"></a>javax.servlet.ServletConfig</h2><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p><strong>被用作在Servlet初始化时，Servlet容器传递信息给Servlet。</strong>Servlet容器大家应该懂了吧，不懂的话就要看下我的上篇文章<a href="http://rason.me/2015/11/25/Interface-between-Servlet-and-Tomcat/" target="_blank" rel="noopener">Tomcat与Servlet之间的接口</a>了。在Tomcat中，<strong>Context容器才是真正运行Servlet的Servlet容器</strong>。</p>
-<p>那么它究竟传递了什么信息给Servlet？</p>
-<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public interface ServletConfig &#123;</span><br><span class="line"></span><br><span class="line">    /** </span><br><span class="line">     * 返回Servlet实例的名字</span><br><span class="line">     */</span><br><span class="line">    public String getServletName();</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 返回ServletContext,被用于调用者与它的Servlet容器之间的交互</span><br><span class="line">     */</span><br><span class="line">    public ServletContext getServletContext();</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">   	 * 返回初始化参数</span><br><span class="line">     */</span><br><span class="line">    public String getInitParameter(String name);</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 返回初始化参数名字枚举</span><br><span class="line">     */</span><br><span class="line">    public Enumeration&lt;String&gt; getInitParameterNames();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-          <p class="article-more-link">
-            <a href="/2015/11/26/The-ServletContext-and-ServletConfig-relations-between-Tomcat-and-Servlet/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/11/26/The-ServletContext-and-ServletConfig-relations-between-Tomcat-and-Servlet/" data-id="cjs45t453004lfn9fwnxrn9wz" class="article-share-link" data-share="baidu" data-title="Tomcat 和 Servlet 中ServletContext，ServletConfig之间的关系">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Interface-between-Servlet-and-Tomcat" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/11/25/Interface-between-Servlet-and-Tomcat/" class="article-date">
-  <time datetime="2015-11-25T07:41:22.000Z" itemprop="datePublished">2015-11-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/25/Interface-between-Servlet-and-Tomcat/">Tomcat与Servlet之间的接口</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在<a href="http://rason.me/2015/11/19/Tomcat-Architecture/" target="_blank" rel="noopener">Tomcat架构</a>和<a href="http://rason.me/2015/11/23/Tomcat-s-Container-Lifecycle/" target="_blank" rel="noopener">Tomcat的Container和Lifecycle</a>两篇文章中基础性地介绍了Tomcat作为一个Servlet容器的基本架构和启动流程，还不清楚Tomcat和Servlet两者究竟是什么样的关系，Servlet又是如何能在Tomcat中正常工作的。今天这篇文章打算介绍一下Servlet与Tomcat之间的联系。</p>
-<h2 id="StandardWrapper"><a href="#StandardWrapper" class="headerlink" title="StandardWrapper"></a>StandardWrapper</h2><p>在<a href="http://rason.me/2015/11/23/Tomcat-s-Container-Lifecycle/" target="_blank" rel="noopener">Tomcat的Container和Lifecycle</a>文章中，我们有说到<code>Wrapper</code>代表一个servlet定义，servlet在tomcat中是以<code>Wrapper</code>形式出现，也就是说我们的Servlet在Tomcat中被包装成Wrapper了。因此，要理解Servlet与Tomcat之间的关系，按思路就应该从Wrapper开始分析，而StandardWrapper是Wrapper的标准实现，所以我们来一探StandardWrapper的究竟。</p>
-        
-          <p class="article-more-link">
-            <a href="/2015/11/25/Interface-between-Servlet-and-Tomcat/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/11/25/Interface-between-Servlet-and-Tomcat/" data-id="cjs45t4450026fn9fvswzds7u" class="article-share-link" data-share="baidu" data-title="Tomcat与Servlet之间的接口">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Tomcat-s-Container-Lifecycle" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/11/23/Tomcat-s-Container-Lifecycle/" class="article-date">
-  <time datetime="2015-11-23T07:49:27.000Z" itemprop="datePublished">2015-11-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Tomcat/">Tomcat</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/23/Tomcat-s-Container-Lifecycle/">Tomcat的Container和Lifecycle</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上篇文章<a href="http://rason.me/2015/11/19/Tomcat-Architecture/" target="_blank" rel="noopener">Tomcat架构</a>中梳理了一下Tomcat的基本架构，现在来介绍一下Tomcat里面的两个接口<code>Container</code>和<code>Lifecycle</code>，为深入了解Tomcat的工作原理打下基础。</p>
-<h2 id="Container（容器）"><a href="#Container（容器）" class="headerlink" title="Container（容器）"></a>Container（容器）</h2><p><strong>一个Container对象可以接收来自客户端的请求，并基于这些请求返回响应信息。Container可以通过实现Pipeline接口支持管道阀门，按运行时配置的顺序处理请求。</strong></p>
-<p>在Tomcat中，Container（容器）会以以下的概念存在：</p>
-<ul>
-<li><p><strong>Engine</strong><br>代表一个完整的servlet引擎，可以包含一个或者多个子容器（Host,Context或者自定义的组）</p>
-</li>
-<li><p><strong>Host</strong><br>代表一个包含一系列Context的虚拟主机</p>
-</li>
-<li><p><strong>Context</strong><br>代表一个单一的ServletContext，可以包含一个或者多个Wrapper</p>
-</li>
-<li><p><strong>Wrapper</strong><br>代表一个servlet定义，servlet在tomcat中是以Wrapper形式出现</p>
-</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2015/11/23/Tomcat-s-Container-Lifecycle/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2015/11/23/Tomcat-s-Container-Lifecycle/" data-id="cjs45t45c0058fn9f1o9558y5" class="article-share-link" data-share="baidu" data-title="Tomcat的Container和Lifecycle">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
-  </nav>
-</section>
-      
-      <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a><span class="category-list-count">7</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Serialization/">Serialization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a><span class="tag-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/Serialization/" style="font-size: 10px;">Serialization</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">2</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2017/12/12/Raft/">Raft</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/30/MVCC/">MVCC</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/06/io-model/">I/O Model</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-      
-    </div>
-    <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 rason<br>
-      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
-      .
-      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
-    </div>
-  </div>
-</footer>
-  </div>
-  <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/about" class="mobile-nav-link">About</a>
-  
-</nav>
-  <!-- totop start -->
-<div id="totop">
-<a title="totop"><img src="/img/scrollup.png"></a>
 </div>
 
-<!-- totop end -->
 
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
 
-<!-- 百度分享 start -->
+        
 
-<div id="article-share-box" class="article-share-box">
-  <div id="bdshare" class="bdsharebuttonbox article-share-links">
-    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
-    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
-    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
-    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
-    <a class="article-share-more" data-cmd="more" title="更多"></a>
-  </div>
-</div>
-<script>
-  function SetShareData(cmd, config) {
-    if (shareDataTitle && shareDataUrl) {
-      config.bdText = shareDataTitle;
-      config.bdUrl = shareDataUrl;
-    }
-    return config;
-  }
-  window._bd_share_config={
-    "common":{onBeforeClick: SetShareData},
-    "share":{"bdCustomStyle":"/css/bdshare.css"}
-  };
-  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
-</script>
+        
 
-<!-- 百度分享 end -->
+        
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p> -->
+</p></footer>
 
 
 
 
-<script src="/js/script.js"></script>
-
-</div>
 </body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = false
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
 </html>

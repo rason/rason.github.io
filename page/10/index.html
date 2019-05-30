@@ -1,812 +1,371 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="utf-8">
-  
-  <title>Rason&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Rason&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/page/10/index.html">
-<meta property="og:site_name" content="Rason&#39;s Blog">
-<meta property="og:locale" content="default">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rason&#39;s Blog">
-  
-    <link rel="alternative" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
-  
-</head></html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
 <body>
-<div id="container">
-  <div id="wrap">
-    <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Rason&#39;s Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-          <a class="main-nav-link" href="/about">About</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
-          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
-          <input type="submit" value="" class="search-form-submit">
-          <input name="tn" type="hidden" value="bds">
-          <input name="cl" type="hidden" value="3">
-          <input name="ct" type="hidden" value="2097152">
-          <input type="hidden" name="si" value="yoursite.com">
-        </form>
-      </div>
-    </div>
-  </div>
-</header>
-    <div class="outer">
-      <section id="main">
-  
-    <article id="post-Network-Basic" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/13/Network-Basic/" class="article-date">
-  <time datetime="2016-04-13T01:47:48.000Z" itemprop="datePublished">2016-04-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/13/Network-Basic/">网络基础知识</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间大概浏览了一下大型网站技术架构一书，在学习的过程中发现自己的基础知识还是不太扎实，所以最近想补充一下自身的基础知识。首先是打算从网络这方面入手，先从简单的《图解TCP/IP》开始，所以接下来的博客会记录一下该书的读书笔记。</p>
-<h2 id="协议的分层"><a href="#协议的分层" class="headerlink" title="协议的分层"></a>协议的分层</h2><p>OSI模型将通信协议进行了分层，目的是为了让比较复杂的网络协议更加简单化。每个分层都接收由它下一层提供的特定服务，并且为自己的上一层提供特定的服务。上下层之间进行交互时所遵循的约定叫做“接口”，同一层之间的交互所遵循的约定叫做“协议”。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-level.png" alt="分层模型"></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/13/Network-Basic/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/13/Network-Basic/" data-id="cjs45t44d002vfn9f5sdg8ozk" class="article-share-link" data-share="baidu" data-title="网络基础知识">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-The-extensibility-of-web" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/07/The-extensibility-of-web/" class="article-date">
-  <time datetime="2016-04-07T05:29:59.000Z" itemprop="datePublished">2016-04-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/07/The-extensibility-of-web/">网站的扩展性</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>网站的扩展性是指对现有系统影响最小的情况下，系统功能可持续扩展或提升的能力。表现在系统基础设施稳定不需要经常变更，应用之间较少依赖和耦合，对需求变更可敏捷响应。它是系统架构设计层面的<strong>开闭原则</strong>。这跟网站的伸缩性不一样，伸缩性指的是系统能够通过增加自身资源规模的方式增强自己计算处理事务的能力。</p>
-<h2 id="可扩展的网站架构"><a href="#可扩展的网站架构" class="headerlink" title="可扩展的网站架构"></a>可扩展的网站架构</h2><p>我们知道低耦合的系统更容易扩展，低耦合的模块更容易复用，一个低耦合的系统设计也会让开发过程和维护变得更加轻松和容易管理。因此，<strong>设计网站可扩展架构的核心思想是模块化</strong>，并在此基础之上，降低模块间的耦合度，提高模块的复用性。</p>
-<p>在前面我们讨论过网站通过分层和分割的方式进行架构伸缩，这也是模块化设计的重要手段。<strong>利用分层和分割的方式将软件分割为若干个低耦合的独立组件模块，这些组件模块以消息传递及依赖调用的方式聚合成一个系统。</strong></p>
-<p>在大型网站中，这些模块通过分布式部署的方式，独立的模块部署在独立的服务器集群上，从物理上分离模块之间的耦合关系，进一步降低耦合性提高复用性。<strong>模块分布式部署以后具体聚合方式主要有分布式消息队列和分布式服务。</strong></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/07/The-extensibility-of-web/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/07/The-extensibility-of-web/" data-id="cjs45t454004pfn9fjqgunezq" class="article-share-link" data-share="baidu" data-title="网站的扩展性">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-scalable-web" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/30/scalable-web/" class="article-date">
-  <time datetime="2016-03-30T00:48:19.000Z" itemprop="datePublished">2016-03-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/30/scalable-web/">网站的伸缩性</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>所谓网站的伸缩性是指不需要改变网站的软硬件设计，仅仅通过改变部署的服务器数量就可以扩大或者缩小网站的服务处理能力。通过之前的学习，我们第一时间能想到的方法就是使用集群。所以，怎么才能做到只要向集群中添加服务器就能增强系统的处理能力是我们需要解决的问题。</p>
-<h2 id="网站的伸缩性架构"><a href="#网站的伸缩性架构" class="headerlink" title="网站的伸缩性架构"></a>网站的伸缩性架构</h2><p>集群的使用当然是伸缩性架构的重要手段。然而，在网站的一开始阶段，我们可能并不需要集群,只需按功能分离即可，如果还记得网站架构演变过程的话。</p>
-<p>因此，网站的伸缩性设计可以分为两类：</p>
-<ul>
-<li><strong>根据功能进行物理分离实现伸缩</strong>：不同服务器部署不同的服务</li>
-<li><strong>单一功能通过集群实现伸缩</strong>：多台服务器部署相同的服务</li>
-</ul>
-<p>在网站的早期，通常会使用第一种方式，如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-1.png" alt="根据功能进行物理分离实现伸缩"></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/30/scalable-web/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/30/scalable-web/" data-id="cjs45t48j00eqfn9fsuyr4l4s" class="article-share-link" data-share="baidu" data-title="网站的伸缩性">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-high-available-web" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/28/high-available-web/" class="article-date">
-  <time datetime="2016-03-28T03:02:28.000Z" itemprop="datePublished">2016-03-28</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/28/high-available-web/">网站的高可用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>网站的可用性描述网站可以有效访问的特性，DNS劫持、CDN服务挂掉、网站服务器挂了、网络交换机失效等都会导致网站不可用。导致网站不可用的原因太多，我们不可能做到网站的百分百可用，那么我们可以使用哪些方式提高网站的可用性？</p>
-<h2 id="架构高可用"><a href="#架构高可用" class="headerlink" title="架构高可用"></a>架构高可用</h2><p>撇开硬件软件，<strong>要达到网站的高可用，首先网站的架构设计应该是高可用的。</strong>那么，什么样的架构才是高可用的架构？</p>
-<p><strong>实现高可用的主要手段就是数据和服务的冗余备份和失效转移。</strong></p>
-<p>典型的网站设计通常基于分层模式：应用层、服务层、数据层。比如：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-three-level.png" alt="分层网站架构模型"></p>
-<p>分层架构中不同层次的服务器具有不同的可用性特点，因此我们需要采用不同的方式达到各层高可用的目的，最终达成一个高可用架构。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/28/high-available-web/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/28/high-available-web/" data-id="cjs45t45q006rfn9f0x3cunh7" class="article-share-link" data-share="baidu" data-title="网站的高可用">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-high-performance-web" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/25/high-performance-web/" class="article-date">
-  <time datetime="2016-03-25T08:21:39.000Z" itemprop="datePublished">2016-03-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/25/high-performance-web/">网站的高性能</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>继续读书，继续笔记。</p>
-<h2 id="性能测试指标"><a href="#性能测试指标" class="headerlink" title="性能测试指标"></a>性能测试指标</h2><ul>
-<li>响应时间：可以利用多次请求得出平均值</li>
-<li>并发数：利用多线程模拟用户并发访问测试</li>
-<li>吞吐量：TPS（每秒事务数）、HPS（每秒HTTP请求数）、QPS（每秒查询数）</li>
-<li>性能计数器：System Load、对象与线程数、内存使用、CPU使用、磁盘与网络IO指标</li>
-</ul>
-<h2 id="性能测试方法"><a href="#性能测试方法" class="headerlink" title="性能测试方法"></a>性能测试方法</h2><ul>
-<li>性能测试</li>
-<li>负载测试</li>
-<li>压力测试</li>
-<li>稳定性测试</li>
-</ul>
-<p>关于这四点，可以用两个图表来表示，就一目了然。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/25/high-performance-web/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/25/high-performance-web/" data-id="cjs45t45u0071fn9fgr2zadmp" class="article-share-link" data-share="baidu" data-title="网站的高性能">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-django-project-structure" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/22/django-project-structure/" class="article-date">
-  <time datetime="2016-03-22T07:04:45.000Z" itemprop="datePublished">2016-03-22</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/22/django-project-structure/">Django现学现卖3】Django工程结构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前两节课程中，我们在阿里云上搭建了一个Django的HelloWorld项目，并且将项目的代码托管在github上。这样，基本的条件都差不多算是准备好了，正常来说可以开始着手写业务代码了。可是，当我在了解Django的<code>project</code>和<code>app</code>区别的过程中，我发现我们有必要先把工程的结构先捋清楚。这样才能使我们的工程结构更加一目了然，也便于以后工程的分离，这一点，就是在《大型网站技术架构》一书中谈到的分离和分割。</p>
-<p><strong>注意：</strong></p>
-<ul>
-<li>由于本人是现学现卖，所以教程可能存在不正确的内容，请大家指正</li>
-<li>工程代码的托管地址是：<a href="https://github.com/rason/HelloPython.git" target="_blank" rel="noopener">点击这里</a></li>
-</ul>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在<a href="http://rason.me/2016/03/03/Deploy-django-on-aliyun/" target="_blank" rel="noopener">教程一</a>中我们创建了一个叫做<code>ebookloader</code>的Django项目，并且创建了一个<code>booksystem</code>应用。那么Django中的工程和应用究竟有什么不同？我举个例子，比如说我要做一个电子书下载的网站，这个网站包含一个电子书下载的功能和一个浏览科技新闻的功能。那么这个网站就是一个工程，这两个功能可以分别作为一个应用。</p>
-<p>所以，我们要管理两个或者更多的应用，工程的结构应该是怎么样会更好呢？据我搜索的结果来说，没有固定唯一的结构，只有相对合理的结构。所以，这里我把我<strong>目前水平认为</strong>相对合理的结构讲解一下。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/22/django-project-structure/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/22/django-project-structure/" data-id="cjs45t45j0061fn9fu9r6rqlx" class="article-share-link" data-share="baidu" data-title="Django现学现卖3】Django工程结构">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/">Django</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Push-project-on-github" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/16/Push-project-on-github/" class="article-date">
-  <time datetime="2016-03-16T08:49:25.000Z" itemprop="datePublished">2016-03-16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/16/Push-project-on-github/">【Django现学现卖2】将项目托管到github远程仓库上</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在<a href="http://rason.me/2016/03/03/Deploy-django-on-aliyun/" target="_blank" rel="noopener">Django现学现卖1</a>中，为了简单起见，我直接在阿里云服务器上搭建了一个Helloworld应用。但是我不可能直接在服务器上写代码啊，那样太不方便了，所以就决定把项目托管到<a href="https://github.com/rason/HelloPython" target="_blank" rel="noopener">github</a>上，然后就可以用自己的本地机器<code>git clone</code>下来愉快地写代码了。好了，下面开始介绍怎么把项目托管到github上。</p>
-<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p><strong>1.安装git</strong></p>
-<p> 新购买的阿里云服务器没有git，所有首先得安装git。</p>
-<p><code>sudo apt-get install git-all</code></p>
-<p><strong>2.初始化仓库</strong></p>
-<p>我们进入教程一中创建的工程文件夹，将该文件夹作为仓库。</p>
-<p><code>cd ebookloader/</code></p>
-<p><code>git init</code></p>
-<p>初始完之后，我们使用<code>ls -a</code>命令查看一下，发现<code>.git</code>文件夹，此文件夹就为我们保存了版本控制的信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@iZ94hd1izoaZ:/ebookloader# ls -a</span><br><span class="line">.  ..  booksystem  ebookloader  .git  manage.py</span><br></pre></td></tr></table></figure>
-<p><strong>3.将工程加入版本控制</strong></p>
-<p>我们上一步初始化的仓库，默认是没有把<code>ebookloader</code>文件夹中的内容加入到版本控制中的，所以执行</p>
-<p><code>git add .</code></p>
-<p>把文件夹中的所有内容暂存起来，但是此时内容还没有真正保存到仓库中，我们可以使用</p>
-<p><code>git status</code></p>
-<p>查看状态，结果如下</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/16/Push-project-on-github/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/16/Push-project-on-github/" data-id="cjs45t44j003dfn9f1jl0r3hr" class="article-share-link" data-share="baidu" data-title="【Django现学现卖2】将项目托管到github远程仓库上">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/">Django</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Big-website-architecture-elements-and-patterns" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/14/Big-website-architecture-elements-and-patterns/" class="article-date">
-  <time datetime="2016-03-14T08:12:19.000Z" itemprop="datePublished">2016-03-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/14/Big-website-architecture-elements-and-patterns/">大型网站架构要素与模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>思考一个问题，我们应当追本溯源。大型网站架构为什么会出现？是伴随着业务的发展，现有的网站架构已经不能很好地支持业务的执行，高并发和海量的数据导致我们不得不做出改变。在上一篇文章<a href="http://rason.me/2016/03/11/The-evolution-of-big-website-architecture/" target="_blank" rel="noopener">大型网站架构演变</a>我们已经大概地分析了伴随业务的发展，我们是如何逐渐做出改变的。那么今天的文章，应该解决的问题就是：<strong>技术上，我们是按照什么原则对网站架构做出改变的？</strong>另一方面，<strong>我们做出改变之后的网站架构具有什么特点？</strong></p>
-<p>本文依然是读《大型网站技术架构》一书的笔记和体会。</p>
-<h2 id="大型网站架构的特点（要素）"><a href="#大型网站架构的特点（要素）" class="headerlink" title="大型网站架构的特点（要素）"></a>大型网站架构的特点（要素）</h2><p>即前言中的第二个问题答案。</p>
-<p>站在前人的肩膀上，我们知道大型网站架构具有以下要素：</p>
-<ul>
-<li><strong>性能</strong></li>
-<li><strong>可用性</strong></li>
-<li><strong>伸缩性</strong></li>
-<li><strong>扩展性</strong></li>
-<li><strong>安全性</strong></li>
-</ul>
-<p>因此，当我们对网站进行改造时，需要关注上面五点要素，架构设计过程中需要平衡这五个要素之间的关系来实现需要和架构目标。通过这些要素，也可以衡量出一个软件架构设计的优劣。</p>
-<p>那么问题来了，我们如何才能做到以上五点要素？</p>
-<p><strong>1.如何提高性能？</strong></p>
-<ul>
-<li>浏览器端：浏览器缓存，页面压缩，合理布局页面，减少Cookie传输等。</li>
-<li>应用服务器端：本地缓存，分布式缓存，异步消息队列，集群等。</li>
-<li>代码端：多线程，改善内存等。</li>
-<li>数据库服务器端：索引，缓存，SQL优化，NoSQL等。</li>
-<li>其它：CDN，反向代理等。</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/14/Big-website-architecture-elements-and-patterns/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/14/Big-website-architecture-elements-and-patterns/" data-id="cjs45t47e00bhfn9f3d5u5mi6" class="article-share-link" data-share="baidu" data-title="大型网站架构要素与模式">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-The-evolution-of-big-website-architecture" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/11/The-evolution-of-big-website-architecture/" class="article-date">
-  <time datetime="2016-03-11T02:32:26.000Z" itemprop="datePublished">2016-03-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/11/The-evolution-of-big-website-architecture/">大型网站架构演变</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>俗话说，“站得高，望得远”。思想达到了一定的高度，看待问题的深度就不一样了。虽然现在的基础知识也不咋地，但是先拓展一下自己的视野可以更清晰地看到自己的不足。因此决定看一下《大型网站技术架构》一书，拓展自己的视野，更加系统化地了解大型网站需要具备哪些技术。此文一下读书笔记，简单记录一下核心知识，以便日后温故而知新。</p>
-<h2 id="大型网站架构演变历程"><a href="#大型网站架构演变历程" class="headerlink" title="大型网站架构演变历程"></a>大型网站架构演变历程</h2><p>任何大型网站都是从小型的网站发展起来的，大型网站并不是一蹴而就，而是根据业务的发展演变而成的。说句不好听的，绝大部分公司都还没到需要用上大型网站架构技术的时候就已经死掉了。因此，我们要深深地明白，技术是为业务服务的，技术的首要任务是解决业务问题，不要为了架构而架构。但是，我们在设计系统的时候，还是需要一些大局观，以便系统更易于扩展。那么，一个小型网站，是怎么逐步地演变成一个大型网站的？</p>
-<h3 id="初始阶段网站架构"><a href="#初始阶段网站架构" class="headerlink" title="初始阶段网站架构"></a>初始阶段网站架构</h3><p><strong>应用程序，数据库，文件等所有资源都在一台服务器上。</strong></p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-init-arc.png" alt="初始阶段网站架构"></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/11/The-evolution-of-big-website-architecture/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/11/The-evolution-of-big-website-architecture/" data-id="cjs45t48d00e9fn9fvoz0vrgy" class="article-share-link" data-share="baidu" data-title="大型网站架构演变">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/">Architecture</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Deploy-django-on-aliyun" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/03/Deploy-django-on-aliyun/" class="article-date">
-  <time datetime="2016-03-03T07:46:41.000Z" itemprop="datePublished">2016-03-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/03/Deploy-django-on-aliyun/">【Django现学现卖1】在新购的阿里云上搭建Django的HelloWorld</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>听说Python这门语言很牛逼，也听说<code>Django在手，天下我有</code>。所以抽了两天时间大概看了下Python的语法和Django框架，按照<code>learning by doing</code>的思想，就立马购买了一个月阿里云服务器，动手搭建第一个Django应用，初学者按照以下操作就可以搭建一个Django的<code>Hello, world.</code>了。</p>
-<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p><strong>1.基本准备</strong></p>
-<p>Ubuntu系统电脑一台（当然Unix系其它也行）和阿里云服务器一台（自行购买）。</p>
-<p><strong>2.登录阿里云服务器</strong></p>
-<p>使用<code>ssh user@ip</code>命名登录，user一般为root，当然你也可用其它用户，如果有的话；ip即为你购买的阿里云服务器ip。</p>
-<p><strong>3.更新服务器</strong></p>
-<p><code>sudo apt-get update</code></p>
-<p><strong>4.安装apache</strong></p>
-<p><code>sudo apt-get install apache2 libapache2-mod-wsgi</code></p>
-<p><strong>5.安装pip</strong></p>
-<p><code>sudo apt-get install python-pip</code></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/03/03/Deploy-django-on-aliyun/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/03/03/Deploy-django-on-aliyun/" data-id="cjs45t43l000zfn9fh51wwqrd" class="article-share-link" data-share="baidu" data-title="【Django现学现卖1】在新购的阿里云上搭建Django的HelloWorld">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/">Django</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
-  </nav>
-</section>
-      
-      <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a><span class="category-list-count">7</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Serialization/">Serialization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a><span class="tag-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/Serialization/" style="font-size: 10px;">Serialization</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">2</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2017/12/12/Raft/">Raft</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/30/MVCC/">MVCC</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/06/io-model/">I/O Model</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-      
-    </div>
-    <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 rason<br>
-      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
-      .
-      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
-    </div>
-  </div>
-</footer>
-  </div>
-  <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/about" class="mobile-nav-link">About</a>
-  
-</nav>
-  <!-- totop start -->
-<div id="totop">
-<a title="totop"><img src="/img/scrollup.png"></a>
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
 </div>
 
-<!-- totop end -->
-
-
-<!-- 百度分享 start -->
-
-<div id="article-share-box" class="article-share-box">
-  <div id="bdshare" class="bdsharebuttonbox article-share-links">
-    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
-    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
-    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
-    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
-    <a class="article-share-more" data-cmd="more" title="更多"></a>
-  </div>
+<div class="index-about">
+    <i>  </i>
 </div>
-<script>
-  function SetShareData(cmd, config) {
-    if (shareDataTitle && shareDataUrl) {
-      config.bdText = shareDataTitle;
-      config.bdUrl = shareDataUrl;
-    }
-    return config;
-  }
-  window._bd_share_config={
-    "common":{onBeforeClick: SetShareData},
-    "share":{"bdCustomStyle":"/css/bdshare.css"}
-  };
-  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
-</script>
 
-<!-- 百度分享 end -->
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li class="active">
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
 </div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+<div class="post-preview-container" style="min-height: 580px">
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-13</div>
+        <div class="post-info">
+            <a href="/2016/04/13/Network-Basic/">
+                <h3>
+                    网络基础知识
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Network" title="Network">Network</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-07</div>
+        <div class="post-info">
+            <a href="/2016/04/07/The-extensibility-of-web/">
+                <h3>
+                    网站的扩展性
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-30</div>
+        <div class="post-info">
+            <a href="/2016/03/30/scalable-web/">
+                <h3>
+                    网站的伸缩性
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-28</div>
+        <div class="post-info">
+            <a href="/2016/03/28/high-available-web/">
+                <h3>
+                    网站的高可用
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-25</div>
+        <div class="post-info">
+            <a href="/2016/03/25/high-performance-web/">
+                <h3>
+                    网站的高性能
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-22</div>
+        <div class="post-info">
+            <a href="/2016/03/22/django-project-structure/">
+                <h3>
+                    Django现学现卖3】Django工程结构
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Django" title="Django">Django</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-16</div>
+        <div class="post-info">
+            <a href="/2016/03/16/Push-project-on-github/">
+                <h3>
+                    【Django现学现卖2】将项目托管到github远程仓库上
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Django" title="Django">Django</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-14</div>
+        <div class="post-info">
+            <a href="/2016/03/14/Big-website-architecture-elements-and-patterns/">
+                <h3>
+                    大型网站架构要素与模式
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-11</div>
+        <div class="post-info">
+            <a href="/2016/03/11/The-evolution-of-big-website-architecture/">
+                <h3>
+                    大型网站架构演变
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-03-03</div>
+        <div class="post-info">
+            <a href="/2016/03/03/Deploy-django-on-aliyun/">
+                <h3>
+                    【Django现学现卖1】在新购的阿里云上搭建Django的HelloWorld
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Django" title="Django">Django</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+</div>
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/page/9/">&larr; Newer Posts</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/page/11/">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p> -->
+</p></footer>
+
+
+
+
 </body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = false
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
 </html>

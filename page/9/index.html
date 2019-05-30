@@ -1,880 +1,371 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="utf-8">
-  
-  <title>Rason&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Rason&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/page/9/index.html">
-<meta property="og:site_name" content="Rason&#39;s Blog">
-<meta property="og:locale" content="default">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rason&#39;s Blog">
-  
-    <link rel="alternative" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
-  
-</head></html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
 <body>
-<div id="container">
-  <div id="wrap">
-    <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Rason&#39;s Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-          <a class="main-nav-link" href="/about">About</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
-          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
-          <input type="submit" value="" class="search-form-submit">
-          <input name="tn" type="hidden" value="bds">
-          <input name="cl" type="hidden" value="3">
-          <input name="ct" type="hidden" value="2097152">
-          <input type="hidden" name="si" value="yoursite.com">
-        </form>
-      </div>
-    </div>
-  </div>
-</header>
-    <div class="outer">
-      <section id="main">
-  
-    <article id="post-Insertion" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/06/02/Insertion/" class="article-date">
-  <time datetime="2016-06-02T02:29:25.000Z" itemprop="datePublished">2016-06-02</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/02/Insertion/">插入排序</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>趁热打铁，上篇写了<a href="http://rason.me/2016/06/02/Selection/" target="_blank" rel="noopener">选择排序</a>，继续把插入排序简单总结一下。</p>
-<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p><strong>什么是插入排序？</strong>通常我们在打牌的时候，整理牌的方法是一张一张来，将每一张牌插入到其它已经有序的牌中的适合位置。假设我们从左到右整理，第一张不用整理，然后看第二张，如果比第一张小，就会放到第一张前面；然后再看第三张，和第二张比较如果比它大就不用管了，如果比它小，就跟第二张交换一下位置，然后第二张再跟第一张比较，如果比第一张小，则还要和第一张交换位置；依次进行到最右边的，则排序完成。</p>
-<p>乍一看，跟上篇选择排序有点相像，<strong>选择排序是取出来跟后面剩下的元素比较，而插入排序是取出来后跟前面的元素比较</strong>，但实际操作上又有所不同。因为选择排序每次外循环最多只交换一次，而插入排序中，如果是一张比较少的牌，可能会依次地和前面的好多张牌都交换位置，就相当于很多牌都往后移动了一个位置。</p>
-<p>那么，从上面的描述之中，先自己动手写一个插入排序的代码实现，先不要看下面的标准答案。我自己根据定义，写出的代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.algs4.sort;</span><br><span class="line"></span><br><span class="line">public class InsertSort extends Sort &#123;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	void sort(Comparable[] a) &#123;</span><br><span class="line">		for (int i = 0; i &lt; a.length; i++) &#123;</span><br><span class="line">			for (int j = i; j &gt; 0; j--) &#123;</span><br><span class="line">				if(less(a[j], a[j - 1]))&#123;</span><br><span class="line">					exch(a, j, j - 1);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args)&#123;</span><br><span class="line">		InsertSort insertSort = new InsertSort();</span><br><span class="line">		Integer[] a = &#123;3,1,4,7,5,8,6&#125;;</span><br><span class="line">		insertSort.sort(a);</span><br><span class="line">		insertSort.show(a);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-          <p class="article-more-link">
-            <a href="/2016/06/02/Insertion/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/06/02/Insertion/" data-id="cjs45t4440021fn9fh2nj9lj5" class="article-share-link" data-share="baidu" data-title="插入排序">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/排序/">排序</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Selection" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/06/02/Selection/" class="article-date">
-  <time datetime="2016-06-02T00:40:53.000Z" itemprop="datePublished">2016-06-02</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/02/Selection/">选择排序</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近这段时间工作有点忙，博客的更新频率放缓了一点，以后还是大约每月更新四篇比较符合节奏。接下来的时间打算简单地学习一下算法，说实话，由于大学时学习的专业是信息工程，属于计算机相关专业。在算法这方面的知识还是十分的薄弱，而且在工作上也并没有刻意地去学习或用到。鉴于成为一名优秀的工程师，算法是必然要掌握的，所以还是补补这方面的知识。</p>
-<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p><strong>什么是选择排序？</strong>就是依次地从后面剩下的元素中取出最小的值，替换第一个、第二个、……，直到元素末尾，排序就完成了。</p>
-<p>看到这个概念，你会怎么编码实现这个功能？先不要看下面的答案。下面是我第一时间想出来的方案：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.algs4.sort;</span><br><span class="line"></span><br><span class="line">public class SelectSort &#123;</span><br><span class="line"></span><br><span class="line">	public static int[] sort(int[] a)&#123;</span><br><span class="line">		for (int i = 0; i &lt; a.length; i++) &#123;</span><br><span class="line">			int min = a[i];</span><br><span class="line">			for (int j = i + 1; j &lt; a.length; j++) &#123;</span><br><span class="line">				if(a[j] &lt; min)&#123;</span><br><span class="line">					int tmp = a[j];</span><br><span class="line">					a[i] = tmp;</span><br><span class="line">					a[j] = min;</span><br><span class="line">					min = a[i];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return a;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		int[] a = &#123;3,1,4,7,5,8,6&#125;;</span><br><span class="line">		int[] sortA = sort(a);</span><br><span class="line">		for (int i = 0; i &lt; sortA.length; i++) &#123;</span><br><span class="line">			System.out.println(sortA[i]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我的思路是，外循环取出第一个数，然后内循环剩下的数，然后和第一个数比较，如果比第一个数小，则交换它们的位置。编写了测试代码，成功地实现了排序。下面是标准解决方案：</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/06/02/Selection/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/06/02/Selection/" data-id="cjs45t44o003sfn9flwt90bwf" class="article-share-link" data-share="baidu" data-title="选择排序">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/排序/">排序</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Packaging-Programs-in-JAR-Files" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/17/Packaging-Programs-in-JAR-Files/" class="article-date">
-  <time datetime="2016-05-17T00:39:17.000Z" itemprop="datePublished">2016-05-17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java/">Java</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/17/Packaging-Programs-in-JAR-Files/">将程序打包到JAR文件中</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上篇文章介绍了在java命令中设置classpath的问题，直接用java命令运行一个class。趁热打铁，这篇文章介绍一下使用java命令运行一个.jar文件。</p>
-<h2 id="JAR文件的好处"><a href="#JAR文件的好处" class="headerlink" title="JAR文件的好处"></a>JAR文件的好处</h2><ul>
-<li>安全：你可以对JAR文件的内容进行数字签名</li>
-<li>减少下载次数：不用为JAR文件中的每项内容都发起一个Http请求下载</li>
-<li>压缩：占用空间少</li>
-<li>作为扩展包：我们知道java平台有一些扩展的包，JAR文件可以使我们的软件作为扩展包放到java平台上</li>
-<li>包封装：封装一个JAR文件意味着所以依赖的classes都应该被打包在JAR文件中，作为一个整体方便使用</li>
-<li>版本信息：JAR文件可以有版本信息</li>
-<li>可移植性</li>
-</ul>
-<h2 id="使用JAR文件的基础"><a href="#使用JAR文件的基础" class="headerlink" title="使用JAR文件的基础"></a>使用JAR文件的基础</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">操作</th>
-<th style="text-align:center">命令</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">创建JAR文件</td>
-<td style="text-align:center">jar cf jar-file input-file(s)</td>
-</tr>
-<tr>
-<td style="text-align:center">查看JAR文件内容</td>
-<td style="text-align:center">jar tf jar-file</td>
-</tr>
-<tr>
-<td style="text-align:center">提取JAR文件内容</td>
-<td style="text-align:center">jar xf jar-file</td>
-</tr>
-<tr>
-<td style="text-align:center">更新JAR文件内容（input-file为添加的文件）</td>
-<td style="text-align:center">jar uf jar-file input-file(s)</td>
-</tr>
-<tr>
-<td style="text-align:center">提取JAR文件中指定内容</td>
-<td style="text-align:center">jar xf ar-file archived-file(s)</td>
-</tr>
-<tr>
-<td style="text-align:center">运行JAR文件（需要有入口类Main-Class）</td>
-<td style="text-align:center">java -jar jar-file</td>
-</tr>
-</tbody>
-</table>
-        
-          <p class="article-more-link">
-            <a href="/2016/05/17/Packaging-Programs-in-JAR-Files/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/05/17/Packaging-Programs-in-JAR-Files/" data-id="cjs45t44f0032fn9fhwa3ox6y" class="article-share-link" data-share="baidu" data-title="将程序打包到JAR文件中">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-ClassPath" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/16/ClassPath/" class="article-date">
-  <time datetime="2016-05-16T03:15:26.000Z" itemprop="datePublished">2016-05-16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java/">Java</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/16/ClassPath/">ClassPath</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>基础不扎实，就如搭建空中楼阁。这个浮躁的世界，我们总想着很快地实现自己的目标。然而这个世界并不是那么容易就取得成功，冯仑也曾说过“伟大是熬出来的”。编程也是一样的道理，学习基础知识可能很枯燥无味，而且很费时间，可是为了走得更远我们又不得不这样做。明白成功并不那么容易，戒掉浮躁，就是一种伟大的进步。或许，我们<strong>把目标实现的时间设置得更长，比如五年、十年，浮躁就会离我们远一点</strong>。</p>
-<p>扯得有点远了，假如我问一个问题：<strong>不利用任何IDE，你能编写一个Java程序在命令行中输入伟大的‘Hello World’吗？</strong>如果可以，那么阅读到这里就可以去陪女朋友或老婆了。</p>
-<h2 id="使用javac-java编译执行java文件"><a href="#使用javac-java编译执行java文件" class="headerlink" title="使用javac,java编译执行java文件"></a>使用javac,java编译执行java文件</h2><p><strong>第一步：</strong>在Eclipse中创建一个Java工程，并在包com.rason.algs4.binarysearch下创建一个Test.java的文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.algs4.binarysearch;</span><br><span class="line"></span><br><span class="line">public class Test &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		System.out.println(&quot;Hello world!Hello &quot; + args[0]);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>前面提出的问题是不用IDE，为什么我用IDE创建？这里我只是为了方便后面演示问题。</p>
-<p><strong>第二步：</strong>打开Test.java的存放路径，在我的机器中是<code>~/Documents/workspace/algs4/src/com/rason/algs4/binarysearch</code>,然后使用<code>javac Test.java</code>编译</p>
-<p><code>rason@rason-ThinkPad-T430:~/Documents/workspace/algs4/src/com/rason/algs4/binarysearch$ javac Test.java</code> </p>
-<p>编译之后会在该文件夹下生成<code>Test.class</code>文件。</p>
-<p><strong>第二步：</strong>使用java命令执行Test.class</p>
-<p>执行<code>rason@rason-ThinkPad-T430:~/Documents/workspace/algs4/src/com/rason/algs4/binarysearch$ java Test rason</code></p>
-<p>最后的<code>rason</code>字符串作为第一个参数传给Test的main函数。</p>
-<p>按回车之后，发现错误了<code>Error: Could not find or load main class Test</code>。这是什么原因？从字面的意思我们可以看出，是因为找不到或者加载不到Test这个class文件。然后想了一下，是不是因为我们没写包名？加上包名再试一次。</p>
-<p>执行<code>rason@rason-ThinkPad-T430:~/Documents/workspace/algs4/src/com/rason/algs4/binarysearch$ java com.rason.algs4.binarysearch.Test rason</code></p>
-<p>发现还是错误<code>Error: Could not find or load main class com.rason.algs4.binarysearch.Test</code>，意思还是找不到，此时你应该意识到自己并不熟悉使用java命令执行class文件了吧？</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/05/16/ClassPath/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/05/16/ClassPath/" data-id="cjs45t43d000mfn9fctpbkusw" class="article-share-link" data-share="baidu" data-title="ClassPath">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ClassPath/">ClassPath</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-routing-protocol" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/05/routing-protocol/" class="article-date">
-  <time datetime="2016-05-05T06:34:50.000Z" itemprop="datePublished">2016-05-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/05/routing-protocol/">路由协议</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前后花了一个月左右时间终于把《图解TCP/IP》一书浏览了一遍，看的不是很深入，最后一篇笔记就记录一下路由协议方便的知识点。最后两章应用层协议和网络安全没什么实际的内容，就此略过了。等有空了还是得通读一下《详解TCP/IP》卷一、二、三，《图解TCP/IP》还是写的太基础了，学的不是很扎实。</p>
-<h2 id="路由控制"><a href="#路由控制" class="headerlink" title="路由控制"></a>路由控制</h2><h3 id="IP地址与路由控制"><a href="#IP地址与路由控制" class="headerlink" title="IP地址与路由控制"></a>IP地址与路由控制</h3><p>互联网由路由器连接的网络组合而成的。为了能让数据包能够正确地达到目标主机，路由器必须在图中进行正确的转发，这种向“正确方向”转发数据所进行的处理就叫做<strong>路由控制或路由</strong>。</p>
-<h3 id="静态路由与动态路由"><a href="#静态路由与动态路由" class="headerlink" title="静态路由与动态路由"></a>静态路由与动态路由</h3><p><strong>路由器根据路由控制表转发数据包。</strong></p>
-<p>那么，怎么制作和管理路由控制表则是路由的关键了，这里有两种方式：静态和动态。</p>
-<p><strong>静态路由</strong>是值事先设置好路由器和主机并将路由信息固定的一种方式。可想而知，这种方式只适合在小规模的网络中，大规模的网络用人工维护的话难度就太大了。</p>
-<p><strong>动态路由</strong>可以让路由器自动学习到其他路由器的网络，并且网络拓扑发生改变后自动更新路由表。网络管理员只需配置动态路由协议即可。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/05/05/routing-protocol/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/05/05/routing-protocol/" data-id="cjs45t48i00enfn9fo0tjois3" class="article-share-link" data-share="baidu" data-title="路由协议">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-TCP-UDP" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/27/TCP-UDP/" class="article-date">
-  <time datetime="2016-04-27T02:19:04.000Z" itemprop="datePublished">2016-04-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/27/TCP-UDP/">TCP与UDP</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>TCP/IP中有两个具有代表性的传输层协议，它们分别是TCP和UDP。TCP提供可靠的通信传输，而UDP则常被用于让广播和细节控制交给应用的通信传输。所以，根据通信的具体特征，选择何时的传输层协议是非常重要的。</p>
-<h2 id="传输层的作用"><a href="#传输层的作用" class="headerlink" title="传输层的作用"></a>传输层的作用</h2><p>我们知道IP首部中有一个协议字段，用来标识网络层（IP）的上一层所采用的哪一种传输层协议。根据这个协议号，就可以识别IP传输的数据是TCP的内容还是UDP的内容。同样，传输层为了识别所传输的数据究竟应该发给哪个应用，也设定了这样的一个编号——端口号。比如httpd的端口号为80，sshd的端口号为22。</p>
-<p>因此，传输协议TCP、UDP的作用就是通过接收数据中的目标端口号识别目标处理程序，然后将数据传给诸如HTTP、TELNET以及FTP等应用层协议进行处理。</p>
-<ul>
-<li><p><strong>TCP</strong>:面向连接的、可靠的流协议。为提供可靠传输，实现“顺序控制“、“重发控制”机制。此外还具备“流量控制”、“拥塞控制”、提高网络利用率等众多功能。</p>
-</li>
-<li><p><strong>UDP</strong>：提供不具可靠性的数据报协议。细微的处理它会交给上层的应用去完成。</p>
-</li>
-</ul>
-<h2 id="端口号"><a href="#端口号" class="headerlink" title="端口号"></a>端口号</h2><p>数据链路层用MAC地址识别同一链路中的不同计算机、IP层用IP地址识别TCP/IP网络中互联的主机和路由器，而传输层用的是端口号。端口号用于识别同一台计算机中进行通信的不同应用程序，也称程序地址。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/dispatch-by-port.png" alt="根据端口号识别应用"></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/27/TCP-UDP/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/27/TCP-UDP/" data-id="cjs45t48c00e5fn9frw8i32l0" class="article-share-link" data-share="baidu" data-title="TCP与UDP">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-relative-tech-of-ip" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/21/relative-tech-of-ip/" class="article-date">
-  <time datetime="2016-04-21T02:59:36.000Z" itemprop="datePublished">2016-04-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/21/relative-tech-of-ip/">IP协议相关技术</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>仅仅利用IP协议是无法进行网络通信的，还需要一些IP的辅助技术。这一篇文章文章盘点一下IP的一些辅助技术。</p>
-<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><p>我们不会直接在浏览器中输入IP地址访问某个网站，因为是在太难记忆了。所以就出现了用域名代替IP地址，但是网络通信是利用IP地址进行通信的。所以就出现了DNS（Domain Name System），即域名系统，通过域名系统可以查询到域名对应的IP地址。</p>
-<p>域名系统（DNS）是因特网的一项服务，它作为将<strong>域名</strong>和<strong>IP地址</strong>互相映射的一个分布式数据库，能够使人更方便地访问互联网。</p>
-<h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p>DNS查询有两种方式：<strong>递归和迭代</strong>。DNS客户端设置使用的DNS服务器一般都是递归服务器，它负责全权处理客户端的DNS查询请求，直到返回最终结果。而DNS服务器之间一般采用迭代查询。</p>
-<p>以查询zh.wikipedia.org为例：</p>
-<ul>
-<li><p>客户端发送查询报文“query zh.wikipedia.org”至DNS服务器，DNS服务器首先检查自身缓存，如果存在记录则直接返回结果。</p>
-</li>
-<li><p>不存在。DNS服务器向<strong>根域名服务器</strong>发送查询报文“query zh.wikipedia.org”,根域名服务器返回.org域的权威域名服务器地址，这一级首先会返回的是<strong>顶级域名</strong>的权威域名服务器。</p>
-</li>
-<li><p>DNS服务器向.org域的权威域名服务器发送查询报文“query zh.wikipedia.org”，得到“.wikipedia.org”域的权威域名服务器地址。</p>
-</li>
-<li><p>DNS服务器向.wikipedia.org域的权威域名服务器发送查询报文“query zh.wikipedia.org”，得到主机zh的A记录，存入自身缓存并返回给客户端。</p>
-</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/21/relative-tech-of-ip/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/21/relative-tech-of-ip/" data-id="cjs45t45y007bfn9foniza52z" class="article-share-link" data-share="baidu" data-title="IP协议相关技术">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-IP" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/19/IP/" class="article-date">
-  <time datetime="2016-04-19T05:54:25.000Z" itemprop="datePublished">2016-04-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/19/IP/">IP协议</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>连续看了《图解TCP/IP》中的两章书，数据链路与IP协议。看的我云里雾里的，真实难啃的骨头，大学里欠下的知识债终究还是要还的。难懂归难懂，懂多少就要记下来多少，不懂的以后继续翻看。</p>
-<p>数据链路层的读书笔记就不打算写了，因为看得不是很懂，只是知道个大概，直接记录一下IP协议方面的知识。这也是OSI模型分层的好处啊，我可以不太理解下层的知识，直接了解上层，反正就知道上层通过调用下层的接口就可以进行处理了。</p>
-<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>用一个小案例来总结一下数据链路层和IP协议这两章书，由于自己也是似懂非懂，如有不对请各位看官轻拍。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-transfer.png" alt="数据包发送"></p>
-<p>将IP数据包比如成一个小快递，由深圳某小渔村发送到帝都市某小渔村。我们梳理一下这个过程：</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/19/IP/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/19/IP/" data-id="cjs45t47p00c9fn9f10hmftvd" class="article-share-link" data-share="baidu" data-title="IP协议">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Serialization" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/14/Serialization/" class="article-date">
-  <time datetime="2016-04-14T02:28:59.000Z" itemprop="datePublished">2016-04-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/14/Serialization/">序列化</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">方案</th>
-<th style="text-align:center">特点</th>
-<th style="text-align:center">适用场景</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">XML</td>
-<td style="text-align:center">跨机器，跨语言，自我描述，人眼可读，无需IDL和第三方编译器，可基于HTTP传输协议具有良好的防火墙穿透性；缺点是时间空间开销都很大，不适用于性能要求很高的场景</td>
-<td style="text-align:center">O/R mapping， Spring Bean Configuration File，SOAP适用于公司之间传输数据量相对小或者实时性要求相对低的场景</td>
-</tr>
-<tr>
-<td style="text-align:center">JSON</td>
-<td style="text-align:center">无需IDL，自身就跨语言，跨平台，Associative array格式符合工程师对对象的理解，人眼可读，相对于XML更加简洁，解析速度更快，Javascript的先天性支持，所以很适用Web前端适用，Java后端可用反射的方式进行处理，比如Gson；缺点也是时间和空间开销都比较大</td>
-<td style="text-align:center">公司之间传输数据量相对小，实时性要求相对低（例如秒级别）的服务，基于Web browser的Ajax请求，JSON具有非常强的前后兼容性，适用接口经常发生变化，并对可调式性要求高的场景</td>
-</tr>
-<tr>
-<td style="text-align:center">Thrift</td>
-<td style="text-align:center">高性能序列化和RPC框架，不仅仅是序列化协议，还是一个RPC框架；在空间开销和解析性能上有了比较大的提升，Thrift框架本身并没有透出序列化和反序列化接口，这导致其很难和其他传输层协议共同使用（例如HTTP），所以在跨防火墙时存在安全问题；序列化后的数据是Binary数组，不具可读性，调试困难</td>
-<td style="text-align:center">对于需求为高性能，分布式的RPC服务，Thrift是一个优秀的解决方案；适用于作为公司内部的面向服务构建（SOA）的标准RPC框架</td>
-</tr>
-<tr>
-<td style="text-align:center">Protobuf</td>
-<td style="text-align:center">跟上面几种相比序列化之后的压缩率是最高的，解析速度最快，是一种相当好的序列化方案；可惜的是开源版本没有RPC框架实现，可以与Thrift的RPC框架结合使用</td>
-<td style="text-align:center">由于其解析性能高，序列化后数据量相对少，非常适合应用层对象的持久化场景</td>
-</tr>
-<tr>
-<td style="text-align:center">Avro</td>
-<td style="text-align:center">Avro的产生解决了JSON的冗长和没有IDL的问题，提供两种序列化格式：JSON格式或者Binary格式，Binary格式在空间开销和解析性能方面可以和Protobuf媲美，JSON格式方便测试阶段的调试</td>
-<td style="text-align:center">适合于高性能的序列化服务，适合动态类型语言，适合于做Hive、Pig和MapReduce的持久化数据格式</td>
-</tr>
-</tbody>
-</table>
-<h2 id="选型建议"><a href="#选型建议" class="headerlink" title="选型建议"></a>选型建议</h2><p>以上描述的五种序列化和反序列化协议都各自具有相应的特点，适用于不同的场景：</p>
-<ol>
-<li><p>对于公司间的系统调用，如果性能要求在100ms以上的服务，基于XML的SOAP协议是一个值得考虑的方案。</p>
-</li>
-<li><p>基于Web browser的Ajax，以及Mobile app与服务端之间的通讯，JSON协议是首选。对于性能要求不太高，或者以动态类型语言为主，或者传输数据载荷很小的的运用场景，JSON也是非常不错的选择。</p>
-</li>
-<li><p>对于调试环境比较恶劣的场景，采用JSON或XML能够极大的提高调试效率，降低系统开发成本。</p>
-</li>
-<li><p>当对性能和简洁性有极高要求的场景，Protobuf，Thrift，Avro之间具有一定的竞争关系。</p>
-</li>
-<li><p>对于T级别的数据的持久化应用场景，Protobuf和Avro是首要选择。如果持久化后的数据存储在Hadoop子项目里，Avro会是更好的选择。</p>
-</li>
-<li><p>由于Avro的设计理念偏向于动态类型语言，对于动态语言为主的应用场景，Avro是更好的选择。</p>
-</li>
-<li><p>对于持久层非Hadoop项目，以静态类型语言为主的应用场景，Protobuf会更符合静态类型语言工程师的开发习惯。</p>
-</li>
-<li><p>如果需要提供一个完整的RPC解决方案，Thrift是一个好的选择。</p>
-</li>
-<li><p>如果序列化之后需要支持不同的传输层协议，或者需要跨防火墙访问的高性能场景，Protobuf可以优先考虑。</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/14/Serialization/" data-id="cjs45t44u0041fn9fvejzdlu8" class="article-share-link" data-share="baidu" data-title="序列化">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Serialization/">Serialization</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-TCP-IP-Basic" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/14/TCP-IP-Basic/" class="article-date">
-  <time datetime="2016-04-14T02:28:59.000Z" itemprop="datePublished">2016-04-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Network/">Network</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/14/TCP-IP-Basic/">TCP/IP基础知识</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇文章是《图解TCP/IP》一书的第二章阅读笔记，主要是介绍了一下TCP/IP的一些基础知识，基本上和上一篇文章所描述的内容差不多，但是内容会稍微丰富那么一点点。</p>
-<h2 id="TCP-IP的标准化"><a href="#TCP-IP的标准化" class="headerlink" title="TCP/IP的标准化"></a>TCP/IP的标准化</h2><p>TCP/IP网络协议的出现背景就不细说了，随着分组交换技术的出现和对分组通信的研究发展，TCP/IP的具体规范也随之出现。</p>
-<p>这里所说的TCP/IP并不是简单地指TCP/IP两种协议，虽然有时候确实是指这两种协议。在很多情况下，它只是利用IP进行通信时所必须用到的协议群的统称。如下图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/TCP-IP-%20protocol.png" alt="TCP/IP协议群"></p>
-<p>TCP/IP协议由IETF（The Internet Engineering Task Force）国际互联网工程任务组讨论制定，那些需要标准化的协议，被列入RFC（Request For Comment）征求意见表文档并在互联网上公布。RFC不仅记录了协议的规范内容，还包含了协议的实现和运用的相关信息，以及实验方面的信息。</p>
-<p>RFC信息可以通过<a href="http://www.rfc-editor.org/" target="_blank" rel="noopener">点击这里</a>查看。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/14/TCP-IP-Basic/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/2016/04/14/TCP-IP-Basic/" data-id="cjs45t452004ifn9fgrpuxg7e" class="article-share-link" data-share="baidu" data-title="TCP/IP基础知识">Share</a>
-      
-
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/">Network</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
-  </nav>
-</section>
-      
-      <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AMQP/">AMQP</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/BigData/">BigData</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Business/">Business</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Concurrency/">Concurrency</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataBase/">DataBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DesignPattern/">DesignPattern</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed/">Distributed</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java-Web/">Java Web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode/">LeetCode</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Other/">Other</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Thought/">Thought</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tomcat/">Tomcat</a><span class="category-list-count">7</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adapter-Decorator/">Adapter Decorator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/">Architecture</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bean/">Bean</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BeanDefinitionRegistryPostProcessor/">BeanDefinitionRegistryPostProcessor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binary-Tree/">Binary Tree</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassPath/">ClassPath</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Command-Chain-of-Responsibility/">Command Chain of Responsibility</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/">Concurrency</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus/">Consensus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container-Lifecycle/">Container Lifecycle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie-and-Session/">Cookie and Session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Curator/">Curator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Facade-Observer/">Facade Observer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Filter/">Filter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/">Flume</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gitlab-Jenkins/">Gitlab Jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git内部原理/">Git内部原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git分支/">Git分支</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HighMemery/">HighMemery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/">IO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC容器/">IOC容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA线程池/">JAVA线程池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Encoding/">Java Encoding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaBean转Xml/">JavaBean转Xml</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins-Tomcat/">Jenkins Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LKM/">LKM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux内存/">Linux内存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux命令/">Linux命令</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MVCC/">MVCC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network/">Network</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Partition/">Partition</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pig/">Pig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RestTemplate/">RestTemplate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Samza/">Samza</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Serialization/">Serialization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ServletContext-ServletConfig/">ServletContext ServletConfig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-MySQL/">SpringBoot MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot-缓存/">SpringBoot 缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring基本结构/">Spring基本结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strategy-Proxy/">Strategy Proxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Synchronized/">Synchronized</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thought/">Thought</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/">Thrift</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-NIO/">Tomcat NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-Servlet-Interface/">Tomcat Servlet Interface</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat-find-Servlet/">Tomcat find Servlet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat架构/">Tomcat架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web请求/">Web请求</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zuul/">Zuul</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distributed-session/">distributed-session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git分支管理/">git分支管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git远程仓库/">git远程仓库</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml转javabean/">xml转javabean</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/三方存管/">三方存管</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉查找树/">二叉查找树</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务列表/">任务列表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优先队列-Algorithm/">优先队列 Algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代理/">动态代理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/地址空间/">地址空间</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/子数组的最大值-Kadane算法/">子数组的最大值 Kadane算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符设备驱动/">字符设备驱动</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/总结/">总结</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/散列表/">散列表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件系统/">文件系统</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私募债/">私募债</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/符号表/">符号表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟内存/">虚拟内存</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程和线程/">进程和线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/页面置换算法/">页面置换算法</a><span class="tag-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/AOP/" style="font-size: 10px;">AOP</a> <a href="/tags/Adapter-Decorator/" style="font-size: 10px;">Adapter Decorator</a> <a href="/tags/Algorithm/" style="font-size: 18px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 20px;">Architecture</a> <a href="/tags/Bean/" style="font-size: 10px;">Bean</a> <a href="/tags/BeanDefinitionRegistryPostProcessor/" style="font-size: 10px;">BeanDefinitionRegistryPostProcessor</a> <a href="/tags/Binary-Tree/" style="font-size: 10px;">Binary Tree</a> <a href="/tags/ClassLoader/" style="font-size: 14px;">ClassLoader</a> <a href="/tags/ClassPath/" style="font-size: 10px;">ClassPath</a> <a href="/tags/Command-Chain-of-Responsibility/" style="font-size: 10px;">Command Chain of Responsibility</a> <a href="/tags/Concurrency/" style="font-size: 12px;">Concurrency</a> <a href="/tags/Consensus/" style="font-size: 10px;">Consensus</a> <a href="/tags/Container-Lifecycle/" style="font-size: 10px;">Container Lifecycle</a> <a href="/tags/Cookie-and-Session/" style="font-size: 10px;">Cookie and Session</a> <a href="/tags/Curator/" style="font-size: 10px;">Curator</a> <a href="/tags/Django/" style="font-size: 14px;">Django</a> <a href="/tags/ELK/" style="font-size: 10px;">ELK</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Facade-Observer/" style="font-size: 10px;">Facade Observer</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/Flume/" style="font-size: 12px;">Flume</a> <a href="/tags/Gitlab-Jenkins/" style="font-size: 10px;">Gitlab Jenkins</a> <a href="/tags/Git内部原理/" style="font-size: 10px;">Git内部原理</a> <a href="/tags/Git分支/" style="font-size: 10px;">Git分支</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hadoop/" style="font-size: 12px;">Hadoop</a> <a href="/tags/HighMemery/" style="font-size: 10px;">HighMemery</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/IO/" style="font-size: 10px;">IO</a> <a href="/tags/IOC容器/" style="font-size: 10px;">IOC容器</a> <a href="/tags/JAVA线程池/" style="font-size: 10px;">JAVA线程池</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java-Encoding/" style="font-size: 10px;">Java Encoding</a> <a href="/tags/JavaBean转Xml/" style="font-size: 10px;">JavaBean转Xml</a> <a href="/tags/Jenkins-Tomcat/" style="font-size: 10px;">Jenkins Tomcat</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/LKM/" style="font-size: 10px;">LKM</a> <a href="/tags/Linux/" style="font-size: 16px;">Linux</a> <a href="/tags/Linux内存/" style="font-size: 10px;">Linux内存</a> <a href="/tags/Linux命令/" style="font-size: 10px;">Linux命令</a> <a href="/tags/MVCC/" style="font-size: 10px;">MVCC</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Network/" style="font-size: 20px;">Network</a> <a href="/tags/Partition/" style="font-size: 10px;">Partition</a> <a href="/tags/Pig/" style="font-size: 10px;">Pig</a> <a href="/tags/RabbitMQ/" style="font-size: 20px;">RabbitMQ</a> <a href="/tags/Raft/" style="font-size: 10px;">Raft</a> <a href="/tags/RestTemplate/" style="font-size: 10px;">RestTemplate</a> <a href="/tags/Ribbon/" style="font-size: 10px;">Ribbon</a> <a href="/tags/Samza/" style="font-size: 10px;">Samza</a> <a href="/tags/Serialization/" style="font-size: 10px;">Serialization</a> <a href="/tags/ServletContext-ServletConfig/" style="font-size: 10px;">ServletContext ServletConfig</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/SpringBoot-MySQL/" style="font-size: 10px;">SpringBoot MySQL</a> <a href="/tags/SpringBoot-缓存/" style="font-size: 10px;">SpringBoot 缓存</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/Spring基本结构/" style="font-size: 10px;">Spring基本结构</a> <a href="/tags/Strategy-Proxy/" style="font-size: 10px;">Strategy Proxy</a> <a href="/tags/Synchronized/" style="font-size: 10px;">Synchronized</a> <a href="/tags/Thought/" style="font-size: 10px;">Thought</a> <a href="/tags/Thrift/" style="font-size: 14px;">Thrift</a> <a href="/tags/Tomcat-NIO/" style="font-size: 10px;">Tomcat NIO</a> <a href="/tags/Tomcat-Servlet-Interface/" style="font-size: 10px;">Tomcat Servlet Interface</a> <a href="/tags/Tomcat-find-Servlet/" style="font-size: 10px;">Tomcat find Servlet</a> <a href="/tags/Tomcat架构/" style="font-size: 10px;">Tomcat架构</a> <a href="/tags/Web请求/" style="font-size: 10px;">Web请求</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/Zuul/" style="font-size: 10px;">Zuul</a> <a href="/tags/distributed-session/" style="font-size: 10px;">distributed-session</a> <a href="/tags/git分支管理/" style="font-size: 10px;">git分支管理</a> <a href="/tags/git远程仓库/" style="font-size: 10px;">git远程仓库</a> <a href="/tags/xml转javabean/" style="font-size: 10px;">xml转javabean</a> <a href="/tags/三方存管/" style="font-size: 10px;">三方存管</a> <a href="/tags/二叉查找树/" style="font-size: 10px;">二叉查找树</a> <a href="/tags/任务列表/" style="font-size: 10px;">任务列表</a> <a href="/tags/优先队列-Algorithm/" style="font-size: 10px;">优先队列 Algorithm</a> <a href="/tags/动态代理/" style="font-size: 10px;">动态代理</a> <a href="/tags/地址空间/" style="font-size: 10px;">地址空间</a> <a href="/tags/子数组的最大值-Kadane算法/" style="font-size: 10px;">子数组的最大值 Kadane算法</a> <a href="/tags/字符设备驱动/" style="font-size: 10px;">字符设备驱动</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/总结/" style="font-size: 10px;">总结</a> <a href="/tags/排序/" style="font-size: 16px;">排序</a> <a href="/tags/操作系统/" style="font-size: 10px;">操作系统</a> <a href="/tags/散列表/" style="font-size: 10px;">散列表</a> <a href="/tags/文件系统/" style="font-size: 10px;">文件系统</a> <a href="/tags/私募债/" style="font-size: 10px;">私募债</a> <a href="/tags/符号表/" style="font-size: 10px;">符号表</a> <a href="/tags/虚拟内存/" style="font-size: 12px;">虚拟内存</a> <a href="/tags/进程和线程/" style="font-size: 10px;">进程和线程</a> <a href="/tags/页面置换算法/" style="font-size: 10px;">页面置换算法</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">2</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2017/12/12/Raft/">Raft</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/05/Data-Partition/">Data Partition</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/30/MVCC/">MVCC</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/23/Http-Request-Method/">Http Request Method</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/06/io-model/">I/O Model</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-      
-    </div>
-    <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 rason<br>
-      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
-      .
-      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
-    </div>
-  </div>
-</footer>
-  </div>
-  <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/about" class="mobile-nav-link">About</a>
-  
-</nav>
-  <!-- totop start -->
-<div id="totop">
-<a title="totop"><img src="/img/scrollup.png"></a>
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
 </div>
 
-<!-- totop end -->
-
-
-<!-- 百度分享 start -->
-
-<div id="article-share-box" class="article-share-box">
-  <div id="bdshare" class="bdsharebuttonbox article-share-links">
-    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
-    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
-    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
-    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
-    <a class="article-share-more" data-cmd="more" title="更多"></a>
-  </div>
+<div class="index-about">
+    <i>  </i>
 </div>
-<script>
-  function SetShareData(cmd, config) {
-    if (shareDataTitle && shareDataUrl) {
-      config.bdText = shareDataTitle;
-      config.bdUrl = shareDataUrl;
-    }
-    return config;
-  }
-  window._bd_share_config={
-    "common":{onBeforeClick: SetShareData},
-    "share":{"bdCustomStyle":"/css/bdshare.css"}
-  };
-  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
-</script>
 
-<!-- 百度分享 end -->
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li class="active">
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
 </div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+<div class="post-preview-container" style="min-height: 580px">
+    
+    <div class="post-preview">
+        <div class="post-time">2016-06-02</div>
+        <div class="post-info">
+            <a href="/2016/06/02/Insertion/">
+                <h3>
+                    插入排序
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#排序" title="排序">排序</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-06-02</div>
+        <div class="post-info">
+            <a href="/2016/06/02/Selection/">
+                <h3>
+                    选择排序
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#排序" title="排序">排序</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-05-17</div>
+        <div class="post-info">
+            <a href="/2016/05/17/Packaging-Programs-in-JAR-Files/">
+                <h3>
+                    将程序打包到JAR文件中
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-05-16</div>
+        <div class="post-info">
+            <a href="/2016/05/16/ClassPath/">
+                <h3>
+                    ClassPath
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#ClassPath" title="ClassPath">ClassPath</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-05-05</div>
+        <div class="post-info">
+            <a href="/2016/05/05/routing-protocol/">
+                <h3>
+                    路由协议
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Network" title="Network">Network</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-27</div>
+        <div class="post-info">
+            <a href="/2016/04/27/TCP-UDP/">
+                <h3>
+                    TCP与UDP
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Network" title="Network">Network</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-21</div>
+        <div class="post-info">
+            <a href="/2016/04/21/relative-tech-of-ip/">
+                <h3>
+                    IP协议相关技术
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Network" title="Network">Network</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-19</div>
+        <div class="post-info">
+            <a href="/2016/04/19/IP/">
+                <h3>
+                    IP协议
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Network" title="Network">Network</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-14</div>
+        <div class="post-info">
+            <a href="/2016/04/14/Serialization/">
+                <h3>
+                    序列化
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Serialization" title="Serialization">Serialization</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+    <div class="post-preview">
+        <div class="post-time">2016-04-14</div>
+        <div class="post-info">
+            <a href="/2016/04/14/TCP-IP-Basic/">
+                <h3>
+                    TCP/IP基础知识
+                </h3>
+            </a>
+            <p>
+<!--                
+                <span>/</span>
+                
+                <a class="tag" href="/tags/#Network" title="Network">Network</a>
+                <span>/</span>
+                
+                
+    -->        </p>
+        </div>
+    </div>
+    
+</div>
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/page/8/">&larr; Newer Posts</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/page/10/">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p> -->
+</p></footer>
+
+
+
+
 </body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = false
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
 </html>
