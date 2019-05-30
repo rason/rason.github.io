@@ -15,4 +15,4 @@ Email：rason2008@gmail.com
 
 公众号:
 
-![rason](https://raw.githubusercontent.com/rason/rason.github.io/master/image/rason.png)
+![rason](https://raw.githubusercontent.com/rason/rason.github.io/master/img/mp.jpg)
