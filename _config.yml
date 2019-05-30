@@ -17,7 +17,7 @@ url: http://yoursite.com
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
-
+sidebar-avatar: img/spring.png
 # Directory
 source_dir: source
 public_dir: public
@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape-plus
+theme: hexo-theme-aircloud 
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
