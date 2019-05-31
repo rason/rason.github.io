@@ -1,4 +1,4 @@
-title: Django现学现卖3】Django工程结构
+title: Django工程结构
 categories: Django
 date: 2016-03-22 15:04:45
 tags: Django
