@@ -56,25 +56,25 @@
             <li>
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
+                    <span>主页</span>
                 </a>
             </li>
 <!--            <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
+                    <span>标签</span>
                 </a>
             </li>
     -->        <li>
                 <a href="/archives">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
+                    <span>存档</span>
                 </a>
             </li>
             <li>
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
+                    <span>关于</span>
                 </a>
             </li>
             
@@ -82,7 +82,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#kafka-安装"><span class="toc-text">kafka 安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#elasticsearch-安装"><span class="toc-text">elasticsearch 安装</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#kafka-安装"><span class="toc-text">kafka 安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#elasticsearch-安装"><span class="toc-text">elasticsearch 安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#zipkin-服务"><span class="toc-text">zipkin 服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#spring-boot-微服务配置"><span class="toc-text">spring boot 微服务配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#验证"><span class="toc-text">验证</span></a></li></ol>
 </div>
     
 </div>
@@ -93,7 +93,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input">
-            <span id="begin-search">search</span>
+            <span id="begin-search">搜索</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -117,16 +117,16 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">Post：<span>2019-06-18 10:05:59</span></span>
+        <span class="attr">发布于：<span>2019-06-18 10:05:59</span></span>
         
-        <span class="attr">Tags：/
+        <span class="attr">标签：/
         
         <a class="tag" href="/tags/#sleuth zipkin kafka elasticsearch" title="sleuth zipkin kafka elasticsearch">sleuth zipkin kafka elasticsearch</a>
         <span>/</span>
         
         
         </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
 </span>
 
     </div>
@@ -145,16 +145,40 @@
 <li>检查 <code>curl localhost:9200</code></li>
 </ol>
 <p>如果以 root 用户启动会报错</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">org.elasticsearch.bootstrap.StartupException: java.lang.RuntimeException: can not run elasticsearch as root</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">因为我们可以创建一个非 root 用户来启动</span><br></pre></td></tr></table></figure>
-<p>groupadd es<br>useradd es -g es -p es<br>chown -R es:es ${elasticsearch_HOME}/<br>sudo su es<br>./bin/elasticsearch<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### zipkin 服务</span><br><span class="line"></span><br><span class="line">1. 下载 `curl -sSL https://zipkin.io/quickstart.sh | bash -s`</span><br><span class="line">2. 启动 `STORAGE_TYPE=elasticsearch ES_HOSTS=http://127.0.0.1:9200 KAFKA_BOOTSTRAP_SERVERS=127.0.0.1:9092 java -jar zipkin.jar &amp;`</span><br><span class="line">3. 检查 在浏览器中打开 `http://127.0.0.1:9411`</span><br><span class="line"></span><br><span class="line">![zipkin](https://raw.githubusercontent.com/rason/rason.github.io/master/image/zipkin.png)</span><br><span class="line"></span><br><span class="line">#### spring boot 微服务配置</span><br><span class="line"></span><br><span class="line">1. pom.xml 需要加入以下依赖</span><br></pre></td></tr></table></figure></p>
-<dependencymanagement><br>      <dependencies><br>          <dependency><br>              <groupid>org.springframework.cloud</groupid><br>              <artifactid>spring-cloud-dependencies</artifactid><br>              <version>${release.train.version}</version><br>              <type>pom</type><br>              <scope>import</scope><br>          </dependency><br>      </dependencies><br></dependencymanagement>
-
-<dependency><br>    <groupid>org.springframework.cloud</groupid><br>    <artifactid>spring-cloud-starter-zipkin</artifactid><br></dependency>
-
-<p> <dependency><br>    <groupid>org.springframework.kafka</groupid><br>    <artifactid>spring-kafka</artifactid><br></dependency><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. application.yml 配置</span><br></pre></td></tr></table></figure></p>
-<p>spring:<br>  sleuth:<br>    sampler:<br>      probability: 1.0<br>  zipkin:<br>    sender:<br>      type: kafka<br>  kafka:<br>    bootstrap-servers: 127.0.0.1:9092<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">3. logback 配置</span><br><span class="line"></span><br><span class="line">在日志的 pattern 中加入 `[%X&#123;X-B3-TraceId:-&#125;,%X&#123;X-B3-SpanId:-&#125;]` 就可以在日志中将 traceId 和 spanId 打印出来了.</span><br><span class="line"></span><br><span class="line">#### 验证</span><br><span class="line"></span><br><span class="line">启动两个微服务, 然后发起一个服务之间调用的请求. </span><br><span class="line"></span><br><span class="line">1. 日志的输出应该有类似以下的内容:</span><br></pre></td></tr></table></figure></p>
-<p>2019-06-18 10:49:46,797 [304b31da6dbe1609,304b31da6dbe1609]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 根据 traceId 在 zipkin 中搜索</span><br><span class="line"></span><br><span class="line">![zipkin-search](https://raw.githubusercontent.com/rason/rason.github.io/master/image/zipkin-search.png)</span><br><span class="line"></span><br><span class="line">3. 检查内容是不是真的保存在 elasticsearch 中</span><br></pre></td></tr></table></figure></p>
-<p>curl -H “Content-Type: application/json” ‘localhost:9200/_search’ -d ‘{“query”:{“match”:{“traceId”:”304b31da6dbe1609”}}}’<br><code>`</code></p>
+<p><code>org.elasticsearch.bootstrap.StartupException: java.lang.RuntimeException: can not run elasticsearch as root</code></p>
+<p>因此我们可以创建一个非 root 用户来启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">groupadd es </span><br><span class="line">useradd es -g es -p es</span><br><span class="line">chown -R es:es $&#123;elasticsearch_HOME&#125;/</span><br><span class="line">sudo su es</span><br><span class="line">./bin/elasticsearch</span><br></pre></td></tr></table></figure>
+<h4 id="zipkin-服务"><a href="#zipkin-服务" class="headerlink" title="zipkin 服务"></a>zipkin 服务</h4><ol>
+<li>下载 <code>curl -sSL https://zipkin.io/quickstart.sh | bash -s</code></li>
+<li>启动 <code>STORAGE_TYPE=elasticsearch ES_HOSTS=http://127.0.0.1:9200 KAFKA_BOOTSTRAP_SERVERS=127.0.0.1:9092 java -jar zipkin.jar &amp;</code></li>
+<li>检查 在浏览器中打开 <code>http://127.0.0.1:9411</code></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/zipkin.png" alt="zipkin"></p>
+<h4 id="spring-boot-微服务配置"><a href="#spring-boot-微服务配置" class="headerlink" title="spring boot 微服务配置"></a>spring boot 微服务配置</h4><ol>
+<li>pom.xml 需要加入以下依赖</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencyManagement&gt; </span><br><span class="line">      &lt;dependencies&gt;</span><br><span class="line">          &lt;dependency&gt;</span><br><span class="line">              &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">              &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</span><br><span class="line">              &lt;version&gt;$&#123;release.train.version&#125;&lt;/version&gt;</span><br><span class="line">              &lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">              &lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">          &lt;/dependency&gt;</span><br><span class="line">      &lt;/dependencies&gt;</span><br><span class="line">&lt;/dependencyManagement&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt; </span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-zipkin&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line"> &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>application.yml 配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  sleuth:</span><br><span class="line">    sampler:</span><br><span class="line">      probability: 1.0</span><br><span class="line">  zipkin:</span><br><span class="line">    sender:</span><br><span class="line">      type: kafka</span><br><span class="line">  kafka:</span><br><span class="line">    bootstrap-servers: 127.0.0.1:9092</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>logback 配置</li>
+</ol>
+<p>在日志的 pattern 中加入 <code>[%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}]</code> 就可以在日志中将 traceId 和 spanId 打印出来了.</p>
+<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>启动两个微服务, 然后发起一个服务之间调用的请求. </p>
+<ol>
+<li>日志的输出应该有类似以下的内容:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2019-06-18 10:49:46,797 [304b31da6dbe1609,304b31da6dbe1609]</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>根据 traceId 在 zipkin 中搜索</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/zipkin-search.png" alt="zipkin-search"></p>
+<ol start="3">
+<li>检查内容是不是真的保存在 elasticsearch 中</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H &quot;Content-Type: application/json&quot; &apos;localhost:9200/_search&apos; -d &apos;&#123;&quot;query&quot;:&#123;&quot;match&quot;:&#123;&quot;traceId&quot;:&quot;304b31da6dbe1609&quot;&#125;&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
 
         
         <br>
