@@ -11,7 +11,7 @@
 
     <title>
         
-        
+        Spring Kafka AckMode
         
     </title>
 
@@ -53,7 +53,7 @@
     </div>
     <div class="contents" id="nav-content">
         <ul>
-            <li class="active">
+            <li>
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
                     <span>HOME</span>
@@ -81,6 +81,10 @@
         </ul>
     </div>
     
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#enable-auto-commit"><span class="toc-text">enable-auto-commit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ack-mode"><span class="toc-text">ack-mode</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#record"><span class="toc-text">record</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#batch"><span class="toc-text">batch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#time"><span class="toc-text">time</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#count"><span class="toc-text">count</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#count-time"><span class="toc-text">count_time</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#manual"><span class="toc-text">manual</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#manual-immediate"><span class="toc-text">manual_immediate</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li>
+</div>
+    
 </div>
 
 
@@ -105,117 +109,46 @@
     <div class="index-middle">
         <!-- Main Content -->
         
-<div class="post-preview-container" style="min-height: 580px">
-    
-    <div class="post-preview">
-        <div class="post-time">2015-09-14</div>
-        <div class="post-info">
-            <a href="/2015/09/14/Java-Bean-To-Xml/">
-                <h3>
-                    利用注解、反射将JavaBean转Xml
-                </h3>
-            </a>
-            <p>
-<!--                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#JavaBean转Xml" title="JavaBean转Xml">JavaBean转Xml</a>
-                <span>/</span>
-                
-                
-    -->        </p>
-        </div>
+
+
+<div class="post-container">
+    <div class="post-title">
+        Spring Kafka AckMode
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2015-09-08</div>
-        <div class="post-info">
-            <a href="/2015/09/08/Git-theory/">
-                <h3>
-                    Git内部原理-底层命令和对象
-                </h3>
-            </a>
-            <p>
-<!--                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#Git内部原理" title="Git内部原理">Git内部原理</a>
-                <span>/</span>
-                
-                
-    -->        </p>
-        </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-06-20 17:36:49</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2015-09-02</div>
-        <div class="post-info">
-            <a href="/2015/09/02/Git-branch/">
-                <h3>
-                    Git分支-分支的新建与合并
-                </h3>
-            </a>
-            <p>
-<!--                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#Git分支" title="Git分支">Git分支</a>
-                <span>/</span>
-                
-                
-    -->        </p>
+    <div class="post-content ">
+        <h2 id="enable-auto-commit"><a href="#enable-auto-commit" class="headerlink" title="enable-auto-commit"></a>enable-auto-commit</h2><ol>
+<li>当 enable-auto-commit 为 true 时, 会根据 auto-commit-interval 配置的时间间隔去自动 commit, 就算 record 被消费异常也会自动 commit.</li>
+<li>当 enable-auto-commit 为 false 时, 需要根据 listener 的 ack-mode 来确定确认模式.</li>
+</ol>
+<h2 id="ack-mode"><a href="#ack-mode" class="headerlink" title="ack-mode"></a>ack-mode</h2><h4 id="record"><a href="#record" class="headerlink" title="record"></a>record</h4><p>在 listener 处理每条消息之后提交, 即处理一条提交一条.</p>
+<h4 id="batch"><a href="#batch" class="headerlink" title="batch"></a>batch</h4><p>在下一次 poll 之前提交已经处理完的记录.</p>
+<h4 id="time"><a href="#time" class="headerlink" title="time"></a>time</h4><p>按照时间间隔来提交, 单位为毫秒.</p>
+<h4 id="count"><a href="#count" class="headerlink" title="count"></a>count</h4><p>累积到 count 数目时提交.</p>
+<h4 id="count-time"><a href="#count-time" class="headerlink" title="count_time"></a>count_time</h4><p>到了时间或者到了累积的数目时提交.</p>
+<h4 id="manual"><a href="#manual" class="headerlink" title="manual"></a>manual</h4><p>手工提交, 需要在业务代码中调用 Acknowledgment.acknowledge() 提交, 调用之后，就是跟 batch 同理处理。</p>
+<h4 id="manual-immediate"><a href="#manual-immediate" class="headerlink" title="manual_immediate"></a>manual_immediate</h4><p>调用 Acknowledgment.acknowledge() 之后里面提交.</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果你想业务代码发生异常时进行某些处理再提交, 你可能需要将 enable-auto-commit 设置为 false, 然后 ack-mode 设置为手工提交两种模式之一, 其他情况, 都会按照一定方式自动提交.</p>
+
+        
+        <br>
+        <div id="comment-container">
         </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2015-08-25</div>
-        <div class="post-info">
-            <a href="/2015/08/25/Git-remote/">
-                <h3>
-                    git远程仓库
-                </h3>
-            </a>
-            <p>
-<!--                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#git远程仓库" title="git远程仓库">git远程仓库</a>
-                <span>/</span>
-                
-                
-    -->        </p>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
         </div>
+
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2015-08-20</div>
-        <div class="post-info">
-            <a href="/2015/08/20/Markdown-grammar/">
-                <h3>
-                    Markdown语法
-                </h3>
-            </a>
-            <p>
-<!--                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#Markdown" title="Markdown">Markdown</a>
-                <span>/</span>
-                
-                
-    -->        </p>
-        </div>
-    </div>
-    
 </div>
-<ul class="pager">
-    
-    <li class="previous">
-        <a href="/page/13/">&larr; Newer Posts</a>
-    </li>
-    
-    
-</ul>
 
     </div>
 </div>
@@ -257,7 +190,7 @@
     // We expose some of the variables needed by the front end
     window.hexo_search_path = ""
     window.hexo_root = "/"
-    window.isPost = false
+    window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="/js/index.js"></script>
