@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        HTTPS 的思考
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对称加密"><span class="toc-text">对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#非对称加密"><span class="toc-text">非对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#非对称加密-对称加密"><span class="toc-text">非对称加密 + 对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#中间人夹击"><span class="toc-text">中间人夹击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#公钥究竟是谁的"><span class="toc-text">公钥究竟是谁的?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS-简化流程"><span class="toc-text">HTTPS 简化流程</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        HTTPS 的思考
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-06-25 10:49:05</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>众所周知, HTTPS 是为了解决信息安全传输的问题, 我们来推理一下, 怎么才能达到安全传输的效果.</p>
+<p>比如, A 发信息和 B 聊天, 为了防止聊天内容被截获偷窥, 我们可以怎么做?</p>
+<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>一个比较简单的方式, 就是对聊天内容进行加密, A 发送消息前用密码 XXX 对内容进行加密, B 收到之后对内容用密码 XXX 进行解密, 这种方式称为对称加密. 其他人不知道密码, 当然就没法对内容进行解密.</p>
+<p>但是, A 怎么把密码告诉 B 呢, 如果通过网络传输, 发送的密码被偷窥了, 那也没办法达到安全传输. 当然, A 可以通过线下的方式将密码给到 B, 可是 A 还要跟很多人聊天, 不可能都通过线下的方式.</p>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>为了解决对称加密的存在的问题, 出现了非对称加密. A 和 B 都有一对公私秘钥对, A 公钥加密的内容只有 A 的私钥才能解密, B 公钥加密的内容只有 B 的私钥才能解密. 这样, A 把自己的公钥给 B, B 把自己的公钥给 A. 聊天的时候:</p>
+<p><code>A 发送的内容 ---&gt; 用 B 的公钥加密 ---&gt; B 接收到加密的内容 ---&gt; B 用自己的私钥解密</code></p>
+<p>这样就能达到安全传输了, 因为 B 的私钥只有自己才有, B 的公钥泄漏了也没关系, 公钥是用来加密的. </p>
+<h3 id="非对称加密-对称加密"><a href="#非对称加密-对称加密" class="headerlink" title="非对称加密 + 对称加密"></a>非对称加密 + 对称加密</h3><p>非对称加密一般比较慢, 如果内容一直都是用对称加密来保护, 那性能就会有影响了. 所以, 我们可以用对称加密的方式来传输对称加密的密钥, 之后就用对称加密来聊天即可.</p>
+<h3 id="中间人夹击"><a href="#中间人夹击" class="headerlink" title="中间人夹击"></a>中间人夹击</h3><p>但是, 非对称加密也没法解决<strong>中间人夹击</strong>的问题.</p>
+<p>试想一下, 在 A 和 B 之间, 有一个中间人. 在 A 和 B 交互公钥的时候, 中间人都把公钥拦截下来了, 把自己的公钥给到 A 和 B. 这样, A 以为自己在和 B 聊天, 其实是在和中间人聊天, B 也一样.</p>
+<p><code>A 发送的内容 ---&gt; 用中间人的公钥加密 ---&gt; 中间人接收到加密的内容 ---&gt; 中间人用自己的私钥解密, 偷看到内容了 ---&gt; 中间人用 B 的公钥加密 ---&gt; B 接收到加密的内容 ---&gt; B 用自己的私钥解密</code></p>
+<h3 id="公钥究竟是谁的"><a href="#公钥究竟是谁的" class="headerlink" title="公钥究竟是谁的?"></a>公钥究竟是谁的?</h3><p>中间人夹击的问题在于公钥被偷天换日了, A 收到的公钥怎么才能知道这确确实实是 B 的公钥, 而不是中间人的?</p>
+<p>现实中, 我们用身份证来表明自己的身份. 那么, 网络中有没有一个公信力的机构, 给 A 和 B 颁发一个”身份证”, 这个”身份证”上有属于自己的公钥. 当 A 拿到 B 的”身份证”的时候, 一看是 B 的, 然后从中拿到公钥.</p>
+<p>这里的”身份证”就是数字证书, 而公信力机构就是 CA.</p>
+<p>但是, 我怎么知道这个”身份证”是真的还是假的呢? 国家的身份证系统能查到身份证的真假, 那么操作系统或浏览器其实也有预置的CA列表来验证这个”身份证”是不是伪造的.</p>
+<h3 id="HTTPS-简化流程"><a href="#HTTPS-简化流程" class="headerlink" title="HTTPS 简化流程"></a>HTTPS 简化流程</h3><ol>
+<li>浏览器发出 HTTPS 请求</li>
+<li>服务器发送数字证书(证书上有服务器的公钥)</li>
+<li>浏览器用预置的CA列表来验证证书是不是伪造的, 如果有风险则提示</li>
+<li>浏览器生成随机的密钥对, 用服务器的公钥加密发送自己的密钥对给服务器</li>
+<li>服务器用自己的私钥解密, 得到浏览器的密钥对</li>
+<li>双方都知道了公钥, 可以开始加密传输了</li>
+</ol>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
