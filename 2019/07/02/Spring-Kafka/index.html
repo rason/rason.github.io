@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Spring Kafka 的思考
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#生产者"><span class="toc-text">生产者</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-我怎么知道发送到-Broker-的消息发送成功了"><span class="toc-text">1.我怎么知道发送到 Broker 的消息发送成功了?</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-发送成功了-Broker-还有没有可能丢失消息"><span class="toc-text">2.发送成功了 Broker 还有没有可能丢失消息?</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#消费者"><span class="toc-text">消费者</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-什么情况下会出现消息重复消费"><span class="toc-text">1.什么情况下会出现消息重复消费?</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-会不会出现消息还没有被消息-但是偏移量被提交了-导致消息-“丢失”"><span class="toc-text">2.会不会出现消息还没有被消息, 但是偏移量被提交了, 导致消息 “丢失”?</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Broker"><span class="toc-text">Broker</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-副本因子"><span class="toc-text">1.副本因子</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-脏副本的选举"><span class="toc-text">2.脏副本的选举</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-最小同步副本数"><span class="toc-text">3.最小同步副本数</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Spring Kafka 的思考
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-07-02 14:58:06</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>Kafka 在高吞吐量的场景应用比较广泛, 但是可能会存在数据丢失, 那么 Kafka 究竟有多可靠? 本人只是简单实用过 Spring 集成的 Kafka, 并不是很熟悉, 所以下面思考的内容可能会有错.</p>
+<h4 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h4><h5 id="1-我怎么知道发送到-Broker-的消息发送成功了"><a href="#1-我怎么知道发送到-Broker-的消息发送成功了" class="headerlink" title="1.我怎么知道发送到 Broker 的消息发送成功了?"></a>1.我怎么知道发送到 Broker 的消息发送成功了?</h5><p>Spring 中的 <code>KafkaTemplate</code> 的发送方法返回 <code>ListenableFuture</code> 可以设置回调, 发送成功或者失败都是有回调的.</p>
+<p>如果发送失败了怎么办? 在回调的失败方式中打个日志就算了, 还是重新再发送, 如果一直失败会不会死循环了? </p>
+<p>目前我还没遇到发送失败的情况, 可能是样本还不够大, 这个问题还要深入思考.</p>
+<p>另外, Spring Kafka 中有个配置项 <code>spring.kafka.producer.retries</code> 可以设置 <strong>重试</strong> 的次数, 这个是使用生产者内部的重试机制. 比如 Broker 返回 <code>LEADER_NOT_AVAILABLE</code> 错误, 生产者会自动进行重试. 但是重试可能会导致消息的重复, 在 <code>0.11.0.0</code> 版本之后, Kafka 提供了幂等的特性. 要不要用幂等的特性也是个问题, 不知道对吞吐量影响有多大, 所以一般情况还是让消费者来做幂等好了.</p>
+<h5 id="2-发送成功了-Broker-还有没有可能丢失消息"><a href="#2-发送成功了-Broker-还有没有可能丢失消息" class="headerlink" title="2.发送成功了 Broker 还有没有可能丢失消息?"></a>2.发送成功了 Broker 还有没有可能丢失消息?</h5><p>如果 Broker 只有一份数据, 机器挂了, 是不是就丢失了? 当然 Kafka 消息是保存在硬盘中, 一般情况下重启之后消息还是存在的. 但是 Broker 在收到消息之后不是马上就刷盘的, 在刷盘之前挂了那消息就真的丢失了.</p>
+<p>所以, 数据复制才是靠谱的选择, 挂了一份还有其他的. 然而, 数据复制就必然会遇到数据一致性的问题, Spring Kafka 给了我们几个发送确认选择:</p>
+<ul>
+<li><code>acks=0</code> 消息发送出去之后就认为写入成功了.</li>
+<li><code>acks=1</code> 默认方式, Leader 节点写入后确认. </li>
+<li><code>acks=all/-1</code> 所有节点写入后确认.</li>
+</ul>
+<p>显然, 这又是吞吐量与可靠性的一次 Trade Off.</p>
+<h4 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h4><p>从本质上说, 保证了生产者到 Broker 之间的可靠, 那么 Kafka 其实就已经可靠了. 因为数据持久化在硬盘之后, 消费者可以根据情况控制偏移量来消费消息.</p>
+<p>因此, 在消费者方面应该思考怎么刚好消费一次.</p>
+<h5 id="1-什么情况下会出现消息重复消费"><a href="#1-什么情况下会出现消息重复消费" class="headerlink" title="1.什么情况下会出现消息重复消费?"></a>1.什么情况下会出现消息重复消费?</h5><p>当我们消费了消息, 但是偏移量没有提交, 那就会出现消息重复消息. 那么, 什么情况下会出现消费了消息, 但是偏移量没有被提交?</p>
+<ul>
+<li>消息被消费后, 提交偏移量之前, 进程挂了</li>
+<li><code>0.10.0.0</code> 之前的版本,消费者没有单独的心跳进程, 如果到了 <code>session.timeout.ms</code> 时间, 获取的一批数据还没处理完, 会认为消费者挂了, 提交偏移量会失败</li>
+</ul>
+<h5 id="2-会不会出现消息还没有被消息-但是偏移量被提交了-导致消息-“丢失”"><a href="#2-会不会出现消息还没有被消息-但是偏移量被提交了-导致消息-“丢失”" class="headerlink" title="2.会不会出现消息还没有被消息, 但是偏移量被提交了, 导致消息 “丢失”?"></a>2.会不会出现消息还没有被消息, 但是偏移量被提交了, 导致消息 “丢失”?</h5><p>这里说的丢失指的是被跳过处理了. 因为只要消息被成功保存到 Broker 中,消费者可以通过偏移量指定消费哪条消息, 并没有真的丢失.</p>
+<p>如果 <code>enable.auto.commit=true</code>, 当我们拉取到的消息使用另外的线程去处理, 但是另外的线程可能因其他原因没处理成功, 这种情况下就可能会出现消息”丢失”.</p>
+<p>另外, 我们也可以想一下, 如果消息处理异常了, 但是还是自动提交了, 这种消息我们该怎么办? 重试, 记录日志或者是投递一个”死信队列”?</p>
+<h4 id="Broker"><a href="#Broker" class="headerlink" title="Broker"></a>Broker</h4><h5 id="1-副本因子"><a href="#1-副本因子" class="headerlink" title="1.副本因子"></a>1.副本因子</h5><p>显然, Broker 要保证数据的可靠性就需要有副本, 并且最好不要在同一台机器上. <code>default.replication.factor</code> 用于设置副本数, 当副本数为 N 的时候, 可以容忍 N-1 个副本挂掉.</p>
+<h5 id="2-脏副本的选举"><a href="#2-脏副本的选举" class="headerlink" title="2.脏副本的选举"></a>2.脏副本的选举</h5><p><code>unclean.leader.election.enable</code> 0.11.0.0 之前的版本, 默认为 true; 之后的版本默认为 false. 如果设置为 true, 当没有同步副本可用的时候, 不同步的副本会成为 leader, 意味着有数据丢失. 如果设置为 false, 则意味着系统会处于不可用的状态, 该部分没有 leader 提供服务. 需要在可用性和一致性之间做取舍.</p>
+<h5 id="3-最小同步副本数"><a href="#3-最小同步副本数" class="headerlink" title="3.最小同步副本数"></a>3.最小同步副本数</h5><p><code>min.insync.replicas</code> 如果 broker 数为3, 最小同步副本数为2. 当2个同步副本中的一个出现问题, 集群便不会再接受生产者的发送消息请求. 同时客户端会收到 <code>NotEnoughReplicasException</code>. 此时, 消费者还可以继续读取存在的数据. 唯一的同步副本变成只读.</p>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
