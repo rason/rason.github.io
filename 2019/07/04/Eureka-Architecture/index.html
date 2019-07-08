@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Eureka Architecture
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#总体架构"><span class="toc-text">总体架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Eureka-Server"><span class="toc-text">Eureka Server</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#服务注册-Register"><span class="toc-text">服务注册(Register)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务续约-Renew"><span class="toc-text">服务续约(Renew)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务下线-Cancel"><span class="toc-text">服务下线(Cancel)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务获取"><span class="toc-text">服务获取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务剔除"><span class="toc-text">服务剔除</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#节点间服务同步"><span class="toc-text">节点间服务同步</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#节点互相感知"><span class="toc-text">节点互相感知</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#节点初始化"><span class="toc-text">节点初始化</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Service-Provider"><span class="toc-text">Service Provider</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#服务注册-Register-1"><span class="toc-text">服务注册(Register)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务续约-Renew-1"><span class="toc-text">服务续约(Renew)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务下线-Cancel-1"><span class="toc-text">服务下线(Cancel)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#怎么发现-Eureka-Server"><span class="toc-text">怎么发现 Eureka Server</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Server-Consumer"><span class="toc-text">Server Consumer</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#服务获取-1"><span class="toc-text">服务获取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务更新"><span class="toc-text">服务更新</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#怎么发现-Eureka-Server-1"><span class="toc-text">怎么发现 Eureka Server</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Eureka Architecture
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-07-04 13:52:41</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>被誉为下一代微服务架构的 Service Mesh 已经越来越火了, 我还在写 Eureka 的文章, 是不是太 low 了. 那就先 low 一回, 下次再时尚一把.</p>
+<h4 id="总体架构"><a href="#总体架构" class="headerlink" title="总体架构"></a>总体架构</h4><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/eureka_architecture.png" alt="Eureka Architecture"></p>
+<p>上图是 Eureka 官方给出的架构图, 一共有三种角色:</p>
+<ul>
+<li>Eureka Server: Eureka 服务端, 核心就是保存服务的注册表信息, 如果是集群部署, 多个服务端之间会复制注册表信息, 达到最终的一致性.</li>
+<li>Application Service: 应用服务提供者, 作为 Eureka 的客户端, 启动时会注册到 Eureka 服务端, 对外提供服务.</li>
+<li>Application Client: 应用客户端, 也是 Eureka 客户端, 启动时会用 Eureka 服务端获取所有的服务列表.</li>
+</ul>
+<h4 id="Eureka-Server"><a href="#Eureka-Server" class="headerlink" title="Eureka Server"></a>Eureka Server</h4><p>对于 Eureka 服务端, 我们首先能想到的几个问题:</p>
+<ol>
+<li>服务提供者的注册过程是怎么样的, 用什么样的数据结构来保存服务提供者信息?</li>
+<li>Eureka 服务端怎么知道服务提供者挂掉了, 挂掉了之后会怎么办?</li>
+<li>集群情况下, Eureka 服务端之间的注册表信息是怎么同步的?</li>
+<li>集群情况下, 一个 Eureka 服务端启动的时候, 是怎么获取到其他节点的注册表信息的?</li>
+</ol>
+<h5 id="服务注册-Register"><a href="#服务注册-Register" class="headerlink" title="服务注册(Register)"></a>服务注册(Register)</h5><p>Eureka 服务端是通过暴露 HTTP 接口来提供服务注册的; 另外, 更新服务状态也是这个接口, 比如服务下线, 会调用这个接口将状态更新为 DOWN.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.netflix.eureka.resources.ApplicationResource#addInstance</span><br></pre></td></tr></table></figure>
+<p>注册的过程比较简单, 先是注册到本节点, 然后调用 replicateToPeers 向其它 Eureka Server 节点做状态同步（异步操作）</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-register.png" alt="Service Register"></p>
+<p>注册的服务信息保存在一个嵌套的 HashMap 中:</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ConcurrentHashMap&lt;String, Map&lt;String, Lease&lt;InstanceInfo&gt;&gt;&gt; registry</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一层 HashMap 的 key 是 appName，也就是应用名字</li>
+<li>第二层 HashMap 的 key 是 instanceId ，也就是实例ID</li>
+</ul>
+<p>为什么是这样的结构, 大家想一下应该就知道了, 因为一个应用会存在多个实例.</p>
+<h5 id="服务续约-Renew"><a href="#服务续约-Renew" class="headerlink" title="服务续约(Renew)"></a>服务续约(Renew)</h5><p>Eureka 服务端会提供服务续约接口给服务提供者调用, 让它告诉 Eureka 服务端它还活着, 正常提供者服务呢, 不要把我给踢掉.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.netflix.eureka.resources.InstanceResource#renewLease</span><br></pre></td></tr></table></figure>
+<p>接口的实现跟 Register 基本保持一致, 先更新自身节点状态, 然后同步到其他节点.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-renew.png" alt="Service Renew"></p>
+<h5 id="服务下线-Cancel"><a href="#服务下线-Cancel" class="headerlink" title="服务下线(Cancel)"></a>服务下线(Cancel)</h5><p>Eureka 服务端会提供服务下线接口给服务提供者调用, 让它告诉 Eureka 服务端它要下线了, 不对外提供服务了, 把我踢掉吧.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.netflix.eureka.resources.InstanceResource#cancelLease</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-cancel.png" alt="Service Cancel"></p>
+<h5 id="服务获取"><a href="#服务获取" class="headerlink" title="服务获取"></a>服务获取</h5><p>Eureka 服务端会提供接口让服务消费者调用, 用来获取注册在 Eureka 服务端上的服务.</p>
+<p>为了提高性能，服务列表在Eureka Server会缓存一份，同时每30秒更新一次.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/fetch-service.png" alt="Service Fetch"></p>
+<h5 id="服务剔除"><a href="#服务剔除" class="headerlink" title="服务剔除"></a>服务剔除</h5><p>Eureka 服务端会定时检查在一定时间内(默认是90秒)没有续约的服务, 默认是每60秒检查一次. 也就是如果有服务超过90秒没有向 Eureka 服务端发起续约请求的话，就会被当做失效服务剔除掉(如果没有开启自我保护模式的话). 自我保护模式这里不详细展开, 有兴趣的可以谷歌查一下.</p>
+<p>失效时间可以通过 <code>eureka.instance.leaseExpirationDurationInSeconds</code> 进行配置，定期扫描时间可以通过 <code>eureka.server.evictionIntervalTimerInMs</code> 进行配置.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-eviction.png" alt="Service Eviction"></p>
+<h5 id="节点间服务同步"><a href="#节点间服务同步" class="headerlink" title="节点间服务同步"></a>节点间服务同步</h5><p>上面的 Register、Renew、Cancel 接口都会先在本节点进行操作, 然后同步到其他节点. 同步的方式也很简单, 就是将服务提供者请求的方式一样转发到其他节点.</p>
+<p>节点之间的状态是采用异步的方式同步的，所以不保证节点间的状态一定是一致的，不过基本能保证最终状态是一致的.</p>
+<p>结合服务发现的场景，实际上也并不需要节点间的状态强一致。在一段时间内（比如30秒），节点A比节点B多一个服务实例或少一个服务实例，在业务上也是完全可以接受的（Service Consumer侧一般也会实现错误重试和负载均衡机制）。</p>
+<h5 id="节点互相感知"><a href="#节点互相感知" class="headerlink" title="节点互相感知"></a>节点互相感知</h5><p>Eureka 服务端之间需要同步注册表的前提是知道对方的存在, 那么他们之间是怎么互相感知的?</p>
+<p>Eureka Server在启动后会调用 <code>EurekaClientConfig.getEurekaServerServiceUrls</code> 来获取所有的节点，并且会定期更新。定期更新频率可以通过 <code>eureka.server.peerEurekaNodesUpdateIntervalMs</code> 配置。</p>
+<p>默认情况下是从 <code>eureka.client.serviceUrl</code> 配置项读取其他节点的地址, 如果希望灵活控制节点, 可以重写 <code>getEurekaServerServiceUrls</code> 方法从外部存储读取服务端地址列表.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/peer-discovery.png" alt="Peer Discovery"></p>
+<h5 id="节点初始化"><a href="#节点初始化" class="headerlink" title="节点初始化"></a>节点初始化</h5><p>一个新的 Eureka 服务端节点启动时, 会从其他节点获取到所有的服务信息, 前提是 <code>register-with-eureka = true</code>, 当然这个配置项默认就是 true.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/server-init.png" alt="Server Init"></p>
+<h4 id="Service-Provider"><a href="#Service-Provider" class="headerlink" title="Service Provider"></a>Service Provider</h4><p>上面说的是 Eureka 服务端的工作机制, 接下来就是 Eureka 客户端, 首先看下服务提供者.</p>
+<p>对于服务的提供者, 主要就是 Register、Renew、Cancel 三个操作.</p>
+<h5 id="服务注册-Register-1"><a href="#服务注册-Register-1" class="headerlink" title="服务注册(Register)"></a>服务注册(Register)</h5><p>将服务注册到 Eureka Server 上, 首先需要配置 <code>eureka.client.registerWithEureka=true</code>. 注册过程很简单, 就是在服务启动的时候会有一个定时任务调用 Eureka Server 提供的注册接口.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-register.png" alt="Client Register"></p>
+<h5 id="服务续约-Renew-1"><a href="#服务续约-Renew-1" class="headerlink" title="服务续约(Renew)"></a>服务续约(Renew)</h5><p>服务提供者需要不断地告诉 Eureka Server 自己还活着, 现在这是一个定时任务不断地发送续约请求.有两个参数需要配置:</p>
+<ul>
+<li><code>instance.leaseRenewalIntervalInSeconds</code> 续约的频率, 就是多久发送一次续约请求, 默认 30 秒.</li>
+<li><code>instance.leaseExpirationDurationInSeconds</code> 服务时效时间, 就是多少秒内没有发送需求请求, Eureka Server 就认为服务提供者挂了.</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-renew.png" alt="Client Renew"></p>
+<h5 id="服务下线-Cancel-1"><a href="#服务下线-Cancel-1" class="headerlink" title="服务下线(Cancel)"></a>服务下线(Cancel)</h5><p>在服务提供者 shut down 的时候，需要及时通知 Eureka Server 把自己剔除，从而避免客户端调用已经下线的服务。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-cancel.png" alt="Client Cancel"></p>
+<h5 id="怎么发现-Eureka-Server"><a href="#怎么发现-Eureka-Server" class="headerlink" title="怎么发现 Eureka Server"></a>怎么发现 Eureka Server</h5><p>服务提供者怎么知道 Eureka Server 的地址呢? 这个跟 Eureka Server 各个节点之间的发现是类似的, 默认也是从配置文件中读取, 灵活的话就是重写 <code>getEurekaServerServiceUrls</code> 方法.定期更新频率可以通过 <code>eureka.client.eurekaServiceUrlPollIntervalSeconds</code> 配置.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-discovery-server.png" alt="Client Discovery Server"></p>
+<h4 id="Server-Consumer"><a href="#Server-Consumer" class="headerlink" title="Server Consumer"></a>Server Consumer</h4><p>服务消费者比较简单, 主要是怎么获取服务列表和更新服务列表.</p>
+<h5 id="服务获取-1"><a href="#服务获取-1" class="headerlink" title="服务获取"></a>服务获取</h5><p>Service Consumer 在启动时会从 Eureka Server 获取所有服务列表，并在本地 <strong>缓存</strong> . 需要注意的是，需要确保配置 <code>eureka.client.shouldFetchRegistry=true</code>.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-fetch-service.png" alt="Client Fetch Service"></p>
+<h5 id="服务更新"><a href="#服务更新" class="headerlink" title="服务更新"></a>服务更新</h5><p>由于在本地有一份缓存，所以需要定期更新，定期更新频率可以通过 <code>eureka.client.registryFetchIntervalSeconds</code> 配置.</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-fetch-service/client-update-service.png" alt="Client Update Service"></p>
+<h5 id="怎么发现-Eureka-Server-1"><a href="#怎么发现-Eureka-Server-1" class="headerlink" title="怎么发现 Eureka Server"></a>怎么发现 Eureka Server</h5><p>服务消费者和服务提供者本质上都是 Eureka 的客户端, 所以逻辑是一样的.</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>整个流程, 有很多定时任务, 这里梳理一下:</p>
+<ul>
+<li>Eureka Server: 定时检查更新服务列表缓存, 默认 30 秒; 定时剔除失效服务, 默认 60 秒; 定时更新其他服务端节点地址, 默认 10 分钟.</li>
+<li>Service Provider: 定时续约, 默认 30 秒; 定时更新 Eureka Server 地址, 默认 5 分钟.</li>
+<li>Server Consumer: 定时更新服务列表缓存, 默认 30 秒; 定时更新 Eureka Server 地址, 默认 5 分钟.</li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
