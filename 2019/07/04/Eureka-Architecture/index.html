@@ -130,8 +130,8 @@
 <p>上图是 Eureka 官方给出的架构图, 一共有三种角色:</p>
 <ul>
 <li>Eureka Server: Eureka 服务端, 核心就是保存服务的注册表信息, 如果是集群部署, 多个服务端之间会复制注册表信息, 达到最终的一致性.</li>
-<li>Application Service: 应用服务提供者, 作为 Eureka 的客户端, 启动时会注册到 Eureka 服务端, 对外提供服务.</li>
-<li>Application Client: 应用客户端, 也是 Eureka 客户端, 启动时会用 Eureka 服务端获取所有的服务列表.</li>
+<li>Application Service: 即 Service Provider , 作为 Eureka 的客户端, 启动时会注册到 Eureka 服务端, 对外提供服务.</li>
+<li>Application Client: 即 Server Consumer , 也是 Eureka 客户端, 启动时会用 Eureka 服务端获取所有的服务列表.</li>
 </ul>
 <h4 id="Eureka-Server"><a href="#Eureka-Server" class="headerlink" title="Eureka Server"></a>Eureka Server</h4><p>对于 Eureka 服务端, 我们首先能想到的几个问题:</p>
 <ol>
