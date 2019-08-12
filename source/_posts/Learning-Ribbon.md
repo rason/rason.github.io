@@ -141,7 +141,7 @@ public <T> T execute(String serviceId, LoadBalancerRequest<T> request) throws IO
 
 ### 总体流程
 
-![Ribbon](https://raw.githubusercontent.com/rason/rason.github.io/master/image/robbin-loadbalancer.png)
+![Ribbon](https://raw.githubusercontent.com/rason/rason.github.io/master/image/riibbin-loadbalancer.png)
 
-本文只是简单梳理了 Robbin 实现负载均衡的核心流程, 但是具体的负载均衡算法没有去深入考究, 也就是 ILoadBalancer 里面的方法实现, 涉及到 IRule, IRule, ServerList, 有兴趣的可以继续深入研究.
+本文只是简单梳理了 Ribbin 实现负载均衡的核心流程, 但是具体的负载均衡算法没有去深入考究, 也就是 ILoadBalancer 里面的方法实现, 涉及到 IRule, IRule, ServerList, 有兴趣的可以继续深入研究.
 

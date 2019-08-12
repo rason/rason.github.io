@@ -157,7 +157,7 @@ Service Consumer 在启动时会从 Eureka Server 获取所有服务列表，并
 
 由于在本地有一份缓存，所以需要定期更新，定期更新频率可以通过 `eureka.client.registryFetchIntervalSeconds` 配置.
 
-![Client Update Service](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-fetch-service/client-update-service.png)
+![Client Update Service](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-update-service.png)
 
 ##### 怎么发现 Eureka Server
 
