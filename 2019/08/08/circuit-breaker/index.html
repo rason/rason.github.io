@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        circuit-breaker
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方案"><span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#断路器状态机"><span class="toc-text">断路器状态机</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        circuit-breaker
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-08-08 16:17:29</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>在分布式系统中，对远程服务的调用很可能会<strong>临时性</strong>失败（如网络连接超时或资源过载等）。这些故障通常会在短时间内自我修复，通常我们在搭建一个可靠的分布式系统时，会通过<strong>重试</strong>策略来应对这些问题。</p>
+<p>但是，也有可能会遇到一些意外事件导致的故障，这种故障可能会需要比较长的时间才能修复。在这种情况下，应用程序重试多少次都是失败的，而且如果此时并发很大，这些毫无意义的重试很有可能把整个服务拖垮。所以，在这种情况下，应该是让应用程序快速认识到操作已失败，并相应地处理故障。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p><strong>断路器</strong>模式可以防止应用程序重复尝试执行很可能会失败的操作。在发生故障期间，让它快速失败进入兜底逻辑，不用浪费 CPU 周期。 断路器模式还可让应用程序检测故障是否已经解决。 如果问题已被修复，应用程序便可以尝试调用操作。</p>
+<blockquote>
+<p>断路器模式的目的与重试模式不同。 重试模式在预期操作将成功的情况下让应用程序重试操作。 断路器模式则防止应用程序执行很可能失败的操作。 应用程序可以使用重试模式通过断路器调用操作，来组合这两种模式。 但重试逻辑应该对断路器返回的任何异常保持敏感，并且在断路器指示故障为非临时性的情况下放弃重试尝试。</p>
+</blockquote>
+<p>针对可能失败的操作，断路器充当其代理。代理监控最近发生失败的次数，并使用此信息来决定是执行正常的逻辑还是兜底逻辑或者是直接返回异常。</p>
+<h3 id="断路器状态机"><a href="#断路器状态机" class="headerlink" title="断路器状态机"></a>断路器状态机</h3><ul>
+<li><p><strong>关闭：</strong>将应用程序的请求路由到正常逻辑。代理维护最近失败次数的计数，如果对操作的调用不成功，代理将递增此计数。 如果在给定时间段内最近失败次数超过指定的阈值，则代理将置于<strong>打开</strong>状态。 此时，代理会启动超时计时器，并且当此计时器过期时，代理将置于<strong>半开</strong>状态。</p>
+</li>
+<li><p><strong>打开：</strong>来自应用程序的请求立即失败，并为应用程序返回异常或者执行兜底逻辑。</p>
+</li>
+<li><p><strong>半开：</strong>允许数量有限的来自应用程序的请求通过并调用操作。 如果这些请求成功，则假定先前导致失败的问题已被修复，并且断路器将切换到<strong>关闭</strong>状态（失败计数器重置）。 如果有任何请求失败，则断路器将假定故障仍然存在，因此它会恢复到<strong>打开</strong>状态，并重新启动超时计时器，再给系统一段时间来从故障中恢复。</p>
+</li>
+</ul>
+<blockquote>
+<p>半开状态对于防止恢复服务突然被大量请求压垮很有用。 在服务恢复的期间，能够支持的请求数量有限，如果突然有大量的请求可能导致服务超时或再次失败。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/circuit-breaker-diagram.png" alt="断路器状态机"></p>
+<p>在图中，<strong>关闭</strong>状态所使用的失败计数器是<strong>基于时间</strong>的。 它会定期自动重置。 这有助于防止断路器在遇到偶然失败时进入<strong>打开</strong>状态。 仅当在指定间隔期间内发生指定数量的失败时，才会达到将断路器跳闸到<strong>打开</strong>状态的故障阈值。 <strong>半开</strong>状态使用的计数器记录成功调用操作的次数。 在指定数量的连续操作调用成功后，断路器将恢复到<strong>关闭</strong>状态。 如果任何调用失败，断路器会立即进入<strong>打开</strong>状态，成功计数器会在下次进入<strong>半开</strong>状态时重置。</p>
+<p>断路器模式在系统从故障中恢复时提供稳定性，并将对性能的影响降至最低。 它可以通过快速拒绝很可能失败的操作的请求（而非等待操作超时或永不返回）来帮助维持系统的响应时间。 如果断路器在每次改变状态时引发事件，则该信息可以用于监视由断路器保护的系统部分的运行状况，或者当断路器跳闸到打开状态时，对管理员发出警报。</p>
+<p>该模式是可自定义的，并且可以根据可能的故障类型进行调整。 例如，可以向断路器应用可递增的超时计时器。 最开始可以将断路器置于打开状态几秒钟，如果故障未得到解决，则将超时增加到几分钟，以此类推。 在某些情况下，与其通过打开状态返回失败并引发异常，返回对应用程序来说有意义的默认值实则更加有用。</p>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
