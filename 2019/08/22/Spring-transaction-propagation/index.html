@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Spring transaction propagation
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#事务传播属性"><span class="toc-text">事务传播属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PROPAGATION-NESTED-与-PROPAGATION-REQUIRES-NEW-的区别"><span class="toc-text">PROPAGATION_NESTED 与 PROPAGATION_REQUIRES_NEW 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PROPAGATION-NESTED-用法示例"><span class="toc-text">PROPAGATION_NESTED 用法示例</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Spring transaction propagation
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-08-22 14:06:55</span></span>
+        
+        
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>有些简单的知识点理解的比较含糊，在使用的时候总是会卡壳，Spring 事务的传播行为就是一个例子。今天再次复习一下。</p>
+<p>事务的传播行为指的是两个方法调用之间事务怎么传播的问题。比如，方法A 有事务，调用的方法B也有事务，那么方法B 的事务是直接加入方法A 的事务还是让方法A 的事务挂起呢？当然，Spring 的事务传播行为不仅仅只有这两种情况。</p>
+<h3 id="事务传播属性"><a href="#事务传播属性" class="headerlink" title="事务传播属性"></a>事务传播属性</h3><ul>
+<li><strong>PROPAGATION_REQUIRED：</strong> 如果方法A没有事务，就新建一个事务；如果有，就加入当前事务。这是 Spring 提供的默认事务传播行为。</li>
+<li><strong>PROPAGATION_SUPPORTS：</strong> 如果方法A没有事务，就以非事务方式执行；如果有，就使用当前事务。</li>
+<li><strong>PROPAGATION_MANDATORY：</strong> 如果方法A没有事务，就抛出异常；如果有，就使用当前事务。</li>
+<li><strong>PROPAGATION_REQUIRES_NEW：</strong> 如果方法A没有事务，就新建一个事务；如果有，就将当前事务挂起。</li>
+<li><strong>PROPAGATION_NOT_SUPPORTED：</strong> 如果方法A没有事务，就以非事务方式执行；如果有，就将当前事务挂起。</li>
+<li><strong>PROPAGATION_NEVER：</strong> 如果方法A没有事务，就以非事务方式执行；如果有，就抛出异常。</li>
+<li><strong>PROPAGATION_NESTED：</strong> 如果方法A没有事务，就新建一个事务；如果有，就作为当前事务的嵌套事务。</li>
+</ul>
+<p>前六个应该都很好理解，就是最后一个传播行为可能会比较难理解，很容易和 PROPAGATION_REQUIRES_NEW 混淆，下面我们来分析一下这两种行为的区别。</p>
+<h3 id="PROPAGATION-NESTED-与-PROPAGATION-REQUIRES-NEW-的区别"><a href="#PROPAGATION-NESTED-与-PROPAGATION-REQUIRES-NEW-的区别" class="headerlink" title="PROPAGATION_NESTED 与 PROPAGATION_REQUIRES_NEW 的区别"></a>PROPAGATION_NESTED 与 PROPAGATION_REQUIRES_NEW 的区别</h3><p>PROPAGATION_REQUIRES_NEW 是新开一个事务，是独立的，不会受外部事务的影响。当新开的事务开始执行时，外部事务会被挂起，内部事务结束了，外部事务继续执行。<br><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/transaction-propagation-1.png" alt="PROPAGATION_REQUIRES_NEW"></p>
+<p>PROPAGATION_NESTED 是一个 “嵌套的” 事务，它是已经存在事务的一个真正的子事务。嵌套事务开始执行时，它将取得一个 savepoint。如果这个嵌套事务失败，我们将回滚到此 savepoint。本质上，外部事务和嵌套事务属于同一个物理事务，使用保存点实现嵌套事务。嵌套事务和它的父事务是相依的，它的提交要和它的父事务一起。也就是说，如果父事务最后回滚，它也要回滚。如果子事务回滚或提交，不会导致父事务回滚或提交，但父事务回滚将导致子事务回滚。<br><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/transaction-propagation-2.png" alt="PROPAGATION_NESTED"></p>
+<h3 id="PROPAGATION-NESTED-用法示例"><a href="#PROPAGATION-NESTED-用法示例" class="headerlink" title="PROPAGATION_NESTED 用法示例"></a>PROPAGATION_NESTED 用法示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ServiceA &#123;  </span><br><span class="line">      </span><br><span class="line">    /** </span><br><span class="line">     * 事务属性配置为 PROPAGATION_REQUIRED </span><br><span class="line">     */  </span><br><span class="line">    void methodA() &#123;  </span><br><span class="line">        try &#123;  </span><br><span class="line">            ServiceB.methodB();  </span><br><span class="line">        &#125; catch (SomeException) &#123;  </span><br><span class="line">            // 执行其他业务, 如 ServiceC.methodC();  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式也是嵌套事务最有价值的地方，它起到了分支执行的效果, 如果 ServiceB.methodB 失败, 那么执行 ServiceC.methodC(), 而 ServiceB.methodB 已经回滚到它执行之前的 SavePoint, 所以不会产生脏数据(相当于此方法从未执行过), 这种特性可以用在某些特殊的业务中, 而 PROPAGATION_REQUIRED 和 PROPAGATION_REQUIRES_NEW 都没有办法做到这一点。</p>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
