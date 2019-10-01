@@ -56,25 +56,25 @@
             <li>
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
+                    <span>主页</span>
                 </a>
             </li>
 <!--            <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
+                    <span>标签</span>
                 </a>
             </li>
     -->        <li>
                 <a href="/archives">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
+                    <span>存档</span>
                 </a>
             </li>
             <li>
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
+                    <span>关于</span>
                 </a>
             </li>
             
@@ -93,7 +93,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input">
-            <span id="begin-search">search</span>
+            <span id="begin-search">搜索</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -117,10 +117,10 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">Post：<span>2019-08-29 20:18:49</span></span>
+        <span class="attr">发布于：<span>2019-08-29 20:18:49</span></span>
         
         
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
 </span>
 
     </div>
@@ -132,7 +132,7 @@
 <p>但是，当 method2 发生异常时，你会惊奇的发现 method2 的事务并<strong>没有回滚！</strong></p>
 <h3 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h3><p>要理解事务为什么没有回滚，我们就要回顾一下 AOP 的知识。在 Spring 中默认是通过 JDK 动态代理的方式来实现 AOP 的，对于打了 @Transactional 注解的类，Spring 动态代理会生成一个代理 bean 和一个真实的目标 bean。</p>
 <p>我们回头看看 method1 并没有打上注解，所以 method1 并不会被事务切面环绕。而 method2 是通过 method1 调用的，隐藏的调用对象是真实的目标 bean，真实的目标 bean 是没有切面逻辑的，切面逻辑都在代理 bean 上。这就是为什么事务没有回滚的原因，如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/transactional-aop.png" alt="transactional-aop"></p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/transactional-aop.gif" alt="transactional-aop"></p>
 <p>按照这样的理解，只要我们在 method1 方法上打上 @Transactional 注解，事务就能生效了，method2 的注解是多余的。此时，我们应该就能理解 IDEA 的善意提示了。因为 UserService 没有接口，所以只能通过 CGLIB 的方式来实现动态代理，而 CGLIB 是通过继承的方式来进行代理，需要对目标 bean 的方法进行重写，但是 private 修饰的方法是不能重写的，所以就会出现这样的提示。</p>
 <p>但是，在 method1 上打注解，method2 上不打，那不是违背了我们当初让事务范围最小化的出发点了吗？一切又回到了原地。还有没有其他解决方法？</p>
 <ol>
