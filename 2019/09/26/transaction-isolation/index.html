@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        数据库隔离级别温故而知新
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据库的隔离级别"><span class="toc-text">数据库的隔离级别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据库的隔离级别实现"><span class="toc-text">数据库的隔离级别实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#脏读问题"><span class="toc-text">脏读问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#不可重复读问题"><span class="toc-text">不可重复读问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#幻读问题"><span class="toc-text">幻读问题</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MVCC"><span class="toc-text">MVCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#隔离级别与锁的关系"><span class="toc-text">隔离级别与锁的关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MVCC-疑问"><span class="toc-text">MVCC 疑问</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        数据库隔离级别温故而知新
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-09-26 20:48:55</span></span>
+        
+        
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>在工作中，碰到一些问题的时候你会想，诶，这个知识点我似乎没理解透。数据库的隔离级别就是我最近有点困惑的知识点，大家试着回答以下问题：</p>
+<ol>
+<li><p>数据库的隔离级别究竟是为什么解决什么出题而出现的？</p>
+</li>
+<li><p>数据库的隔离级别是怎么实现的？</p>
+</li>
+<li><p>数据库的隔离级别跟锁有什么关系，有了数据库的隔离级别，我们平时在写 SQL 的时候还需要手工加锁吗？</p>
+</li>
+<li><p>为什么 MySQL 的 MVCC 机制在 RC 隔离级别下没有解决不可重复读的问题？</p>
+</li>
+</ol>
+<p>…</p>
+<p>不断地去思考，不断地去刨根问底，我们才能真正的把一个知识理解透。 </p>
+<h4 id="数据库的隔离级别"><a href="#数据库的隔离级别" class="headerlink" title="数据库的隔离级别"></a>数据库的隔离级别</h4><p>我们先来看一下数据库定义的几种隔离级别，偷个懒直接网上找个图：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/isolation-level.jpg" alt="isolation-level"></p>
+<p>我们发现，隔离级别的关键字是<strong>“读”</strong>。也就是说，隔离级别的作用是为了有效保证并发<strong>读取</strong>数据的正确性。这就回答了第一个问题。</p>
+<h4 id="数据库的隔离级别实现"><a href="#数据库的隔离级别实现" class="headerlink" title="数据库的隔离级别实现"></a>数据库的隔离级别实现</h4><p>那么，这几种隔离级别怎么实现的呢？我们可以先试想一下，如果用读写锁来实现，要怎么加锁才能达到效果？</p>
+<p><strong>注意：</strong>这里是假设用锁来实现，MySQL 的实现原理实际并不是这样的，下面我们会谈到。</p>
+<h5 id="脏读问题"><a href="#脏读问题" class="headerlink" title="脏读问题"></a>脏读问题</h5><p>事务1更新了一条数据，但是还没提交，此时事务2读取了这条数据，然后事务1因为某些原因进行了回滚，此时事务2读取到的数据其实是不对的，读到了脏数据就称之为脏读。（注：这就是读未提交隔离级别，能读取到未提交的数据，会发生脏读。读未提交不需要解析实现原理了吧，啥都没限制，直接读直接写就是了）</p>
+<p>那么，我们怎么避免脏读？</p>
+<p>如果用锁来实现的话，我们先来做个约定：更新修改删除数据要加上写锁，读取数据要加上读锁，读锁和写锁是互斥的，读锁和读锁是不互斥的。读锁读完数据就释放，写锁事务提交释放。</p>
+<p>有了这个约定，我们就可以这样来避免脏读了：修改数据我们先加上写锁，读取数据要加上读锁，因为事务1还没提交，写锁还没有释放，此时事务2没法加上读锁，这样就读不到数据，避免了脏读。（注：这就是读已提交隔离级别用锁来实现的原理）</p>
+<h5 id="不可重复读问题"><a href="#不可重复读问题" class="headerlink" title="不可重复读问题"></a>不可重复读问题</h5><p>事务1读取了一条数据，此时事务2更新了这条数据，然后事务1再读取这条数据，发现自己两次读取的内容有点不一样，这就是不可重复读。（注：读已提交隔离级别用锁来实现虽然解决了脏读，但是会存在不可以重复读）</p>
+<p>那么，我们怎么避免不可重复读？</p>
+<p>我们回想一下发送不可重复读的原因，正是因为我们之前设定读完数据就释放读锁，所以事务2才加上了写锁对数据进行了修改，如果事务1第一次读完数据不释放读锁，事务2就加不上写锁，就不会出现这个问题了。好吧，那读锁也事务提交的时候再释放吧，这样就不会发生不可重复读问题了。（注：这就是可重复读用锁来实现的原理了）</p>
+<h5 id="幻读问题"><a href="#幻读问题" class="headerlink" title="幻读问题"></a>幻读问题</h5><p>事务1根据查询条件读取了若干条数据，事务2插入了符合事务1查询条件的数据，此时事务1再查一次，发现记录竟然多了一条，这就是幻读。（注：用锁来实现的可重复读虽然解决了不可重复读的问题，但是会存在幻读，因为新插入的数据并没有锁定）</p>
+<p>那么，我们怎么避免幻读问题？</p>
+<p>既然新插入数据导致我幻读，那我就想办法让他不能插入就行了。我们不仅把符合查询条件的记录锁起来，还把记录前后的 GAP 锁起来，这样其他事务就无法插入新数据了。（注：这就是序列化隔离级别了，你回想一下，这其实就是我在干活的时候，其他事务任何操作都做不了了，只能等我干完了才行）</p>
+<h4 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h4><p>实际上, MySQL 并不会这样实现，因为锁就是性能杀手。在 MySQL InnoDB 存储引擎中，使用的是基于多版本的并发控制协议——MVCC (Multi-Version Concurrency Control) (注：与MVCC相对的，是基于锁的并发控制，Lock-Based Concurrency Control，类似我们上面的推导)。</p>
+<p>MVCC最大的好处：<strong>读不加锁，读写不冲突</strong>。</p>
+<p>注意：在 MySQL InnoDB 存储引擎，MVCC 只用于 RC,RR 两个隔离级别。序列化隔离级别跟我们上面的推导是一样的，读加读锁，写加写锁，读写互斥，性能杀手。</p>
+<p>在MVCC并发控制中，读操作可以分成两类：快照读 (snapshot read)与当前读 (current read)。快照读，读取的是记录的可见版本 (有可能是历史版本)，不用加锁。当前读，读取的是记录的最新版本，并且，当前读返回的记录，都会加上锁，保证其他事务不会再并发修改这条记录。</p>
+<p>那啥是快照读，啥是当前读？以MySQL InnoDB为例：</p>
+<ul>
+<li><strong>快照读</strong>：简单的select操作，属于快照读，不加锁。(当然，也有例外，下面会分析)<br>  select * from table where ?;</li>
+</ul>
+<ul>
+<li><strong>当前读</strong>：特殊的读操作，插入/更新/删除操作，属于当前读，需要加锁。<br>  select <em> from table where ? lock in share mode;<br>  select </em> from table where ? for update;<br>  insert into table values (…);<br>  update table set ? where ?;<br>  delete from table where ?;</li>
+</ul>
+<p>所有以上的语句，都属于当前读，读取记录的最新版本。并且，读取之后，还需要保证其他并发事务不能修改当前记录，对读取记录加锁。其中，除了第一条语句，对读取记录加S锁 (共享锁)外，其他的操作，都加的是X锁 (排它锁)。</p>
+<p>对于 MVCC 的实现原理就不展开分析了，可以参考文末的引用链接。</p>
+<p>以上就回答了文章开头的第二个问题。</p>
+<h4 id="隔离级别与锁的关系"><a href="#隔离级别与锁的关系" class="headerlink" title="隔离级别与锁的关系"></a>隔离级别与锁的关系</h4><p>从上面的分析来看，隔离级别有用到锁。那么我们在平时写业务代码的时候还需要手工加锁吗？</p>
+<p>我们试想一个购票的业务方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	1. 查询余票（select 余票 from xxxx）</span><br><span class="line">	2. 余票扣减(update xxxx set 余票=余票-1)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上文谈到，隔离级别是为了在并发的情况下读取数据的正确性。那么现在有两个事务，几乎同时走到了步骤1查询余票（没有显式使用锁是快照度），都还没有走到步骤2。大家查询出的余票都是1，数据正确的。当事务1提交，余票变成0。当事物2提交（没有使用乐观锁），余票变成-1，出问题了，一张票卖了两次。</p>
+<p>所以，在这种情况下，我们需要显式使用到锁或者其他方式解决业务并发的问题。隔离级别没法帮我们解决这种并发问题。</p>
+<h4 id="MVCC-疑问"><a href="#MVCC-疑问" class="headerlink" title="MVCC 疑问"></a>MVCC 疑问</h4><p>既然采用了 MVCC ，那么 RC 隔离级别下读取的应该是快照，为什么没有解决不可重复读呢？因为 RC 在每次读取的时候都会重建 read view ，其他事务修改的数据在第二次读取的时重建 read view 是能读取到的，所以就出现了不可重复读问题。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上只是我个人不断的自问自答方式来解惑自己的问题，思路有点乱。但是，通过这种不断自问自答的方式刨根问底，很多问题就逐渐明朗起来了。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li><a href="https://tech.meituan.com/2014/08/20/innodb-lock.html" target="_blank" rel="noopener">Innodb中的事务隔离级别和锁的关系</a></li>
+<li><a href="http://blog.sae.sina.com.cn/archives/2127" target="_blank" rel="noopener">MySQL 加锁处理分析</a></li>
+<li><a href="https://elsef.com/2019/03/10/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%90%84%E7%A7%8D%E4%B8%8D%E6%AD%A3%E5%B8%B8%E8%AF%BB/" target="_blank" rel="noopener">MySQL的MVCC在各种隔离级别中发挥的作用</a></li>
+<li><a href="https://mp.weixin.qq.com/s/bM_g6Z0K93DNFycvfJIbwQ" target="_blank" rel="noopener">数据库村的旺财和小强</a></li>
+<li><a href="http://mysql.taobao.org/monthly/2018/03/01/" target="_blank" rel="noopener">数据库内核月报</a></li>
+<li><a href="https://ningyu1.github.io/site/post/50-mysql-gap-lock/" target="_blank" rel="noopener">MySQL Gap Lock问题</a></li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
