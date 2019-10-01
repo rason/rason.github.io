@@ -33,7 +33,7 @@ public class UserService {
 
 我们回头看看 method1 并没有打上注解，所以 method1 并不会被事务切面环绕。而 method2 是通过 method1 调用的，隐藏的调用对象是真实的目标 bean，真实的目标 bean 是没有切面逻辑的，切面逻辑都在代理 bean 上。这就是为什么事务没有回滚的原因，如下图所示：
 
-![transactional-aop](https://raw.githubusercontent.com/rason/rason.github.io/master/image/transactional-aop.png)
+![transactional-aop](https://raw.githubusercontent.com/rason/rason.github.io/master/image/transactional-aop.gif)
 
 按照这样的理解，只要我们在 method1 方法上打上 @Transactional 注解，事务就能生效了，method2 的注解是多余的。此时，我们应该就能理解 IDEA 的善意提示了。因为 UserService 没有接口，所以只能通过 CGLIB 的方式来实现动态代理，而 CGLIB 是通过继承的方式来进行代理，需要对目标 bean 的方法进行重写，但是 private 修饰的方法是不能重写的，所以就会出现这样的提示。
 
