@@ -37,7 +37,7 @@ tags:
 
 #### manual_immediate
 
-调用 Acknowledgment.acknowledge() 之后里面提交.
+调用 Acknowledgment.acknowledge() 之后立马提交.
 
 ## 注意
 
