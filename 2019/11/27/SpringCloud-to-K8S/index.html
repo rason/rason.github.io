@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        将应用从 SpringCloud 迁移到 k8s
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码与配置修改"><span class="toc-text">代码与配置修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写-Dockerfile"><span class="toc-text">编写 Dockerfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-kubectl-和-minikube"><span class="toc-text">安装 kubectl 和 minikube</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-configmap-资源"><span class="toc-text">创建 configmap 资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-deployment-资源"><span class="toc-text">创建 deployment 资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-secret-资源"><span class="toc-text">创建 secret 资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#暴露服务给集群外部调用"><span class="toc-text">暴露服务给集群外部调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结语"><span class="toc-text">结语</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        将应用从 SpringCloud 迁移到 k8s
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-11-27 10:41:56</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>最近花了几天时间看了一下 k8s 和 istio 的文档，对容器化运维以及服务网格有了基础的了解。俗话说读万卷书不如行万里路，于是先尝试用 minikube 练一下手，将现有了一个 Spring Cloud 项目迁移到 k8s 上来。</p>
+<p>粗略地整理了一个整个流程，主要有以下几个改动点：</p>
+<ol>
+<li>代码与配置修改</li>
+<li>编写 Dockerfile</li>
+<li>安装 kubectl 和 minikube</li>
+<li>创建 configmap 资源</li>
+<li>创建 deployment 资源</li>
+<li>创建 secret 资源</li>
+<li>暴露服务给集群外部调用</li>
+</ol>
+<h3 id="代码与配置修改"><a href="#代码与配置修改" class="headerlink" title="代码与配置修改"></a>代码与配置修改</h3><p>代码与配置的修改点不多，这样充分说明从 SpringCloud 迁移到 k8s 是相当的友好。</p>
+<ol>
+<li>由于 k8s 有内置 dns 做服务地址解析以及 service 资源做负载均衡。所以我们不再需要 eureka 做服务注册与发现了，需要把 eureka 相关的依赖与注解删除掉。</li>
+</ol>
+<p>删除 eureka client 的 @EnableDiscoveryClient 注解以及以下依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-netflix-eureka-client&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>另外 <code>application.yml</code> 配置文件也要去掉 eureka server 相关配置。</p>
+<ol start="2">
+<li>由于 k8s 服务之间的调用是通过服务名称:端口的形式，所以 feign client 上需用加上 url 参数，例如：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@FeignClient(value = &quot;xxxService&quot;, url = &quot;xxxService:8080&quot;)</span><br></pre></td></tr></table></figure>
+<p>xxxService 就是后面要部署的 k8s 服务名称，8080 端口是 xxxService k8s 服务暴露的端口，可以自定义。</p>
+<ol start="3">
+<li>为了我们修改 springboot 的 application.yml 文件之后，k8s 能自动感知然后重新自动部署应用，我们可以用 configmap 资源来维护我们的配置文件。需要作出以下改动：</li>
+</ol>
+<p>微服务内部只保留 bootstrap.yml 文件，其他 application.yml 文件在统一的地方维护后续用于生成 configmap 资源。bootstrap.yml 文件示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">     name: xxxService</span><br><span class="line">  profiles:</span><br><span class="line">    active: #spring.profiles.active#</span><br><span class="line">  servlet:</span><br><span class="line">    multipart:</span><br><span class="line">      max-request-size: 100MB</span><br><span class="line">      max-file-size: 100MB</span><br><span class="line">  devtools:</span><br><span class="line">    restart:</span><br><span class="line">      enabled: true   # 设置开启热部署</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      reload:</span><br><span class="line">        enabled: true</span><br><span class="line">        mode: polling</span><br><span class="line">        period: 5000</span><br><span class="line">      config:</span><br><span class="line">        sources:</span><br><span class="line">          - name: $&#123;spring.application.name&#125;</span><br><span class="line">management:</span><br><span class="line">  endpoint:</span><br><span class="line">    restart:</span><br><span class="line">      enabled: true</span><br><span class="line">    health:</span><br><span class="line">      enabled: true</span><br><span class="line">    info:</span><br><span class="line">      enabled: true</span><br></pre></td></tr></table></figure>
+<p>新增以下依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-kubernetes-config&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0.1.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>这个依赖的用途就是让 k8s 来管理我们的配置文件。</p>
+<h3 id="编写-Dockerfile"><a href="#编写-Dockerfile" class="headerlink" title="编写 Dockerfile"></a>编写 Dockerfile</h3><p>我们需要将 springboot 应用打包成镜像，然后上传到镜像仓库中，后面部署到 k8s 中需要指定镜像地址。Dockerfile 文件示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FROM openjdk:8-jdk-alpine</span><br><span class="line">VOLUME /tmp</span><br><span class="line">ADD xxxService-1.0.jar app.jar</span><br><span class="line">ENTRYPOINT [&quot;java&quot;,&quot;-Djava.security.egd=file:/dev/./urandom&quot;,&quot;-jar&quot;,&quot;/app.jar&quot;]</span><br></pre></td></tr></table></figure>
+<p>将镜像打包到仓库这里就不展开了。</p>
+<h3 id="安装-kubectl-和-minikube"><a href="#安装-kubectl-和-minikube" class="headerlink" title="安装 kubectl 和 minikube"></a>安装 kubectl 和 minikube</h3><p>这个步骤可以参考<a href="https://kubernetes.io/docs/tasks/tools/install-minikube/" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="创建-configmap-资源"><a href="#创建-configmap-资源" class="headerlink" title="创建 configmap 资源"></a>创建 configmap 资源</h3><p>假设我们将 springboot 的配置文件维护在 git 仓库中，我们就可以在安装 minikube 的机器上 git clone 下来，运行以下命令，就可以将配置文件维护在 configmap 中了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create configmap xxx --from-file=application.yml</span><br></pre></td></tr></table></figure>
+<p>但是后面我们部署服务的时候，默认账户下 pod 应该是没有权限读取到 configmap 中的内容的，所以我们需要创建有权限的 serviceaccount。可以参考一下<a href="https://juejin.im/post/5d71b1b4518825462823825a" target="_blank" rel="noopener">这篇文章</a></p>
+<h3 id="创建-deployment-资源"><a href="#创建-deployment-资源" class="headerlink" title="创建 deployment 资源"></a>创建 deployment 资源</h3><p>创建 deployment 资源很简单，只要指定镜像地址，运行一个简单的命令即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create deployment xxxService --image=镜像地址</span><br></pre></td></tr></table></figure>
+<p>但是这样默认创建的 deployment 资源还是有点小问题的：</p>
+<ol>
+<li>还没有配置读取我们上面创建的 configmap</li>
+<li>由于我用的是阿里云私有镜像仓库，没有配置用户密码会拉取镜像失败</li>
+</ol>
+<p>对于第一个问题，我们需要将 configmap 挂在到容器中。参考配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: demo</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: demo</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: demo</span><br><span class="line">        image: xxx</span><br><span class="line">        imagePullPolicy: IfNotPresent</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 8080</span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: /deployments/config</span><br><span class="line">          name: easygo-device</span><br><span class="line">          readOnly: true</span><br><span class="line">      volumes:</span><br><span class="line">      - name: demo-config</span><br><span class="line">        configMap:</span><br><span class="line">          name: demo-configmap</span><br><span class="line">          items:</span><br><span class="line">            - key: application.yml</span><br><span class="line">              path: application.yml </span><br><span class="line">      imagePullSecrets:</span><br><span class="line">      - name: aliyun-docker-hub</span><br></pre></td></tr></table></figure>
+<p>对于第二问题，我们需要创建 secret 资源来保存我们私有仓库的用户名密码，然后配置在 deployment 资源上，即上面的 imagePullSecrets 属性。创建 secret 资源比较简单，见下面的命令。</p>
+<h3 id="创建-secret-资源"><a href="#创建-secret-资源" class="headerlink" title="创建 secret 资源"></a>创建 secret 资源</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret docker-registry 资源名称 --docker-server=仓库地址 --docker-username=&#123;UserName&#125; --docker-password=&#123;Password&#125; --docker-email=&#123;Email&#125;</span><br></pre></td></tr></table></figure>
+<p>资源名称就是上面配置的 aliyun-docker-hub ，名称可自定义。</p>
+<h3 id="暴露服务给集群外部调用"><a href="#暴露服务给集群外部调用" class="headerlink" title="暴露服务给集群外部调用"></a>暴露服务给集群外部调用</h3><p>默认情况下，k8s 集群外部是无法访问到集群内部的服务，所以我们需要将服务暴露出去，方式有很多种。具体可以看下<a href="https://jimmysong.io/posts/accessing-kubernetes-pods-from-outside-of-the-cluster/" target="_blank" rel="noopener">这篇文章</a></p>
+<p>最简单的方式是 NodePort，比如将 xxx 服务暴露出去，运行以下命令即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose deployment xxx --type=NodePort --port=8080</span><br></pre></td></tr></table></figure>
+<p>然后我们就可以通过节点IP加上面暴露的端口即可访问。</p>
+<p>而常用的方式是通过 Ingress 资源暴露，需要创建 Ingress 资源和部署 Ingress Controller。</p>
+<p>先看一下官方的 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/" target="_blank" rel="noopener">Ingrss 介绍</a></p>
+<p>然后 Ingress Controller 可以用 nginx ingress，部署方式见<a href="https://kubernetes.github.io/ingress-nginx/deploy/" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>本文只是介绍了 SpringCloud 迁移到 k8s 的大致流程，不是很完善，按照上面的步骤来弄应该还是会踩点坑。</p>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

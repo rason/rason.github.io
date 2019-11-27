@@ -135,7 +135,7 @@
 <h4 id="count"><a href="#count" class="headerlink" title="count"></a>count</h4><p>累积到 count 数目时提交.</p>
 <h4 id="count-time"><a href="#count-time" class="headerlink" title="count_time"></a>count_time</h4><p>到了时间或者到了累积的数目时提交.</p>
 <h4 id="manual"><a href="#manual" class="headerlink" title="manual"></a>manual</h4><p>手工提交, 需要在业务代码中调用 Acknowledgment.acknowledge() 提交, 调用之后，就是跟 batch 同理处理。</p>
-<h4 id="manual-immediate"><a href="#manual-immediate" class="headerlink" title="manual_immediate"></a>manual_immediate</h4><p>调用 Acknowledgment.acknowledge() 之后里面提交.</p>
+<h4 id="manual-immediate"><a href="#manual-immediate" class="headerlink" title="manual_immediate"></a>manual_immediate</h4><p>调用 Acknowledgment.acknowledge() 之后立马提交.</p>
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果你想业务代码发生异常时进行某些处理再提交, 你可能需要将 enable-auto-commit 设置为 false, 然后 ack-mode 设置为手工提交两种模式之一, 其他情况, 都会按照一定方式自动提交.</p>
 
         
