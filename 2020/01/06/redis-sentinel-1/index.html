@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Redis 哨兵模式（一）
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是-Sentinel"><span class="toc-text">什么是 Sentinel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sentinel-State"><span class="toc-text">Sentinel State</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sentinelRedisInstance"><span class="toc-text">sentinelRedisInstance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取主服务器信息"><span class="toc-text">获取主服务器信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取从服务器信息"><span class="toc-text">获取从服务器信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向主服务器和从服务器发送消息"><span class="toc-text">向主服务器和从服务器发送消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建连向其他-Sentinel-的命令连接"><span class="toc-text">创建连向其他 Sentinel 的命令连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Redis 哨兵模式（一）
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2020-01-06 19:17:12</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>上一篇文章研究了一下 Redis 的主从复制，如果再进一步思考，假设发生了主从切换的情况，客户端是怎么感知到，从而连接到主服务器进行读写操作呢？</p>
+<p>今天我们要研究的 Sentinel(哨兵) 模式就是 Redis 高可用的一种方案：由一个或多个 Sentinel 实例组成的 Sentinel 系统，可以监控任意多个主服务器，以及这些主服务器下的所有从服务器。当监控到主服务器下线之后，可以自动将某个从服务器升级为新的主服务器。</p>
+<p>由于篇幅原因，今天先来了解一下 Sentinel 的一些数据结构和消息通信的基本知识，有了今天的基础知识之后，下一篇文章再来了解如何检测服务器下线情况和故障转移。</p>
+<h3 id="什么是-Sentinel"><a href="#什么是-Sentinel" class="headerlink" title="什么是 Sentinel"></a>什么是 Sentinel</h3><p>Redis Sentinel 其实就是一个比较特殊的 Redis 服务器，可以通过 <code>redis-sentinel /path/to/your/sentinel.conf</code> 或者 <code>redis-server /path/to/your/sentinel.conf --sentinel</code> 来启动。</p>
+<p>当一个 Sentinel 启动时，它需要执行以下步骤：</p>
+<ol>
+<li>初始化服务器</li>
+<li>将普通 Redis 服务器使用的代码替换成 Sentinel 代码</li>
+<li>初始化 Sentinel 状态</li>
+<li>根据给定的配置文件，初始化 Sentinel 的监控主服务器列表</li>
+<li>创建与主服务器的网络连接</li>
+</ol>
+<p>从上面的步骤我们可以得到的信息：Sentinel 就是一个普通的 Redis 服务器替换了一些达到 Sentinel 功能的代码，根据配置文件初始化并监控主服务器。</p>
+<p>既然要监控 Redis 服务器的情况，那么 Sentinel 肯定有数据结构来保存相关的信息，然后才根据相关信息来做决策。所以，我们要先了解 Sentinel 的数据结构。</p>
+<h3 id="Sentinel-State"><a href="#Sentinel-State" class="headerlink" title="Sentinel State"></a>Sentinel State</h3><p>Sentinel 用一个叫做 sentinelState 的数据结构保存了服务器中所有和 Sentinel 功能有关的状态（服务器的一般状态仍然由 redisServer 数据结构来保存，因为 Sentinel 本质也是一个 Redis 服务器）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct sentinelState &#123;</span><br><span class="line">	// 当前纪元，用于实现故障转移</span><br><span class="line">	uint64_t current_epoch;</span><br><span class="line"></span><br><span class="line">	// 保存了所以被这个 sentinel 监控的主服务器</span><br><span class="line">	// 字典的 key 是主服务器的名称，在 sentinel.conf 配置文件中指定</span><br><span class="line">	// 字典的值是一个指向 sentinelRedisInstance 结构的指针</span><br><span class="line">	dict *masters;</span><br><span class="line">	int tilt;</span><br><span class="line">	int running_scripts;</span><br><span class="line">	mstime_t tilt_start_time;</span><br><span class="line">	mstime_t previous_time;</span><br><span class="line">	list *scripts_queue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>本次我们的主题只需要关注有注释的两个属性，其中重点就是 masters 属性，这里记录了 Sentinel 系统所监控的主服务器。这个时候大家可能就会有疑问了，Sentinel 不是还监控主服务下面的所有从服务器吗，为什么 sentinelState 这个数据结构没有 slaves 属性？这是因为 slaves 被保存到 sentinelRedisInstance 结构了。</p>
+<h3 id="sentinelRedisInstance"><a href="#sentinelRedisInstance" class="headerlink" title="sentinelRedisInstance"></a>sentinelRedisInstance</h3><p>上面提到 Sentinel 监控的 masters 信息被保存在 sentinelRedisInstance 这个数据结构中。其实不仅是 master , slave 和 Sentinel 系统中的其他 Sentinel 节点信息也是用这个数据结构来保存，只是不同的角色所用到的属性不太一样。现在我们来看下这个数据结构的几个关键属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">struct sentinelRedisInstance &#123;</span><br><span class="line">	// 标识值，记录了实例的类型，以及该实例的当前状态</span><br><span class="line">	int flags;</span><br><span class="line"></span><br><span class="line">	// 实例的名字</span><br><span class="line">	// 主服务器的名字由用户在配置文件中指定</span><br><span class="line">	// 从服务器以及 Sentinel 的名字由 Sentinel 自动设置，格式为 IP:PORT</span><br><span class="line">	char *name;</span><br><span class="line"></span><br><span class="line">	// 实例运行ID</span><br><span class="line">	char *runid;</span><br><span class="line"></span><br><span class="line">	// 配置纪元，用于实现故障转移</span><br><span class="line">	uint64_t config_epoch;</span><br><span class="line"></span><br><span class="line">	// 实例的地址，这个数据结构保存的是实例的 IP 和 PORT</span><br><span class="line">	sentinelAddr *addr;</span><br><span class="line"></span><br><span class="line">	// 实例多少毫秒没响应被认为主观下线，由 SENTINEL down-after-milliseconds 指定</span><br><span class="line">	mstime_t down_after_period;</span><br><span class="line"></span><br><span class="line">	// 多少个实例认为主观下线之后变为客观下线，即 SENTINEL monitor &lt;master-name&gt; &lt;ip&gt; &lt;port&gt; &lt;quorum&gt; 中的 quorum 参数</span><br><span class="line">	int quorum;</span><br><span class="line"></span><br><span class="line">	// 在执行故障转移时，可以同时对新的主服务器进行同步的从服务器数量</span><br><span class="line">	int parallel_syncs;</span><br><span class="line"></span><br><span class="line">	// 故障转移超时时间</span><br><span class="line">	mstime_t failover_timeout;</span><br><span class="line"></span><br><span class="line">	// 这个属性只有 master 才有，保存的是该 master 下属的所有 slave。key 是 ip:port，value 是 sentinelRedisInstance 指针</span><br><span class="line">	dict *slaves;</span><br><span class="line"></span><br><span class="line">	// 这个属性只有 master 才有，保存的是监控该 master的所有 Sentinel。key 是 ip:port，value 是 sentinelRedisInstance 指针</span><br><span class="line">	dict *sentinels;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>核心的两个数据结构我们已经有所了解，为了让大家更有体感，我们来画一下具有三个 Sentinel 和一主两备的 Redis 实例的结构图。</p>
+<p>假设我们 sentinel.conf 配置文件中配置的 master 名字为 mymaster。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-deploy.png" alt="Sentinel deployment"></p>
+<p>上面是部署结构图，三个 Sentinel 和一主两备的 Redis 实例，下面是数据结构。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-datastruct.png" alt="Sentinel data struct"></p>
+<h3 id="获取主服务器信息"><a href="#获取主服务器信息" class="headerlink" title="获取主服务器信息"></a>获取主服务器信息</h3><p>看完上面的示例，大家可能会有个疑问，在初始化的时候，我们配置文件只配置了 master 的相关信息，并没有配置 slave 的信息，Sentinel 是怎么获取到 slave 的信息并保存在数据结构中的呢？</p>
+<p>回想一下主从复制的部署过程，从服务会通过 SLAVEOF 命令来复制主服务器，建立了双方之间的联系，此时主服务器是有 slave 服务器的相关信息。所以，在 Sentinel 初始化的时候并不需要那么麻烦把 slave 服务器也配置到 sentinel.conf 配置文件中。</p>
+<p>Sentinel 初始化的最后一步是创建到主服务器的网络连接，包含命令连接和订阅连接：</p>
+<ul>
+<li>命令连接：用于向主服务发送命令，并接收命令回复</li>
+<li>订阅连接：用于订阅主服务器的 <code>__sentinel__:hello</code> 频道，这个作用后面会介绍</li>
+</ul>
+<p>Slave 服务器的信息就是通过命令连接来发现的，Sentinel 默认会以十秒一次的频率，通过向主服务发送 INFO 命令，主要可以获得以下两方面的信息：</p>
+<ul>
+<li>主服务器本身的信息，如 run_id 和 role</li>
+<li>所有从服务器信息，包含 ip 和 port</li>
+</ul>
+<p>根据这些返回的信息，就可以更新上面的数据结构中的内容了。</p>
+<h3 id="获取从服务器信息"><a href="#获取从服务器信息" class="headerlink" title="获取从服务器信息"></a>获取从服务器信息</h3><p>从主服务器信息中获取到所有从服务器的 ip 和 port 之后，Sentinel 也会创建到从所有从服务器的命令连接和订阅连接，也就是说 Sentinel 对所有监控的 Redis 服务器（不管主从）都会建立命令连接和订阅连接。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-link.png" alt="Sentinel network"></p>
+<p>创建命令连接之后，也是十秒一次的频率向从服务器发送 INFO 命令获取相关信息：</p>
+<ul>
+<li>从服务器 run_id, role, slave_priority, slave_repl_offset</li>
+<li>主服务器 master_host, master_port</li>
+<li>主从服务器连接状态 master_link_status</li>
+</ul>
+<p>获取到这些信息之后更新从服务器的 sentinelRedisInstance。</p>
+<h3 id="向主服务器和从服务器发送消息"><a href="#向主服务器和从服务器发送消息" class="headerlink" title="向主服务器和从服务器发送消息"></a>向主服务器和从服务器发送消息</h3><p>现在，我们已经知道 Sentinel 怎么发现 slave 服务器的了，但是现在另外一个疑问来了，Sentinel 是怎么发现其他 Sentinel 的呢？Sentinel 之间是需要互相通信的，这样才能进行故障转移等工作，所以 Sentinel 之间必须能够互相发现。</p>
+<p>答案就是通过上面所说的订阅链接，从订阅的 <code>__sentinel__:hello</code> 频道接收到信息，这些信息包含了其他 Sentinel 的信息。那么 <code>__sentinel__:hello</code> 频道里面的信息是谁发送的呢？必然需要有客户端向 <code>__sentinel__:hello</code> 频道发送了消息，Sentinel 才能收到消息。</p>
+<p>既然是通过订阅连接发现其他 Sentinel ，只有 Sentinel 本身知道自己的信息，所以转了一圈发送信息到 <code>__sentinel__:hello</code> 频道的也是 Sentinel。简单来说就是 Sentinel 通过 PUBLISH 命令向所有被监控的主服务器和从服务器的 <code>__sentinel__:hello</code> 频道发送消息，告诉别的 Sentinel 自身的相关信息。</p>
+<p>在默认情况下，Sentinel 会以两秒一次的频率，通过命令连接向所有被监控的主服务器和从服务器发送以下格式的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PUBLISH `__sentinel__:hello` &quot;&lt;s_ip&gt;,&lt;s_port&gt;,&lt;s_runid&gt;,&lt;s_epoch&gt;,&lt;m_name&gt;,&lt;m_ip&gt;,&lt;m_port&gt;,&lt;m_epoch&gt;&quot;</span><br></pre></td></tr></table></figure>
+<p>其中 s_ 开头的参数是 Sentinel 本身的信息，而 m_ 开头的参数是主服务器的信息。</p>
+<p>以我们上面的例子来说，当 Sentinel1， Sentinel2， Sentinel3， 都向他们所监控的所有主服务器和从服务器发送了 PUBLISH 命令之后，三个 Sentinel 都会通过订阅连接获取到各自发送的消息，包含自己发送的那一条。当一个 Sentinel 从 <code>__sentinel__:hello</code> 频道收到一条消息时，会对这条消息进行分析：</p>
+<ul>
+<li>如果 Sentinel runid 跟自己的 runid 相同，证明是自己发送的，则不作处理</li>
+<li>如果不同，证明是其他 Sentinel 发送过来的，然后就更新数据结构</li>
+</ul>
+<h3 id="创建连向其他-Sentinel-的命令连接"><a href="#创建连向其他-Sentinel-的命令连接" class="headerlink" title="创建连向其他 Sentinel 的命令连接"></a>创建连向其他 Sentinel 的命令连接</h3><p>通过 <code>__sentinel__:hello</code> 频道发现了其他的 Sentinel ，那么为了和其他 Sentinel 通信，需要建立与其他 Sentinel 的命令连接。最终监控同一个主服务的多个 Sentinel 将形成互相连接的网络：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-network.png" alt="Sentinel network"></p>
+<p>通过命令连接相连的各个 Sentinel 可以通过向其他 Sentinel 发送命令请求来进行信息交换，下一篇文章要介绍的检测主观下线、客观下线就是通过信息交换来实现的。</p>
+<p>这里要注意的是，Sentinel 在连接主服务器和从服务器时，会同时创建命令连接和订阅连接，但是在连接其他 Sentinel 时，却只会创建命令连接，因为他们已经互相发现了，没必要用订阅连接。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>今天的文章由于篇幅关系其实还没有讲到核心功能，检测服务器状态和故障转移，但是有了这些基础之后就很简单了，现在做一个小结：</p>
+<ul>
+<li>Sentinel 是一个特殊的 Redis 服务器，通过配置文件获取要监控的 master 信息</li>
+<li>Sentinel 通过向主服务发送 INFO 命令获取到 slave 信息</li>
+<li>Sentinel 通过订阅 <code>__sentinel__:hello</code> 频道获取其他 Sentinel 信息</li>
+<li>Sentinel 会向主服务和所属的从服务器建立命令连接和订阅连接，每十秒发送 INFO 命令，每两秒发送 PUBLISH 命令</li>
+<li>Sentinel 之间只会建立命令连接</li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

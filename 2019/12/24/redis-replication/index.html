@@ -56,25 +56,25 @@
             <li>
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
 <!--            <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
     -->        <li>
                 <a href="/archives">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li>
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
@@ -93,7 +93,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input">
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -117,10 +117,10 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-12-24 15:55:51</span></span>
+        <span class="attr">Post：<span>2019-12-24 15:55:51</span></span>
         
         
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 
     </div>
@@ -144,7 +144,7 @@
 <h4 id="命令传播"><a href="#命令传播" class="headerlink" title="命令传播"></a>命令传播</h4><p>在同步操作执行完毕之后，主从服务器两者的数据库将达到一致状态，但这种一致并不是一成不变的，每当主服务器执行客户端发送的写命令时，主服务器的数据库就有可能会被修改，并导致主从服务器不再一致。</p>
 <p>为了让主从服务器再次回到一致状态，主服务器需要对从服务器执行命令传播操作：主服务器会将自己执行的写命令发送给从服务器执行，当从服务器执行了相同的写命令之后，主从服务器将再次回到一致状态。</p>
 <h4 id="部分同步"><a href="#部分同步" class="headerlink" title="部分同步"></a>部分同步</h4><p>相信大家都能想到，如果从服务器因为网络中断了比较短的时间，此时主从服务器的数据库差别可能并不是特别大，每次都要全量同步的话就非常浪费资源了。</p>
-<p>在 Redis 2.8 之后引入了部分同步（PSYNC），部分同步功能由一下三个部分构成：</p>
+<p>在 Redis 2.8 之后引入了部分同步（PSYNC），部分同步功能由以下三个部分构成：</p>
 <ol>
 <li>主服务器的复制偏移量（replication offset）和从服务器的复制偏移量。</li>
 <li>主服务器的复制积压缓冲区（replication backlog）。</li>
@@ -180,7 +180,10 @@
 <li>Redis 2.8 之后通过复制偏移量，复制积压缓冲区，服务器运行 ID 引入了部分同步</li>
 <li>Redis 4.0 之后通过 master_replid 和 master_replid2 解决主备切换全量同步的问题</li>
 </ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.jianshu.com/p/54dabc470eb6" target="_blank" rel="noopener">Redis 4.0 解决全量同步问题</a><br><a href="https://www.cnblogs.com/kismetv/p/9236731.html" target="_blank" rel="noopener">Redis 主从复制</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://www.jianshu.com/p/54dabc470eb6" target="_blank" rel="noopener">Redis 4.0 解决全量同步问题</a></li>
+<li><a href="https://www.cnblogs.com/kismetv/p/9236731.html" target="_blank" rel="noopener">Redis 主从复制</a></li>
+</ul>
 
         
         <br>
