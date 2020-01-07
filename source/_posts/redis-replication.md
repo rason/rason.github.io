@@ -38,7 +38,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 
 相信大家都能想到，如果从服务器因为网络中断了比较短的时间，此时主从服务器的数据库差别可能并不是特别大，每次都要全量同步的话就非常浪费资源了。
 
-在 Redis 2.8 之后引入了部分同步（PSYNC），部分同步功能由一下三个部分构成：
+在 Redis 2.8 之后引入了部分同步（PSYNC），部分同步功能由以下三个部分构成：
 
 1. 主服务器的复制偏移量（replication offset）和从服务器的复制偏移量。
 2. 主服务器的复制积压缓冲区（replication backlog）。
@@ -97,6 +97,6 @@ master_replid 和 master_replid2 跟 runid 没有关系，只是生成的规则�
 
 ### 参考资料
 
-[Redis 4.0 解决全量同步问题](https://www.jianshu.com/p/54dabc470eb6)
-[Redis 主从复制](https://www.cnblogs.com/kismetv/p/9236731.html)
+- [Redis 4.0 解决全量同步问题](https://www.jianshu.com/p/54dabc470eb6)
+- [Redis 主从复制](https://www.cnblogs.com/kismetv/p/9236731.html)
 
