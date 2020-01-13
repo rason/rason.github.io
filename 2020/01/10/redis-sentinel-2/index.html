@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Redis 哨兵模式（二）
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/spring.png">
+        </div>
+        <div class="name">
+            <i>rason</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+<!--            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+    -->        <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#检测主观下线"><span class="toc-text">检测主观下线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#检测客观下线"><span class="toc-text">检测客观下线</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#发送-Sentinel-is-master-down-by-addr-命令"><span class="toc-text">发送 Sentinel is-master-down-by-addr 命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#接收-Sentinel-is-master-down-by-addr-命令"><span class="toc-text">接收 Sentinel is-master-down-by-addr 命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#接收-Sentinel-is-master-down-by-addr-命令的回复"><span class="toc-text">接收 Sentinel is-master-down-by-addr 命令的回复</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选举-Leader-Sentinel"><span class="toc-text">选举 Leader Sentinel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#故障转移"><span class="toc-text">故障转移</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#选出新的主服务器"><span class="toc-text">选出新的主服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改从服务器的复制目标"><span class="toc-text">修改从服务器的复制目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#将旧的主服务器变为从服务器"><span class="toc-text">将旧的主服务器变为从服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Redis 哨兵模式（二）
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2020-01-10 16:50:38</span></span>
+        
+        
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>在上一篇文章中学习了 Sentinel 基本的数据结构和消息通信，现在我们来看一下监控和故障转移。</p>
+<h3 id="检测主观下线"><a href="#检测主观下线" class="headerlink" title="检测主观下线"></a>检测主观下线</h3><p>众所周知，检测服务是否可用的常用方式就是通过发起一个请求，等待服务的响应，如果服务在某个规定的时间点内都没有响应，那么我们就会认为服务挂掉了。</p>
+<p>Sentinel 检测主观下线也是采用类似的方式，在默认的情况下，Sentinel 会以每秒一次的频率向所有与它创建了命令连接的实例（包括主服务器，从服务器和其他 Sentinel）发送 PING 命令，并通过响应信息来判断实例是否在线。</p>
+<ul>
+<li>有效响应：实例返回 +PONG, -LOADING, -MASTERDOWN 三种其中一种</li>
+<li>无效响应：返回以上三种之外的的其他响应或者是没有响应</li>
+</ul>
+<p>Sentinel 配置文件中的 <code>down-after-milliseconds</code> 属性用于判断实例进入主观下线所需要的时间：即在 <code>down-after-milliseconds</code> 配置的毫秒数内，连续向 Sentinel 返回无效响应，则认为实例进入主观下线状态，此时会更新数据结构中的 flags 属性，打开 <code>SRI_S_DOWN</code> 标识。</p>
+<p>比如，主服务器在 <code>down-after-milliseconds</code> 时间范围内没有返回有效响应，则数据结构会更新如下：</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sri_s_down.png" alt="Sentinel network"></p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>down-after-milliseconds</code> 不仅用于判断主服务器主观下线，还用于从服务器和其他 Sentinel</li>
+<li>每个 Sentinel 配置的 <code>down-after-milliseconds</code> 时间有可能不同，如果配置不同，会出现 Sentinel1 认为已经主观下线，而 Sentinel2 不这样认为</li>
+</ul>
+<h3 id="检测客观下线"><a href="#检测客观下线" class="headerlink" title="检测客观下线"></a>检测客观下线</h3><p>当 Sentinel 将一个主服务器判断为下线之后，为了确认该主服务是否真的下线，它会向同样监视这一主服务器的其他 Sentinel 进行询问，看它们是否也认为主服务已经进入了下线状态（可以是主观下线或者客观下线）。当 Sentinel 从其他 Sentinel 那里接受到足够数量的已下线判断，Sentinel 就会将主服务器判断为客观下线，并对其执行故障转移操作。</p>
+<h4 id="发送-Sentinel-is-master-down-by-addr-命令"><a href="#发送-Sentinel-is-master-down-by-addr-命令" class="headerlink" title="发送 Sentinel is-master-down-by-addr 命令"></a>发送 Sentinel is-master-down-by-addr 命令</h4><p>Sentinel 通过使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sentinel is-master-down-by-addr &lt;ip&gt; &lt;port&gt; &lt;current_epoch&gt; &lt;runid&gt;</span><br></pre></td></tr></table></figure>
+<p>命令询问其他 Sentinel 是否判断主服务已经下线，各参数意义如下：</p>
+<ul>
+<li>ip: 被 Sentinel 判断为主观下线的主服务器 IP 地址</li>
+<li>port: 被 Sentinel 判断为主观下线的主服务器 PORT 地址</li>
+<li>current_epoch: Sentinel 当前的配置纪元，用于选举 Leader Sentinel</li>
+<li>run_id: 可以是 <em> 或者 Sentinel 的 run_id：</em> 代表仅用于检测主服务器的客观下线状态，而 run_id 则用于选举 Leader Sentinel</li>
+</ul>
+<h4 id="接收-Sentinel-is-master-down-by-addr-命令"><a href="#接收-Sentinel-is-master-down-by-addr-命令" class="headerlink" title="接收 Sentinel is-master-down-by-addr 命令"></a>接收 Sentinel is-master-down-by-addr 命令</h4><p>当一个 Sentinel 接收到另一个 Sentinel 的 <code>is-master-down-by-addr</code> 命令之后，会根据参数来检测主服务是否已经下线，然后返回一条包含以下三个参数的回复：</p>
+<ul>
+<li>down_status: 1 代表主服务已下线，0 代表未下线</li>
+<li>leader_runid: 可以是 * 或者该响应 Sentinel 判断出的局部 Leader Sentinel run_id</li>
+<li>leader_epoch: 仅在 leader_runid 不为 <em> 时有效，leader_runid 为 </em> 时总是 0</li>
+</ul>
+<h4 id="接收-Sentinel-is-master-down-by-addr-命令的回复"><a href="#接收-Sentinel-is-master-down-by-addr-命令的回复" class="headerlink" title="接收 Sentinel is-master-down-by-addr 命令的回复"></a>接收 Sentinel is-master-down-by-addr 命令的回复</h4><p>Sentinel 根据回复统计其他 Sentinel 判断主服务已下线的数量，当这一数量达到配置指定的判断客观下线所需的数量时，Sentinel 就会将主服务 sentinelRedisInstance 数据结构中的 flags 属性 SRI_O_DOWN 标识打开，表示主服务已经进入客观下线状态。</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sri_o_down.png" alt="Sentinel network"></p>
+<p><strong>注意：</strong> 不同的 Sentinel 配置判断客观下线的数量可能存在不同</p>
+<h3 id="选举-Leader-Sentinel"><a href="#选举-Leader-Sentinel" class="headerlink" title="选举 Leader Sentinel"></a>选举 Leader Sentinel</h3><p>当一个主服务器被判断为客观下线时，监视这个下线主服务的各个 Sentinel 会进行协商，选举出一个 Leader Sentinel，并由 Leader Sentinel 对下线的主服务器执行故障转移。</p>
+<p>选举规则和方法：</p>
+<ul>
+<li>所有在线的 Sentinel 都有被选举为 Leader 的资格</li>
+<li>每次选举之后，不论选举是否成功，所有 Sentinel 的 epoch 都会自增一次</li>
+<li>在一个配置纪元里面，所有 Sentinel 都有一次将某个 Sentinel 设置为局部 Leader Sentinel 的机会，并且设置之后再这个纪元之内就不能改变</li>
+<li>每个发现主服务进入客观下线的 Sentinel 都会要求其他 Sentinel 将自己设置为局部 Leader Sentinel</li>
+<li>当 Sentinel 向其他 Sentinel 发送 <code>is-master-down-by-addr</code> 命令中参数设置了自己的 run_id 就是让其他 Sentinel 选举自己为 Leader</li>
+<li>Sentinel 设置局部 Leader 的规则是先到先得，后到的会被拒绝</li>
+<li>Sentinel 会根据 <code>is-master-down-by-addr</code> 命令的回复取出 epoch 看是否跟自己的一致，如果一致再取出 leader_runid 看是否跟自己一直，如果一致则表示选举了自己为局部 Leader</li>
+<li>如果某个 Sentinel 有超过半数的 Sentinel 设置自己为局部 Leader，那么这个 Sentinel 成为真正的 Leader</li>
+<li>如果在规定的时间内没有选举出一个 Leader ，那么在一段时间之后再次选举，知道选举出一个 Leader 为止</li>
+</ul>
+<p>有熟悉的读者可能已经看出，这就是 Raft 选举算法。</p>
+<h3 id="故障转移"><a href="#故障转移" class="headerlink" title="故障转移"></a>故障转移</h3><p>选举出 Leader 之后，Leader 将会对已下线的主服务器执行故障转移操作，该操作包含三个步骤：</p>
+<ol>
+<li>挑选一个从服务器作为新的主服务器</li>
+<li>让其他从服务器改为复制新的主服务器</li>
+<li>将已下线的主服务设置为新的主服务器的从服务器</li>
+</ol>
+<h4 id="选出新的主服务器"><a href="#选出新的主服务器" class="headerlink" title="选出新的主服务器"></a>选出新的主服务器</h4><p>故障转移的第一步就是挑选出一个状态良好，数据完整的从服务器，然后向其发送 SLAVEOF no one 命令，将这个从服务器转换为主服务器。</p>
+<p>Leader 会将已下线主服务器的所有从服务器保存到一个列表里面，然后按照以下规则，一项项地对列表进行过滤：</p>
+<ol>
+<li>删除列表中处于下线或者断线状态的从服务器</li>
+<li>删除列表中最近五秒没有回复过 Leader Sentinel 的 INFO 命令的从服务器</li>
+<li>删除所有与已下线主服务器连接断开超过 down-after-milliseconds * 10 毫秒的从服务器</li>
+</ol>
+<p>之后，Leader 将根据从服务器的优先级，对列表中剩余的从服务器进行排序，选出优先级最高的从服务器。如果有相同最高优先级的，则选出偏移量最大的。如果偏移量也相同，则根据 run_id 排序选出最小的从服务器。</p>
+<p>在向挑选出的从服务器发送 <code>SLAVEOF no one</code> 命令之后，Leader Sentinel 会以每秒一次的频率（平时是每十秒一次）向被升级的从服务发送 INFO 命令，并观察回复中的 role 信息。当被升级服务器的 role 从原来的 slave 变为 master 时，Leader 就知道被选中的从服务器已经升级为主服务器了。</p>
+<h4 id="修改从服务器的复制目标"><a href="#修改从服务器的复制目标" class="headerlink" title="修改从服务器的复制目标"></a>修改从服务器的复制目标</h4><p>选举出新的主服务器之后，下一步就是向其他从服务器发送 SLAVEOF 命令，让它们复制新的主服务器。</p>
+<h4 id="将旧的主服务器变为从服务器"><a href="#将旧的主服务器变为从服务器" class="headerlink" title="将旧的主服务器变为从服务器"></a>将旧的主服务器变为从服务器</h4><p>因为旧的服务器已经下线，所以这个设置是保存在旧的主服务器 redisSentinelInstance 数据结构中。当旧的主服务器重新上线时，Sentinel 就会向它发送 SLAVEOF 命令，让它成为新的主服务器的从服务器。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ul>
+<li>Sentinel 通过每秒一次的 PING 命令来判断服务器是否主观下线</li>
+<li>对于主观下线的主服务器，Sentinel 通过 <code>is-master-down-by-addr</code> 命令询问其他 Sentinel 是否也判断为主观下线</li>
+<li>当有足够多的 Sentinel 判断主服务为主观下线则会设置为客观下线</li>
+<li>当主服务器客观下线之后，Sentinel 会通过 Raft 算法选举出一个 Leader Sentinel 进行故障转移</li>
+<li>故障转移三个步骤：选举新主，其他从服务器复制新主，旧服务器设置为新主的 Slave</li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+<!--        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
+ <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
+</p> 
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
