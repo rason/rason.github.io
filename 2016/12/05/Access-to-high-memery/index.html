@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="Linux HighMemery">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>访问高区内存 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        访问高区内存
+            <h1>访问高区内存</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Dec 05 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux内核的解决方案"><span class="toc-text">Linux内核的解决方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存映射函数"><span class="toc-text">内存映射函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内核空间可视化"><span class="toc-text">内核空间可视化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kmap-如何工作"><span class="toc-text">kmap()如何工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kmap-high-如何工作"><span class="toc-text">kmap_high()如何工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kunmap-的目的"><span class="toc-text">kunmap()的目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#引用计数器"><span class="toc-text">引用计数器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#刷新TLB"><span class="toc-text">刷新TLB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#中断程序如何处理"><span class="toc-text">中断程序如何处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#临时映射kmap-atomic"><span class="toc-text">临时映射kmap_atomic()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#扩展阅读"><span class="toc-text">扩展阅读</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Linux/#Linux">Linux</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        访问高区内存
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-12-05 13:55:57</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#HighMemery" title="HighMemery">HighMemery</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>32位系统最大的寻址范围是4GB，通常会将这4GB虚拟内存地址空间分成3GB的用户空间和1GB的内核空间。也就是说内核能直接映射到物理地址的最大范围是1GB的地址（实际上只有896MB直接映射），那么内核怎么访问超过1GB的物理地址？今天我们来学习Linux内核的解决方案。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>32位系统最大的寻址范围是4GB，通常会将这4GB虚拟内存地址空间分成3GB的用户空间和1GB的内核空间。也就是说内核能直接映射到物理地址的最大范围是1GB的地址（实际上只有896MB直接映射），那么内核怎么访问超过1GB的物理地址？今天我们来学习Linux内核的解决方案。</p>
 <h2 id="Linux内核的解决方案"><a href="#Linux内核的解决方案" class="headerlink" title="Linux内核的解决方案"></a>Linux内核的解决方案</h2><ul>
 <li>高区内存页框只有在真正需要的时候才会被映射</li>
 <li>这些页框用完之后会被释放以便其它页框可以重用相同的虚拟地址</li>
@@ -201,66 +109,49 @@
 <li><a href="https://en.wikipedia.org/wiki/High_memory" target="_blank" rel="noopener">Wikipedia Highmemery</a></li>
 <li><a href="https://linux-mm.org/HighMemory" target="_blank" rel="noopener">HighMemery</a></li>
 </ol>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/HighMemery/#HighMemery">HighMemery</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/12/05/Access-to-high-memery/ - 访问高区内存 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

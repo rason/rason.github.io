@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="Data Partition">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Data Partition - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        Data Partition
+            <h1>Data Partition</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Dec 05 2017
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象模型"><span class="toc-text">抽象模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#哈希分片"><span class="toc-text">哈希分片</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#哈希取模"><span class="toc-text">哈希取模</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟桶"><span class="toc-text">虚拟桶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一致性哈希"><span class="toc-text">一致性哈希</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#路由问题"><span class="toc-text">路由问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#哈希分片缺点"><span class="toc-text">哈希分片缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#范围分片"><span class="toc-text">范围分片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#按数据量分片"><span class="toc-text">按数据量分片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用"><span class="toc-text">应用</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Distributed/#Distributed">Distributed</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        Data Partition
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2017-12-05 15:28:59</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Partition" title="Partition">Partition</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在学习新技术的时候，我习惯先了解该项技术出现的背景，简单来说就是<strong>为了解决什么问题而出现的？</strong>今天所研究的数据分片出现的背景就是<strong>单机无法存储与处理大规模的数据量</strong>，只能依靠大规模集群来对这些数据进行存储和处理。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在学习新技术的时候，我习惯先了解该项技术出现的背景，简单来说就是<strong>为了解决什么问题而出现的？</strong>今天所研究的数据分片出现的背景就是<strong>单机无法存储与处理大规模的数据量</strong>，只能依靠大规模集群来对这些数据进行存储和处理。</p>
 <p>那么，现在要思考的问题就是如何分片并且分配到各个机器中，分片后如何找到某条记录的存储位置——数据路由。延伸还要思考高可用的问题，因为单个分片挂了数据就丢失了，因此需要复制一些副本，但是引入副本就会涉及并发对数据更新时如何保证数据一致性的问题。</p>
 <p>此时，脑子可能陷入了一团糟，要思考的问题这么多，怎么才能考虑得全面？传说<strong>计算机中的任何问题都可以通过分层或者分治的方法来解决</strong>，那么我们分而治之，先不管副本和一致性的问题，先研究一下分片的问题。</p>
 <h2 id="抽象模型"><a href="#抽象模型" class="headerlink" title="抽象模型"></a>抽象模型</h2><p>从上面的分析，我们需要解决两个问题：</p>
@@ -214,66 +122,49 @@
 </tr>
 </tbody>
 </table>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Partition/#Partition">Partition</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2017/12/05/Data-Partition/ - Data Partition @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

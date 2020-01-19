@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="Cookie and Session">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Cookie and Session - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        Cookie and Session
+            <h1>Cookie and Session</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Dec 10 2015
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cookie"><span class="toc-text">Cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie配置项"><span class="toc-text">Cookie配置项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-Web中如何使用Cookie"><span class="toc-text">Java Web中如何使用Cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Cookie需要考虑的问题"><span class="toc-text">使用Cookie需要考虑的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Session"><span class="toc-text">Session</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Session工作原理"><span class="toc-text">Session工作原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Java-Web/#Java Web">Java Web</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        Cookie and Session
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2015-12-10 10:02:30</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Cookie and Session" title="Cookie and Session">Cookie and Session</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>存在即合理，探究一样新东西，我们应当从根源出发。它为何存在，它的存在解决了什么问题？就这篇文章的主题来说，Cookie和Session解决了什么问题？我们知道HTTP协议是一种无状态的协议，也就是说，用户的两次访问，服务器不知道他们是不是同一个人。我们知道是不是同一个人有什么作用？这作用当然是很大的，你不可能动用我账户的钱吧？另外，服务器也不可能让你每次请求都得登录一下吧？还有访问一个模块的时候服务器不可能每次都查询数据库获取你的权限吧？</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>存在即合理，探究一样新东西，我们应当从根源出发。它为何存在，它的存在解决了什么问题？就这篇文章的主题来说，Cookie和Session解决了什么问题？我们知道HTTP协议是一种无状态的协议，也就是说，用户的两次访问，服务器不知道他们是不是同一个人。我们知道是不是同一个人有什么作用？这作用当然是很大的，你不可能动用我账户的钱吧？另外，服务器也不可能让你每次请求都得登录一下吧？还有访问一个模块的时候服务器不可能每次都查询数据库获取你的权限吧？</p>
 <h2 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h2><p>Cookie的作用正是可以解决上述问题，当用户通过HTTP协议访问服务器的时候，服务器会返回一些Key/Value给客户端浏览器，并对这些数据加上一些限制条件，在条件符合时用户再次访问这个服务器时，数据又被完成地返回服务器。因此，我们可以利用Cookie来记录一些用户的信息，这样就可以达到区分用户的作用了。</p>
 <a id="more"></a>
 <h3 id="Cookie配置项"><a href="#Cookie配置项" class="headerlink" title="Cookie配置项"></a>Cookie配置项</h3><p>Cookie是HTTP协议的一个配置项，映射到Java中就是一个Cookie对象，那么Cookie具有哪些可以配置的熟悉？这里只挑几个重点要理解的知道一下就行了：</p>
@@ -191,66 +99,49 @@
 <li><strong>Cookie如何使用和存在的问题</strong></li>
 <li><strong>Session的工作原理</strong></li>
 </ul>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Cookie-and-Session/#Cookie and Session">Cookie and Session</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2015/12/10/Cookie-and-Session/ - Cookie and Session @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

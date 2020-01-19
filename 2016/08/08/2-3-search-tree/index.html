@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="2-3 search tree">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>2-3查找树 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        2-3查找树
+            <h1>2-3查找树</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Aug 08 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3查找树"><span class="toc-text">2-3查找树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查找操作"><span class="toc-text">查找操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#插入操作"><span class="toc-text">插入操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#向2-结点插入新键"><span class="toc-text">向2-结点插入新键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向一棵只含有一个3-结点的树中插入新键"><span class="toc-text">向一棵只含有一个3-结点的树中插入新键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向一个父结点为2-结点的3-结点中插入新键"><span class="toc-text">向一个父结点为2-结点的3-结点中插入新键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向一个父结点为3-结点的3-结点中插入新键"><span class="toc-text">向一个父结点为3-结点的3-结点中插入新键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分解根结点"><span class="toc-text">分解根结点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#局部变换"><span class="toc-text">局部变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全局性质"><span class="toc-text">全局性质</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3树的生长"><span class="toc-text">2-3树的生长</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Algorithm/#Algorithm">Algorithm</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        2-3查找树
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-08-08 08:47:43</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Algorithm" title="Algorithm">Algorithm</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在随机分布的情况下，<strong>二叉查找树已经具有很好的性能，只不过在最坏（有序）的情况下性能还是比较糟糕</strong>。在本文中我们会学习一种二分查找树并能保证无论如何构造它，它的运行时间都是对数级别的。理想情况下我们希望能够保持二分查找树的平衡性。在一棵含有N个结点的树中，我们希望树高为～lgN，这样我们就能够保持所有查找能在～lgN次比较内结束。然而在二叉查找树插入时要保持树的完美平衡的代价太高了。今天要学习的<strong>2-3查找树</strong>能够实现<strong>插入时保持完美平衡</strong>，能够保证符号表API中所有操作（范围查找除外）均能够在对数时间内完成。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在随机分布的情况下，<strong>二叉查找树已经具有很好的性能，只不过在最坏（有序）的情况下性能还是比较糟糕</strong>。在本文中我们会学习一种二分查找树并能保证无论如何构造它，它的运行时间都是对数级别的。理想情况下我们希望能够保持二分查找树的平衡性。在一棵含有N个结点的树中，我们希望树高为～lgN，这样我们就能够保持所有查找能在～lgN次比较内结束。然而在二叉查找树插入时要保持树的完美平衡的代价太高了。今天要学习的<strong>2-3查找树</strong>能够实现<strong>插入时保持完美平衡</strong>，能够保证符号表API中所有操作（范围查找除外）均能够在对数时间内完成。</p>
 <h2 id="2-3查找树"><a href="#2-3查找树" class="headerlink" title="2-3查找树"></a>2-3查找树</h2><p>为了保证查找树的平衡性，我们需要对二叉查找树进行一些改造，允许树中的一个结点保存多个键。我们把一棵标准的二叉查找树的结点成为2-结点（含有一个键和两条链接），而现在我们引入3-结点，它含有两个键和三条链接。2-结点和3-结点中的每条链接都对应着其中保存的键所分割产生的一个区别。如下图所示：</p>
 <p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/23tree-anatomy.png" alt="2-3查找树示意图"></p>
 <p>以上图的EJ结点为例，它有两个键和三条链接，AC小于E、H大于E小于J、L大于J，这就是一个3-结点。</p>
@@ -169,66 +77,49 @@
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文我们学习了2-3查找树，它能够在插入元素时保持完美平衡，弥补了二叉查找树最坏情况的缺陷，使符号表API的各种操作（除范围查找外）都达到了对数级别。</p>
 <p>然而，我们离真正实现符号表API还有一段距离，尽管我们可以用不同的数据类型表示2-结点和3-结点并写出变化所需的代码，但用这种直白的表示方法实现大多数的操作并不方便，因为要处理的情况是在太多。我们需要维护两种不同类型的结点，将被查找的键和结点中的每个键进行比较，将链接和其它信息从一种结点复制到另外一种结点，将结点从一种数据类型转换到另一种数据类型，等等。实现这些不仅需要大量的代码，而且它们所产生的额外开销可能会使算法比表中的二叉查找树更慢。</p>
 <p>因此，直接用2-3查找树实现符号表API是不可取的，但是我们只需要对其进行一点点修改变通就能够用二叉查找树几乎一样的代码实现符号表的API，这就是下篇文章即将学习的<strong>红黑树</strong>。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Algorithm/#Algorithm">Algorithm</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/08/08/2-3-search-tree/ - 2-3查找树 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

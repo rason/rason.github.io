@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="大型网站架构要素与模式">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>大型网站架构要素与模式 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        大型网站架构要素与模式
+            <h1>大型网站架构要素与模式</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Mar 14 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大型网站架构的特点（要素）"><span class="toc-text">大型网站架构的特点（要素）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大型网站架构模式"><span class="toc-text">大型网站架构模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分层"><span class="toc-text">分层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分割"><span class="toc-text">分割</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分布式"><span class="toc-text">分布式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集群"><span class="toc-text">集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缓存"><span class="toc-text">缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步"><span class="toc-text">异步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#冗余"><span class="toc-text">冗余</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动化"><span class="toc-text">自动化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全"><span class="toc-text">安全</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Architecture/#Architecture">Architecture</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        大型网站架构要素与模式
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-03-14 16:12:19</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>思考一个问题，我们应当追本溯源。大型网站架构为什么会出现？是伴随着业务的发展，现有的网站架构已经不能很好地支持业务的执行，高并发和海量的数据导致我们不得不做出改变。在上一篇文章<a href="http://rason.me/2016/03/11/The-evolution-of-big-website-architecture/" target="_blank" rel="noopener">大型网站架构演变</a>我们已经大概地分析了伴随业务的发展，我们是如何逐渐做出改变的。那么今天的文章，应该解决的问题就是：<strong>技术上，我们是按照什么原则对网站架构做出改变的？</strong>另一方面，<strong>我们做出改变之后的网站架构具有什么特点？</strong></p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>思考一个问题，我们应当追本溯源。大型网站架构为什么会出现？是伴随着业务的发展，现有的网站架构已经不能很好地支持业务的执行，高并发和海量的数据导致我们不得不做出改变。在上一篇文章<a href="http://rason.me/2016/03/11/The-evolution-of-big-website-architecture/" target="_blank" rel="noopener">大型网站架构演变</a>我们已经大概地分析了伴随业务的发展，我们是如何逐渐做出改变的。那么今天的文章，应该解决的问题就是：<strong>技术上，我们是按照什么原则对网站架构做出改变的？</strong>另一方面，<strong>我们做出改变之后的网站架构具有什么特点？</strong></p>
 <p>本文依然是读《大型网站技术架构》一书的笔记和体会。</p>
 <h2 id="大型网站架构的特点（要素）"><a href="#大型网站架构的特点（要素）" class="headerlink" title="大型网站架构的特点（要素）"></a>大型网站架构的特点（要素）</h2><p>即前言中的第二个问题答案。</p>
 <p>站在前人的肩膀上，我们知道大型网站架构具有以下要素：</p>
@@ -253,66 +161,49 @@
 </ul>
 <h3 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h3><p>略去。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章的总结大概就是告诉你，大型网站是怎样的，具有什么特点，通过什么方式可以解决高并发和海量数据等问题。只是指了一条明路，但还是得自己走。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Architecture/#Architecture">Architecture</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/03/14/Big-website-architecture-elements-and-patterns/ - 大型网站架构要素与模式 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="Java编码问题">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Java Web编码问题 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        Java Web编码问题
+            <h1>Java Web编码问题</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Feb 13 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编码的原因"><span class="toc-text">编码的原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编码格式"><span class="toc-text">编码格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java中编码场景"><span class="toc-text">Java中编码场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O操作中的编码"><span class="toc-text">I/O操作中的编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存中的编码"><span class="toc-text">内存中的编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码格式比较"><span class="toc-text">编码格式比较</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-Web中的编解码"><span class="toc-text">Java Web中的编解码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#URL的编解码"><span class="toc-text">URL的编解码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-Header的编解码"><span class="toc-text">HTTP Header的编解码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POST表单的编解码"><span class="toc-text">POST表单的编解码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-BODY的编解码"><span class="toc-text">HTTP BODY的编解码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JS中的编码问题"><span class="toc-text">JS中的编码问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#encodeURI"><span class="toc-text">encodeURI()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#encodeURIComponent"><span class="toc-text">encodeURIComponent()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java与JS编解码问题"><span class="toc-text">Java与JS编解码问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Java-Web/#Java Web">Java Web</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        Java Web编码问题
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-02-13 10:31:44</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Java Encoding" title="Java Encoding">Java Encoding</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Java Web开发中经常会遇到编码问题，以前解决编码问题总是不断地尝试，而没有认真地分析乱码出现的根本原因。今天简单地梳理一下编码方面的知识，以便遇到编码问题时能够有据可依地解决问题。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Java Web开发中经常会遇到编码问题，以前解决编码问题总是不断地尝试，而没有认真地分析乱码出现的根本原因。今天简单地梳理一下编码方面的知识，以便遇到编码问题时能够有据可依地解决问题。</p>
 <h2 id="编码的原因"><a href="#编码的原因" class="headerlink" title="编码的原因"></a>编码的原因</h2><ul>
 <li>计算机中存储信息的最小单元是一个字节，即8个bit，所以能表示的字符范围是0~255个。</li>
 <li>人类要表示的字符太多，无法用一个字节来完全表示。</li>
@@ -219,66 +127,49 @@
 <li>重点是HTTP请求中存在编码的地方</li>
 </ul>
 <p>要解决编码问题，首先要搞清楚哪些地方会银企字符到字节的编码，以及字节到字符的编码，最常见地方就是存储数据到磁盘或者数据要经过网络传输。然后针对这些地方搞清楚操作这些数据的框架或系统是如何控制编码的。最后正确设置编码格式，避免使用默认的编码格式。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Java-Encoding/#Java Encoding">Java Encoding</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/02/13/Java-encode/ - Java Web编码问题 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

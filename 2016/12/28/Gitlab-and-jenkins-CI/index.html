@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="Gitlab+Jenkins持续集成">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Gitlab+Jenkins持续集成 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        Gitlab+Jenkins持续集成
+            <h1>Gitlab+Jenkins持续集成</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Dec 28 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gitlab安装"><span class="toc-text">Gitlab安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gitlab使用"><span class="toc-text">Gitlab使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#New-project"><span class="toc-text">New project</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#推送代码到Gitlab"><span class="toc-text">推送代码到Gitlab</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分支管理"><span class="toc-text">分支管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Jenkins安装"><span class="toc-text">Jenkins安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Jenkins新建项目"><span class="toc-text">Jenkins新建项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#项目配置"><span class="toc-text">项目配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源码管理"><span class="toc-text">源码管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Build"><span class="toc-text">Build</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Post-Steps"><span class="toc-text">Post Steps</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Git/#Git">Git</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        Gitlab+Jenkins持续集成
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-12-28 10:25:11</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Gitlab Jenkins" title="Gitlab Jenkins">Gitlab Jenkins</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>公司内部版本管理使用SVN，一直就觉得挺麻烦的，所以就自个折腾一下把版本管理转移到git。后续的问题当然就是要将发布系统搭建起来，大概搜索了一下情况，决定使用Gitlab+Jenkins来做持续集成。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>公司内部版本管理使用SVN，一直就觉得挺麻烦的，所以就自个折腾一下把版本管理转移到git。后续的问题当然就是要将发布系统搭建起来，大概搜索了一下情况，决定使用Gitlab+Jenkins来做持续集成。</p>
 <h2 id="Gitlab安装"><a href="#Gitlab安装" class="headerlink" title="Gitlab安装"></a>Gitlab安装</h2><p><a href="https://about.gitlab.com/downloads/" target="_blank" rel="noopener">Gitlab官网</a>上有教程，选择适合自己的操作系统按照步骤一步步安装就可以了。安装过程可能会遇到一两个小问题，谷歌一下应该可以解决。</p>
 <p>安装完成之后，在浏览器中输入<code>127.0.0.1</code>或者<code>localhost</code>回车即可，Gitlab默认监听80端口。然后注册一个账户即可进入系统。</p>
 <p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitlab-home.png" alt="首页"></p>
@@ -168,66 +76,49 @@
 <p>其中<code>Exec command</code>配置项可以在上传完代码之后执行一些命令，比如进行Tomcat的重启，这里我就不举例了。</p>
 <p>配置了以上几项基本上就可以将整个持续集成环境跑起来了，当然Jenkins还有还多其它丰富的构建配置项就不细说了。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个持续集成的环境大概流程就是这样：将代码提交到Gitlab—&gt;Jenkins从Gitlab拉取代码进行编译打包—&gt;通过Jenkins的Publish over ssh插件上传代码到服务器—&gt;配置Publish over ssh插件中的<code>Exec command</code>选项执行上传代码之后的重启服务器脚本。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Gitlab-Jenkins/#Gitlab Jenkins">Gitlab Jenkins</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/12/28/Gitlab-and-jenkins-CI/ - Gitlab+Jenkins持续集成 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

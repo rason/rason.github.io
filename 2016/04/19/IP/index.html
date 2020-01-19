@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="IP协议">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>IP协议 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        IP协议
+            <h1>IP协议</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Apr 19 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#案例"><span class="toc-text">案例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP基础知识"><span class="toc-text">IP基础知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP地址的基础知识"><span class="toc-text">IP地址的基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IP地址的定义"><span class="toc-text">IP地址的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP地址由网络和主机两部分标识组成"><span class="toc-text">IP地址由网络和主机两部分标识组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP地址的分类"><span class="toc-text">IP地址的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#广播地址"><span class="toc-text">广播地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP多播"><span class="toc-text">IP多播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#子网掩码"><span class="toc-text">子网掩码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全局地址与私有地址"><span class="toc-text">全局地址与私有地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路由控制"><span class="toc-text">路由控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#路由控制表的聚合"><span class="toc-text">路由控制表的聚合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP分割处理与再构成处理"><span class="toc-text">IP分割处理与再构成处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据链路不同，MTU则相异"><span class="toc-text">数据链路不同，MTU则相异</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#路径MTU发现"><span class="toc-text">路径MTU发现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Network/#Network">Network</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        IP协议
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-04-19 13:54:25</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Network" title="Network">Network</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>连续看了《图解TCP/IP》中的两章书，数据链路与IP协议。看的我云里雾里的，真实难啃的骨头，大学里欠下的知识债终究还是要还的。难懂归难懂，懂多少就要记下来多少，不懂的以后继续翻看。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>连续看了《图解TCP/IP》中的两章书，数据链路与IP协议。看的我云里雾里的，真实难啃的骨头，大学里欠下的知识债终究还是要还的。难懂归难懂，懂多少就要记下来多少，不懂的以后继续翻看。</p>
 <p>数据链路层的读书笔记就不打算写了，因为看得不是很懂，只是知道个大概，直接记录一下IP协议方面的知识。这也是OSI模型分层的好处啊，我可以不太理解下层的知识，直接了解上层，反正就知道上层通过调用下层的接口就可以进行处理了。</p>
 <h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>用一个小案例来总结一下数据链路层和IP协议这两章书，由于自己也是似懂非懂，如有不对请各位看官轻拍。如下图所示：</p>
 <p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-transfer.png" alt="数据包发送"></p>
@@ -225,66 +133,49 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">首先在发送端主机发送IP数据报时将其首部的分片禁止标志位设置为1。根据这个标志位，途中的路由器及时遇到</span><br><span class="line">需要分片才能处理的大包，也不会去分片，而是将包丢弃。随后，通过一个ICMP的不可达消息将数据链路上MTU的</span><br><span class="line">值给发送主机。</span><br><span class="line"></span><br><span class="line">下一次，发送主机根据这个MTU对数据包进行分片处理。如此反复，直到数据包被发送到目标主机为止没有再收到</span><br><span class="line">任何ICMP，就认为最后一个ICMP所通知的MTU即是一个合适的MTU值。当MTU的值比较多时，最少可以缓存约10分</span><br><span class="line">钟。过了就重新发现。</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文首先用一个小案例区分了网络层与数据链路层之间的关系，网络层通过IP地址实现终端点对点的数据传输，数据链路层则是通过MAC地址实现两个直连设备之间的数据传输。</p>
 <p>其次分别总结了一下IP的基础知识，主要包含三个方面：IP寻址，路由控制和IP分包与组包。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Network/#Network">Network</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/04/19/IP/ - IP协议 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

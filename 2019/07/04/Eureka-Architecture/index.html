@@ -1,131 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="被誉为下一代微服务架构的 Service Mesh 已经越来越火了, 我还在写 Eureka 的文章, 是不是太 low 了. 那就先 low 一回, 下次再时尚一把.
+总体架构
+上图是 Eureka 官方给出的架构图, 一共有三种角色:
+
+Eureka Server: Eureka 服务端, 核心">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Eureka Architecture - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        Eureka Architecture
+            <h1>Eureka Architecture</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Jul 04 2019
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#总体架构"><span class="toc-text">总体架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Eureka-Server"><span class="toc-text">Eureka Server</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#服务注册-Register"><span class="toc-text">服务注册(Register)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务续约-Renew"><span class="toc-text">服务续约(Renew)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务下线-Cancel"><span class="toc-text">服务下线(Cancel)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务获取"><span class="toc-text">服务获取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务剔除"><span class="toc-text">服务剔除</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#节点间服务同步"><span class="toc-text">节点间服务同步</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#节点互相感知"><span class="toc-text">节点互相感知</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#节点初始化"><span class="toc-text">节点初始化</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Service-Provider"><span class="toc-text">Service Provider</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#服务注册-Register-1"><span class="toc-text">服务注册(Register)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务续约-Renew-1"><span class="toc-text">服务续约(Renew)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务下线-Cancel-1"><span class="toc-text">服务下线(Cancel)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#怎么发现-Eureka-Server"><span class="toc-text">怎么发现 Eureka Server</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Server-Consumer"><span class="toc-text">Server Consumer</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#服务获取-1"><span class="toc-text">服务获取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#服务更新"><span class="toc-text">服务更新</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#怎么发现-Eureka-Server-1"><span class="toc-text">怎么发现 Eureka Server</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
-        
-
-
-<div class="post-container">
-    <div class="post-title">
-        Eureka Architecture
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2019-07-04 13:52:41</span></span>
-        
-        
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <p>被誉为下一代微服务架构的 Service Mesh 已经越来越火了, 我还在写 Eureka 的文章, 是不是太 low 了. 那就先 low 一回, 下次再时尚一把.</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>被誉为下一代微服务架构的 Service Mesh 已经越来越火了, 我还在写 Eureka 的文章, 是不是太 low 了. 那就先 low 一回, 下次再时尚一把.</p>
 <h4 id="总体架构"><a href="#总体架构" class="headerlink" title="总体架构"></a>总体架构</h4><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/eureka_architecture.png" alt="Eureka Architecture"></p>
 <p>上图是 Eureka 官方给出的架构图, 一共有三种角色:</p>
 <ul>
@@ -199,66 +114,44 @@
 <li>Service Provider: 定时续约, 默认 30 秒; 定时更新 Eureka Server 地址, 默认 5 分钟.</li>
 <li>Server Consumer: 定时更新服务列表缓存, 默认 30 秒; 定时更新 Eureka Server 地址, 默认 5 分钟.</li>
 </ul>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2019/07/04/Eureka-Architecture/ - Eureka Architecture @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="最近做了个物联网的项目，用到了 MQTT，里面有个 QoS 的概念理解起来可能会有一点困扰，今天花了点时间梳理了一下其中的逻辑，写篇文章记录一下。
+什么是 QoS ?QoS 的全称是 quality of service。描述的是消息发送方和消息接收方之间消息传递的保证级别。MQTT 中有 3 个 ">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>MQTT QoS - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>MQTT QoS</h1>
+        
+        <h2 class="headline">Jan 14 2020
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>最近做了个物联网的项目，用到了 MQTT，里面有个 QoS 的概念理解起来可能会有一点困扰，今天花了点时间梳理了一下其中的逻辑，写篇文章记录一下。</p>
+<h3 id="什么是-QoS"><a href="#什么是-QoS" class="headerlink" title="什么是 QoS ?"></a>什么是 QoS ?</h3><p>QoS 的全称是 quality of service。描述的是消息发送方和消息接收方之间消息传递的保证级别。MQTT 中有 3 个 QoS 级别：</p>
+<ul>
+<li>At most once (0)</li>
+<li>At least once (1)</li>
+<li>Exactly once (2)</li>
+</ul>
+<p>MQTT 发布消息 QoS 保证不是端到端的，是客户端与服务器之间的。订阅者收到 MQTT 消息的 QoS 级别，最终取决于发布消息的 QoS 和主题订阅的 QoS。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">发布消息的QoS</th>
+<th style="text-align:center">主题订阅的QoS</th>
+<th style="text-align:center">接收消息的QoS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="QoS-0-at-most-once"><a href="#QoS-0-at-most-once" class="headerlink" title="QoS 0 - at most once"></a>QoS 0 - at most once</h3><p>最小 QoS 级别为 0 。此服务级别保证了 <em>尽力而为</em> 的投递，不保证一定投递成功。接收方不会回复确认消息，发送方也不存储和重新发送消息。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">发送方</th>
+<th style="text-align:center">报文流向</th>
+<th style="text-align:center">接受方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">PUBLISH QoS = 0, DUP = 0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">—&gt;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">接收消息（可能不会收到）并处理</td>
+</tr>
+</tbody>
+</table>
+<h3 id="QoS-1-at-least-once"><a href="#QoS-1-at-least-once" class="headerlink" title="QoS 1 - at least once"></a>QoS 1 - at least once</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">发送方</th>
+<th style="text-align:center">报文流向</th>
+<th style="text-align:center">接受方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">存储消息</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">发送 PUBLISH QoS1, DUP = 0，带有 Packetld</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">—&gt;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">接收消息并处理</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">发送带有 Packetld 和 PUBACK 确认报文</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">&lt;—</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">丢弃消息</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>只要发送方没有收到 <code>PUBACK</code> 回复报文，消息还会被重新发送，所有 QoS 1 可能会出现消息重复的问题。</p>
+<p>需要注意的是，接收方在接收 QoS 1 消息时并不会幂等处理，也就是说消息重发也认为是一条新的消息（至于 DUP 标志，协议里有说 “DUP = 1“ 时，也不能假设认为之前收到过该报文）。</p>
+<h3 id="QoS-2-exactly-once"><a href="#QoS-2-exactly-once" class="headerlink" title="QoS 2 - exactly once"></a>QoS 2 - exactly once</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">发送方</th>
+<th style="text-align:center">报文流向</th>
+<th style="text-align:center">接受方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">存储消息</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">发送 PUBLISH QoS2, DUP = 0，带有 PacketId</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">—&gt;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">存储 PacketId 和消息</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">发布带有 Packetld 和 Reason Code 的 PUBREC 报文</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">&lt;—</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">丢弃存储的消息，存储接收到的带有相同 PacketId 的 PUBREC 报文</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">发送 PUBREL 报文</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">—&gt;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">处理消息，然后丢弃 PacketId</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">发送带有 PacketId 的 PUBCOMP 报文</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">&lt;—</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">丢弃存储的状态</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>QoS 2 应该是最难理解的了，涉及了四次交互，如下图所示</p>
+<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/qos2.png" alt="QoS 2"></p>
+<p>简单来说，QoS 2 有点像分布式事务中 <strong>两阶段提交</strong> 的解决方案，第一阶段的请求响应只是将消息保存起来的，但还不能作为正式的消息去处理，相当于一个 <strong>半提交</strong> 的状态，第二阶段就是确认消息提交，可以进行处理了。</p>
+<p>QoS 2 保证只到达了一次是因为在这四次交互之中根据 PacketId 做了幂等处理，但是在处理消息之后 PacketId 会被丢弃，也就是说在发起新一轮的四次交互 PacketId 是可以重用的。至于 QoS 2 怎么实现幂等处理，大家找个 MQTT 客户端的源码看一下。</p>
+<p>对于 QoS 2 如果还有疑问的可以继续看下下面两篇文章：</p>
+<ul>
+<li><a href="http://www.steves-internet-guide.com/understanding-mqtt-qos-2/" target="_blank" rel="noopener">Understanding MQTT QOS Levels- Part 2</a></li>
+<li><a href="https://www.zhihu.com/question/54000916" target="_blank" rel="noopener">MQTT协议中QoS2为什么要四次包交互？</a></li>
+</ul>
+<p>当然，源码是最好的老师。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2020/01/14/mqtt-qos/ - MQTT QoS @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
