@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="网站架构演变">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>大型网站架构演变 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        大型网站架构演变
+            <h1>大型网站架构演变</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Mar 11 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大型网站架构演变历程"><span class="toc-text">大型网站架构演变历程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始阶段网站架构"><span class="toc-text">初始阶段网站架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#应用服务和数据服务分离"><span class="toc-text">应用服务和数据服务分离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用缓存改善网站的性能"><span class="toc-text">使用缓存改善网站的性能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用应用服务器集群改善网站的并发能力"><span class="toc-text">使用应用服务器集群改善网站的并发能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据读写分离"><span class="toc-text">数据读写分离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用反向代理和CDN加速网站响应"><span class="toc-text">使用反向代理和CDN加速网站响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用分布式文件系统和分布式数据库系统"><span class="toc-text">使用分布式文件系统和分布式数据库系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用NoSQL和搜索引擎"><span class="toc-text">使用NoSQL和搜索引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#业务拆分"><span class="toc-text">业务拆分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分布式服务"><span class="toc-text">分布式服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Architecture/#Architecture">Architecture</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        大型网站架构演变
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-03-11 10:32:26</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Architecture" title="Architecture">Architecture</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>俗话说，“站得高，望得远”。思想达到了一定的高度，看待问题的深度就不一样了。虽然现在的基础知识也不咋地，但是先拓展一下自己的视野可以更清晰地看到自己的不足。因此决定看一下《大型网站技术架构》一书，拓展自己的视野，更加系统化地了解大型网站需要具备哪些技术。此文一下读书笔记，简单记录一下核心知识，以便日后温故而知新。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>俗话说，“站得高，望得远”。思想达到了一定的高度，看待问题的深度就不一样了。虽然现在的基础知识也不咋地，但是先拓展一下自己的视野可以更清晰地看到自己的不足。因此决定看一下《大型网站技术架构》一书，拓展自己的视野，更加系统化地了解大型网站需要具备哪些技术。此文一下读书笔记，简单记录一下核心知识，以便日后温故而知新。</p>
 <h2 id="大型网站架构演变历程"><a href="#大型网站架构演变历程" class="headerlink" title="大型网站架构演变历程"></a>大型网站架构演变历程</h2><p>任何大型网站都是从小型的网站发展起来的，大型网站并不是一蹴而就，而是根据业务的发展演变而成的。说句不好听的，绝大部分公司都还没到需要用上大型网站架构技术的时候就已经死掉了。因此，我们要深深地明白，技术是为业务服务的，技术的首要任务是解决业务问题，不要为了架构而架构。但是，我们在设计系统的时候，还是需要一些大局观，以便系统更易于扩展。那么，一个小型网站，是怎么逐步地演变成一个大型网站的？</p>
 <h3 id="初始阶段网站架构"><a href="#初始阶段网站架构" class="headerlink" title="初始阶段网站架构"></a>初始阶段网站架构</h3><p><strong>应用程序，数据库，文件等所有资源都在一台服务器上。</strong></p>
 <p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-init-arc.png" alt="初始阶段网站架构"></p>
@@ -166,66 +74,49 @@
 <p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-distribution-service-arc.png" alt="分布式服务"></p>
 <p>大型网站的架构演变到这里，基本上大多数的技术问题都得以解决，诸如跨数据中心的实时同步和具体网站业务相关的问题也都可以通过组和改进现有技术架构来解决。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>时至今日，大型网站架构演变方案已经非常成熟，各种技术方案也逐渐产品化。许多小型网站已经慢慢不需要再经历大型网站经历的架构演变之路就可以逐步发展壮大，一in我现在越来越多的网站从建立之处就是搭建在大型网站提供的云计算服务基础之上，所需的一切技术资源：计算，存储，网络都可以按需购买，线性伸缩。但要成为网站架构师，对网站的演变过程还是要深刻了解，才能在技术选型和决策时有的放矢。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Architecture/#Architecture">Architecture</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/03/11/The-evolution-of-big-website-architecture/ - 大型网站架构演变 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="vector clock">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>向量时钟 - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        向量时钟
+            <h1>向量时钟</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Sep 20 2017
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#向量时钟"><span class="toc-text">向量时钟</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#因果关系"><span class="toc-text">因果关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Amazon-Dynamo"><span class="toc-text">Amazon Dynamo</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Distributed/#Distributed">Distributed</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        向量时钟
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2017-09-20 08:43:03</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#Consensus" title="Consensus">Consensus</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <p>在分布式系统中，每台机器都有个物理时钟。但是由于每台机器的时钟频率总会有一点偏差，当时间长了，物理时钟偏差就会越来越大。有机械手表的同学应该会相当的理解，我的手表就是每个月会偏差一两分钟。当然，计算机的时钟不会偏差那么大。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>在分布式系统中，每台机器都有个物理时钟。但是由于每台机器的时钟频率总会有一点偏差，当时间长了，物理时钟偏差就会越来越大。有机械手表的同学应该会相当的理解，我的手表就是每个月会偏差一两分钟。当然，计算机的时钟不会偏差那么大。</p>
 <p>当时间发生了偏差，那么就出现问题了，在分布式系统中如果有两个事件发生在不同的机器上，而且时间靠的非常的近，这样我们就有可能无法确定哪件事情先发生。出现这样的问题，我们首先能想到的解决办法就是找到一个极度标准的时钟，然后按固定频率去同步这个时钟。这就好像我的机械手机，我每个月月初都会将其调整到和互联网时间一致。然而，这种方法显然是无法做到绝对的精确。<strong>向量时钟</strong>就是为了解决这类型的问题而出现。</p>
 <h2 id="向量时钟"><a href="#向量时钟" class="headerlink" title="向量时钟"></a>向量时钟</h2><blockquote>
 <p>向量时钟是在分布式系统中生成事件的偏序并检测因果关系的一种算法。就好像<a href="https://en.wikipedia.org/wiki/Lamport_timestamps" target="_blank" rel="noopener">Lamport timestamps</a>一样，在进程间消息包含发送进程的<a href="https://en.wikipedia.org/wiki/Logical_clock" target="_blank" rel="noopener">逻辑时钟</a>状态。</p>
@@ -163,66 +71,49 @@
 <p>当n3要给n1发消息之前，n1却对数据进行了修改，例如将用户昵称改为’ ruan’，更新后如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">n1: &#123; vector: &#123;n1:3, n2:0, n3:0&#125;, data: &apos;ruan&apos; &#125;</span><br><span class="line">n2: &#123; vector: &#123;n1:2, n2:2, n3:3&#125;, data: &apos;fan&apos; &#125;</span><br><span class="line">n3: &#123; vector: &#123;n1:2, n2:0, n3:3&#125;, data: &apos;fan&apos; &#125;</span><br></pre></td></tr></table></figure>
 <p>此时观察n1和n3的向量时钟没有因果关系，数据发生了冲突，Dynamo的设计思路是让客户端自己去解决这种冲突。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/Consensus/#Consensus">Consensus</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2017/09/20/vector-clock/ - 向量时钟 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

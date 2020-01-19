@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="JavaBean转Xml 自定义javabean转xml 非规则xml反射 注解xml">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>利用注解、反射将JavaBean转Xml - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        利用注解、反射将JavaBean转Xml
+            <h1>利用注解、反射将JavaBean转Xml</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Sep 14 2015
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#来简单地看一下代码，不是十分的完善，目前仅支持反射到第二层属性，以后有时间再慢慢完善："><span class="toc-text">来简单地看一下代码，不是十分的完善，目前仅支持反射到第二层属性，以后有时间再慢慢完善：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#先自定义几个注解，比较简单就不细说了"><span class="toc-text">先自定义几个注解，比较简单就不细说了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#新建一个测试JavaBean"><span class="toc-text">新建一个测试JavaBean</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#转换工具类，不懂的地方查下api应该就可以了"><span class="toc-text">转换工具类，不懂的地方查下api应该就可以了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OK-下面随便写个main函数来测试一下"><span class="toc-text">OK,下面随便写个main函数来测试一下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试输出结果"><span class="toc-text">测试输出结果</span></a></li></ol></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Java/#Java">Java</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        利用注解、反射将JavaBean转Xml
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2015-09-14 14:46:45</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#JavaBean转Xml" title="JavaBean转Xml">JavaBean转Xml</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <p>最近对接建行商贸通项目，遇到一个JavaBean和Xml互转的问题。大家通常用的的Bean转Xml应该都是直接将Bean的属性名作为Xml的标签，属性值作为Xml的标签值。比如微信公众平台的消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;xml&gt;</span><br><span class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</span><br><span class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt; </span><br><span class="line">&lt;CreateTime&gt;1348831860&lt;/CreateTime&gt;</span><br><span class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</span><br><span class="line">&lt;Content&gt;&lt;![CDATA[this is a test]]&gt;&lt;/Content&gt;</span><br><span class="line">&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;</span><br><span class="line">&lt;/xml&gt;</span><br></pre></td></tr></table></figure></p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>最近对接建行商贸通项目，遇到一个JavaBean和Xml互转的问题。大家通常用的的Bean转Xml应该都是直接将Bean的属性名作为Xml的标签，属性值作为Xml的标签值。比如微信公众平台的消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;xml&gt;</span><br><span class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</span><br><span class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt; </span><br><span class="line">&lt;CreateTime&gt;1348831860&lt;/CreateTime&gt;</span><br><span class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</span><br><span class="line">&lt;Content&gt;&lt;![CDATA[this is a test]]&gt;&lt;/Content&gt;</span><br><span class="line">&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;</span><br><span class="line">&lt;/xml&gt;</span><br></pre></td></tr></table></figure></p>
 <p>在这种情况下已经有一些现成的工具可以转化，比如说<code>org.simpleframework.xml.core.Persister.Persister()</code>，示例如下：</p>
 <a id="more"></a>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Serializer  serializer = new Persister();</span><br><span class="line">ByteArrayOutputStream out = new ByteArrayOutputStream();</span><br><span class="line">try &#123;</span><br><span class="line">	    serializer.write(o, out);</span><br><span class="line">&#125;</span><br><span class="line">catch (Exception e) &#123;</span><br><span class="line">    logger.error(e.getMessage(), e);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">String xmlData;</span><br><span class="line">try &#123;</span><br><span class="line">	xmlData = out.toString(&quot;GB2312&quot;);</span><br><span class="line">&#125; </span><br><span class="line">catch (UnsupportedEncodingException e) &#123;</span><br><span class="line">		logger.error(e.getMessage(), e);</span><br><span class="line">&#125;</span><br><span class="line">return xmlData;</span><br></pre></td></tr></table></figure>
@@ -155,66 +63,49 @@
 <h3 id="OK-下面随便写个main函数来测试一下"><a href="#OK-下面随便写个main函数来测试一下" class="headerlink" title="OK,下面随便写个main函数来测试一下"></a>OK,下面随便写个main函数来测试一下</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws Exception&#123;</span><br><span class="line">	CCBCommonHead head = new CCBCommonHead();</span><br><span class="line">	head.version = &quot;100&quot;;</span><br><span class="line">	head.type = &quot;0200&quot;;</span><br><span class="line">	head.chanlNo = &quot;30&quot;;</span><br><span class="line">	head.chanlSubNo = &quot;3001&quot;;</span><br><span class="line">	head.chanlDate = &quot;20150919&quot;;</span><br><span class="line">	head.chanlTime = &quot;133030&quot;;</span><br><span class="line">	head.chanlFlowNo = &quot;11111&quot;;</span><br><span class="line">	head.chanlTradNo = &quot;111&quot;;</span><br><span class="line">	</span><br><span class="line">	CCBBalanceResponse br = new CCBBalanceResponse();</span><br><span class="line">	br.header = head;</span><br><span class="line">	br.mchNo = &quot;1111&quot;;</span><br><span class="line">	br.mchName = &quot;ssss&quot;;</span><br><span class="line">	</span><br><span class="line">	List&lt;CCBBalanceItem&gt; items = new ArrayList&lt;CCBBalanceResponse.CCBBalanceItem&gt;();</span><br><span class="line">	CCBBalanceItem item1 = br.new CCBBalanceItem();</span><br><span class="line">	item1.accName = &quot;111&quot;;</span><br><span class="line">	item1.accName = &quot;111&quot;;</span><br><span class="line">	items.add(item1);</span><br><span class="line">	</span><br><span class="line">	CCBBalanceItem item2 = br.new CCBBalanceItem();</span><br><span class="line">	item2.accName = &quot;222&quot;;</span><br><span class="line">	item2.accName = &quot;222&quot;;</span><br><span class="line">	items.add(item2);</span><br><span class="line">	</span><br><span class="line">	br.items = items;</span><br><span class="line">	</span><br><span class="line">	System.out.println(XmlUtils.toXml(br));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="测试输出结果"><a href="#测试输出结果" class="headerlink" title="测试输出结果"></a>测试输出结果</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;</span><br><span class="line">&lt;message&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;version&quot;&gt;100&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;type&quot;&gt;0200&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;chanl_no&quot;&gt;30&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;chanl_sub_no&quot;&gt;3001&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;chanl_date&quot;&gt;20150919&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;chanl_time&quot;&gt;133030&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;ectip_date&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;chanl_flow_no&quot;&gt;11111&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;ectip_flow_no&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;chanl_trad_no&quot;&gt;111&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;term_inf&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;resp_code&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;resp_msg&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;page&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;maxrow&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;locstr&quot;&gt;&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;tot_rec&quot;&gt;&lt;/field&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;MCH_NO&quot;&gt;1111&lt;/field&gt;</span><br><span class="line">        &lt;field pin=&quot;false&quot; name=&quot;MCH_NAME&quot;&gt;ssss&lt;/field&gt;</span><br><span class="line">        &lt;field-list name=&quot;ARRAY_3FC006&quot;&gt;</span><br><span class="line">            &lt;field-list name=&quot;0&quot;&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;ACCT_NAME62&quot;&gt;111&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;SIT_NO&quot;&gt;&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;CURR_COD&quot;&gt;&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;CURR_IDEN&quot;&gt;&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;ACCT_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;AVL_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;STX_SVC_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;STX_GUAR_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;SUPP_GUAR_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;OTH_GUAR_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">            &lt;/field-list&gt;</span><br><span class="line">            &lt;field-list name=&quot;1&quot;&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;ACCT_NAME62&quot;&gt;222&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;SIT_NO&quot;&gt;&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;CURR_COD&quot;&gt;&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;CURR_IDEN&quot;&gt;&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;ACCT_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;AVL_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;STX_SVC_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;STX_GUAR_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;SUPP_GUAR_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">                &lt;field pin=&quot;false&quot; name=&quot;OTH_GUAR_FRZ_BAL&quot;&gt;0.0&lt;/field&gt;</span><br><span class="line">            &lt;/field-list&gt;</span><br><span class="line">        &lt;/field-list&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">&lt;/message&gt;</span><br></pre></td></tr></table></figure>
 <p>原创文章，欢迎转载，无需注明出处。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/JavaBean转Xml/#JavaBean转Xml">JavaBean转Xml</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2015/09/14/Java-Bean-To-Xml/ - 利用注解、反射将JavaBean转Xml @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>

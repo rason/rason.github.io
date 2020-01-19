@@ -1,137 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="BeanDefinitionRegistryPostProcessor">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Spring扩展点BeanDefinitionRegistryPostProcessor - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
         
-        Spring扩展点BeanDefinitionRegistryPostProcessor
+            <h1>Spring扩展点BeanDefinitionRegistryPostProcessor</h1>
         
-    </title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-</head>
-
-<body>
-
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
+        <h2 class="headline">Dec 16 2016
         
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/spring.png">
-        </div>
-        <div class="name">
-            <i>rason</i>
-        </div>
-    </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li>
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-<!--            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-    -->        <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li>
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
             
-        </ul>
-    </div>
-    
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BeanDefinitionRegistryPostProcessor"><span class="toc-text">BeanDefinitionRegistryPostProcessor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一个简单的例子"><span class="toc-text">一个简单的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用"><span class="toc-text">应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-</div>
-    
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
-    
-    <div class="index-middle">
-        <!-- Main Content -->
+            <a href="/categories/Spring/#Spring">Spring</a>
         
-
-
-<div class="post-container">
-    <div class="post-title">
-        Spring扩展点BeanDefinitionRegistryPostProcessor
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2016-12-16 16:14:22</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#BeanDefinitionRegistryPostProcessor" title="BeanDefinitionRegistryPostProcessor">BeanDefinitionRegistryPostProcessor</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-
-    </div>
-    <div class="post-content ">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Spring的设计非常优雅，对修改关闭对扩展开放，今天学习一下Spring其中之一扩展点——BeanDefinitionRegistryPostProcessor。</p>
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Spring的设计非常优雅，对修改关闭对扩展开放，今天学习一下Spring其中之一扩展点——BeanDefinitionRegistryPostProcessor。</p>
 <h2 id="BeanDefinitionRegistryPostProcessor"><a href="#BeanDefinitionRegistryPostProcessor" class="headerlink" title="BeanDefinitionRegistryPostProcessor"></a>BeanDefinitionRegistryPostProcessor</h2><p>当我们用Spring来管理应用，我们会让Spring来管理所有的Bean。除了注解、Java配置和XML配置的方式来创建Bean，还有另外一种方式来创建我们的<code>BeanDefinition</code>。</p>
 <p>通过<code>BeanDefinitionRegistryPostProcessor</code>可以创建一个特别后置处理器来将<code>BeanDefinition</code>添加到<code>BeanDefinitionRegistry</code>中。它和<code>BeanPostProcessor</code>不同，<code>BeanPostProcessor</code>只是在Bean初始化的时候有个钩子让我们加入一些自定义操作；而<code>BeanDefinitionRegistryPostProcessor</code>可以让我们在<code>BeanDefinition</code>中添加一些自定义操作。这就跟类与类实例之间的区别类似。</p>
 <p>也就是说<code>BeanDefinitionRegistryPostProcessor</code>的作用就是可以让我们对<code>BeanDefinition</code>进行一些后置的自定义操作，这就是对扩展开放原则。</p>
@@ -144,66 +52,49 @@
 <p>其中<code>org.mybatis.spring.mapper.MapperScannerConfigurer</code>类就实现了<code>BeanDefinitionRegistryPostProcessor</code>接口来对Mapper进行自定义的注册操作。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// 代码有删减</span><br><span class="line">public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProcessor&#123;</span><br><span class="line">    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException &#123;</span><br><span class="line">	    ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);</span><br><span class="line">	    scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, </span><br><span class="line">  	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner &#123;</span><br><span class="line">	@Override</span><br><span class="line">    public Set&lt;BeanDefinitionHolder&gt; doScan(String... basePackages) &#123;</span><br><span class="line"> 		Set&lt;BeanDefinitionHolder&gt; beanDefinitions = super.doScan(basePackages);//首先调用Spring默认的扫描装配操作</span><br><span class="line">	    if (beanDefinitions.isEmpty()) &#123;</span><br><span class="line">	</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			for (BeanDefinitionHolder holder : beanDefinitions) &#123;//然后循环对每一个BeanDefinition进行一些自定义的操作</span><br><span class="line">				GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();</span><br><span class="line">				definition.getPropertyValues().add(&quot;mapperInterface&quot;, definition.getBeanClassName());</span><br><span class="line">        		definition.setBeanClass(MapperFactoryBean.class);</span><br><span class="line">        		definition.getPropertyValues().add(&quot;addToConfig&quot;, this.addToConfig);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>BeanDefinitionRegistryPostProcessor</code>提供了让我们对BeanDefinition进行自定义注册的方法，如果Spring中的默认配置方式不能满足你的要求，就可以通过实现<code>BeanDefinitionRegistryPostProcessor</code>接口来进行扩展。</p>
-
-        
-        <br>
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-
-        <div id="lv-container">
-        </div>
-
-    </div>
-</div>
-
-    </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
+</section>
     
-    <p>
-<!--        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-    Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a>-->
- <a href="http://www.beian.miit.gov.cn">粤ICP备17046371号-1</a>  
-</p> 
+        
+        <h2 class="footline">
+            <a href="/tags/BeanDefinitionRegistryPostProcessor/#BeanDefinitionRegistryPostProcessor">BeanDefinitionRegistryPostProcessor</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2016/12/16/BeanDefinitionRegistryPostProcessor/ - Spring扩展点BeanDefinitionRegistryPostProcessor @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+		</p>
+	</div>
 </footer>
 
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
 
 
 
-</body>
-
-<script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = ""
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-</html>
