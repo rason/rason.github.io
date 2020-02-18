@@ -152,7 +152,7 @@ Kafka 包装了一个传输层，里面包含了之前注册返回的 `Selection
 
 到这里，发起建立连接请求的代码分析的差不多了，但是真正调用 `java.nio.channels.SocketChannel#finishConnect` 完成连接的建立部分代码还没分析。现在，先让我用一张图来梳理一下目前涉及到的几个核心类的关系：
 
-![NIO Selector](https://raw.githubusercontent.com/rason/rason.github.io/master/image/kafka-producer-network.png)
+![NIO Selector](/image/kafka-producer-network.png)
 
 ### 完成连接的建立
 
