@@ -43,7 +43,7 @@
 <p>Apache Flume是一种分布式，可靠和可用的系统，用于高效收集，聚合和将大量日志数据，从许多不同的来源移动到集中式数据存储。</p>
 <p>使用Apache Flume不仅限于日志数据聚合。 由于数据源是可定制的，因此可以使用Flume 来传输大量事件数据，包括但不限于网络流量数据，社交媒体生成数据，电子邮件消息以及几乎任何数据源。</p>
 <h2 id="数据流模型"><a href="#数据流模型" class="headerlink" title="数据流模型"></a>数据流模型</h2><p><strong>Flume事件</strong>被定义为具有字节有效载荷和可选的一组字符串属性的数据流的单位。 Flume Agent是一个（JVM）进程，它承载事件从外部源传递到下一个目标（跳）的组件。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/flume1.png" alt="Flume"></p>
+<p><img src="/image/flume1.png" alt="Flume"></p>
 <p>Flume 消费由外部Source（如Web服务器）传递给它的事件。外部源将Flume 的事件以目标Flume Source识别的格式发送到Flume。</p>
 <p>例如，可以使用Avro Flume Source 从Avro客户端或其他Flume Agent 发送的Avro事件。</p>
 <p>类似的流程可以使用Thrift Flume Source 来定义，以接收来自Thrift Sink或Flume Thrift Rpc客户端的事件，或者使用从Flume thrift 协议生成的任何语言编写的Thrift客户端。</p>

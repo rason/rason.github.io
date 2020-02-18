@@ -42,7 +42,7 @@
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在<a href="http://rason.me/2016/02/25/ClassLoader/" target="_blank" rel="noopener">ClassLoader工作机制（一）</a>中梳理了一下JVM中ClassLoader的工作机制，那么在一些开源框架中是怎么根据这些机制定义自己的ClassLoader呢？今天我们来看一些Tomcat中的ClassLoader。</p>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在JVM中，我们知道类加载器遵循委托机制。通常，一个类加载器被用来加载一个class或者资源，它会先请求父加载器来进行加载，如果没有的话才会在自己的仓库中查找。注意：这个模式在Tomcat中的WebappClassLoader中有一点不同，但是主要原则还是相同的。</p>
 <p>当Tomcat启动，会创建一系列class loader并会组织成以下的父子关系：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-Tomcat-ClassLoader.png" alt="Tomcat中加载器父子关系"></p>
+<p><img src="/image/web-Tomcat-ClassLoader.png" alt="Tomcat中加载器父子关系"></p>
 <a id="more"></a>
 <h2 id="类加载器定义"><a href="#类加载器定义" class="headerlink" title="类加载器定义"></a>类加载器定义</h2><h3 id="Bootstrap"><a href="#Bootstrap" class="headerlink" title="Bootstrap"></a>Bootstrap</h3><p>这里的Bootstrap只是个统称，所指的就是<a href="http://rason.me/2016/02/25/ClassLoader/" target="_blank" rel="noopener">ClassLoader工作机制（一）</a>中谈到的<strong>Bootstrap ClassLoader</strong>和<strong>ExtClassLoader</strong>。加载JVM自身工作需要的class和系统扩展路径（$JAVA_HOME/jre/lib/ext）中class。</p>
 <h3 id="System"><a href="#System" class="headerlink" title="System"></a>System</h3><p>系统（也称为）类加载器，也就是上一篇文章提到的<strong>AppClassLoader</strong>。一般来说，它负责加载来自命令<code>java</code>中的<code>-classpath</code>，或者<code>java.class.path</code>系统属性或者<code>CLASSPAHT</code>操作系统属性所指定的jar类包和类路径。通过这个类加载器加载的所有类，都对Tomcat自身的类，以及所有web应用的类可见。但是，标准的Tomcat启动脚本（$CATALINA_HOME/bin/catalina.bat），完全无视默认的CLASSPATH环境变量，而是加载了以下三个jar 。</p>

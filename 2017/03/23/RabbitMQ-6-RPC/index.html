@@ -65,7 +65,7 @@
 <p>但是这样会引起新的问题，当队列里有了返回消息，我们怎么知道这个消息是对应哪个请求？这就是<code>correlation_id</code>属性的用途了。我们为每个请求设置唯一的<code>correlation_id</code>值。然后当响应消息返回时我们就可以查看这个属性值，这样就能知道对应哪个请求了。如果查看到的是未知的<code>correlation_id</code>值，我们就可以忽略这个响应消息——因为它不属于我们的请求。</p>
 <p>你可能会问，为什么我们应该忽略回调队列中的未知消息，而不是失败的错误。这是由于服务器端出现竞争条件的可能性。虽然不太可能，但是RPC服务器可能在发送我们响应之后但在发送请求的确认消息之前死亡。如果发生这种情况，重新启动的RPC服务器将再次处理该请求。这就是为什么在客户端上我们必须优雅地处理重复的响应，并且RPC应该是幂等的。</p>
 <a id="more"></a>
-<h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-six.png" alt="RPC"></p>
+<h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p><img src="/image/python-six.png" alt="RPC"></p>
 <p>我们的RPC工作流程：</p>
 <ul>
 <li><p>当客户端启动时，它会创建一个匿名、唯一的回调队列。</p>

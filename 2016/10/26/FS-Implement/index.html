@@ -44,7 +44,7 @@
 </blockquote>
 <p>然而，作为程序员，我们应当了解一下文件系统是如何实现的。</p>
 <h2 id="文件系统的布局"><a href="#文件系统的布局" class="headerlink" title="文件系统的布局"></a>文件系统的布局</h2><p>文件系统存放在磁盘上。多数磁盘划分为一个或多个分区，每个分区中有一个独立的文件系统。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/fs-layout.png" alt="一个可能的文件系统布局"></p>
+<p><img src="/image/fs-layout.png" alt="一个可能的文件系统布局"></p>
 <ul>
 <li><p><strong>主引导记录(Master Boot Record, MBR)</strong>：位于磁盘的0号扇区，由BIOS读入并执行；作用是确定活动分区，读入并执行其引导块，引导块中的程序装载该分区的操作系统。</p>
 </li>
@@ -69,7 +69,7 @@
 <a id="more"></a>
 <h2 id="文件的实现"><a href="#文件的实现" class="headerlink" title="文件的实现"></a>文件的实现</h2><p>文件存储的实现的关键问题是<strong>记录各个文件分别用到哪些磁盘块</strong>。不同操作系统采用不同的方法。</p>
 <h3 id="1-连续分配"><a href="#1-连续分配" class="headerlink" title="1.连续分配"></a>1.连续分配</h3><p>最简单的分配方案是把每个文件作为一连串数据块存储在磁盘上。如下图a)所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/continuous-block.png" alt="a)为5个文件连续分配空间；b)删除文件D后磁盘的状态"></p>
+<p><img src="/image/continuous-block.png" alt="a)为5个文件连续分配空间；b)删除文件D后磁盘的状态"></p>
 <p>连续磁盘分配方案有两大优势：</p>
 <ul>
 <li><p>实现简单：记录每个文件用到的磁盘块简化为只需记住两个数字即可——第一块磁盘地址和文件的块数。</p>
@@ -82,7 +82,7 @@
 <li>随着时间推移，磁盘会变得零碎，如上图b)所示。</li>
 </ul>
 <h3 id="2-链表分配"><a href="#2-链表分配" class="headerlink" title="2.链表分配"></a>2.链表分配</h3><p>存储文件的第二种方法是为每个文件构造磁盘块链表。如下图所示，每个块的第一个字作为指向下一块的指针，块的其他部分存放数据。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/link-block.png" alt="以磁盘块的链表形式存储文件"></p>
+<p><img src="/image/link-block.png" alt="以磁盘块的链表形式存储文件"></p>
 <p>这种方案可以充分利用每个磁盘块，不会因为磁盘碎片（处理最后一块中的内部碎片）而浪费空间。同样，在目录项中，只需要存放第一块的磁盘地址，文件的其他块就可以从这个首块地址查找到。</p>
 <p>缺点：</p>
 <ul>
@@ -92,12 +92,12 @@
 </li>
 </ul>
 <h3 id="3-在内存中采用表的链表分配"><a href="#3-在内存中采用表的链表分配" class="headerlink" title="3.在内存中采用表的链表分配"></a>3.在内存中采用表的链表分配</h3><p>为了解决上面中的第二个缺点，把指针链表放在内存中的一个表中。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/FAT.png" alt="在内存中使用文件分配表的链表分配"></p>
+<p><img src="/image/FAT.png" alt="在内存中使用文件分配表的链表分配"></p>
 <p>上图中，文件A依次使用了磁盘块4，7，2，10，12；文件B依次使用了磁盘块6,3,11,14。利用上图中的表，可以从第4块开始，顺着链表走到最后，找到A的全部磁盘块，链表以一个不属于有效磁盘编号的特殊标记（如-1）结束。内存中的这样一个表格称为<strong>文件分配表（File Allocation Table， FAT）</strong>。</p>
 <p>按照这种方式组织，整个磁盘块都可以存放数据。而且随机存储也容易得多，虽然依然要顺着链表查找给定的偏移量，但是整个链表放在内存中，不需要任何磁盘引用。</p>
 <p>缺点就是占用内存，所以FAT方案对大磁盘不适合。</p>
 <h3 id="4-i节点"><a href="#4-i节点" class="headerlink" title="4. i节点"></a>4. i节点</h3><p>最后一个记录各个文件分别包含哪些磁盘块的方法是给每个文件赋予一个称为i节点（index-node）的数据结构，其中列出了文件属性和文件块的磁盘地址。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/index-node.png" alt="i节点的例子"></p>
+<p><img src="/image/index-node.png" alt="i节点的例子"></p>
 <p>这种方式相对于FAT方式具有很大优势，即有在文件被打开时，其i节点才在内存中。</p>
 <p>i节点的一个问题是，如果每个i节点只能存储固定数量的磁盘地址，那么当一个文件所含的磁盘块的数目超出了i节点所能容纳的数目怎么办？一个解决方案是最后一个“磁盘地址”不指向数据块，而是指向一个包含磁盘块地址的块的地址。</p>
 <h2 id="目录的实现"><a href="#目录的实现" class="headerlink" title="目录的实现"></a>目录的实现</h2><p>在读文件前，必须打开文件。<strong>打开文件时，操作系统利用用户给出的路径名找到相应的目录项。目录项中提供了查找文件磁盘块所需要的信息</strong>。</p>
@@ -109,10 +109,10 @@
 <li><p>对于采用i节点的系统，可以把文件属性存放在i节点中而不是目录项中。这样的话，目录项中只需记录文件名和i节点号。</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/fs-directory.png" alt="a)简单目录，包含固定大小的目录项，在目录项中有磁盘地址和属性；b)每个目录项只引用i节点的目录"></p>
+<p><img src="/image/fs-directory.png" alt="a)简单目录，包含固定大小的目录项，在目录项中有磁盘地址和属性；b)每个目录项只引用i节点的目录"></p>
 <p>上图中的两种处理方法分别对应Windows和Unix。</p>
 <p>到目前为止，我们假设了文件名是固定长度，才能设定所有目录项大小都一样。可是，如果文件名长度固定，典型值为255个字符，遇到文件名很短的话就浪费空间了。为了节约空间，有两种解决方案，如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/deal-directory-filename.png" alt="在目录中处理长文件名的两种方法：a)在行中；b)在堆中"></p>
+<p><img src="/image/deal-directory-filename.png" alt="在目录中处理长文件名的两种方法：a)在行中；b)在堆中"></p>
 <ul>
 <li><p>第一种方法如上图a)所示，缺点很显然，移走文件后，就引入了一个长度可变的空隙，而下一个进来的文件不一定正好适合这个空隙。</p>
 </li>
@@ -137,7 +137,7 @@
 <p>指在文件系统发生变化时，先把相关的信息写入一个被称为日志的区域，然后再把变化写入主文件系统的文件系统。在文件系统发生故障（如内核崩溃或突然停电）时，日志文件系统更容易保持一致性，并且可以较快恢复。</p>
 </blockquote>
 <h2 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h2><p>即使在同一台计算机上同一个操作系统下，也会使用很多不同的文件系统。虚拟文件系统就是为用户进程提供统一的接口。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/VFS.png" alt="虚拟文件系统的位置"></p>
+<p><img src="/image/VFS.png" alt="虚拟文件系统的位置"></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文重点讲述了文件和目录的实现，另外简单提到了共享文件，日志文件系统和虚拟文件系统，关于后面三个知识点可以搜索了解更多。</p>
 </section>
     

@@ -39,7 +39,7 @@
         </h2>
     </header>
 </article>
-<section id="post-body"><h2 id="Work-Queues"><a href="#Work-Queues" class="headerlink" title="Work Queues"></a>Work Queues</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-two.png" alt="工作队列"></p>
+<section id="post-body"><h2 id="Work-Queues"><a href="#Work-Queues" class="headerlink" title="Work Queues"></a>Work Queues</h2><p><img src="/image/python-two.png" alt="工作队列"></p>
 <p>上一篇教程中我们编写程序从一个命名的queue中发送和接收消息。在这篇教程中，我们将创建一个工作队列，用于在多个工作者之间分配耗时的任务。</p>
 <p>工作队列（也称为任务队列）背后的主要思想是避免立即执行资源密集型任务，并且不得不等待它完成。相反，我们安排任务以后完成。我们将任务封装成一个消息然后将其发送到队列中。在后台运行的工作进程将弹出队列中任务并最终执行作业。当你运行很多工作进程时，任务将在它们之间共享。</p>
 <p>这个概念在Web应用程序中尤其有用，因为在短期HTTP请求窗口中无法处理复杂任务。</p>
@@ -85,7 +85,7 @@
 </blockquote>
 <h2 id="均衡调度"><a href="#均衡调度" class="headerlink" title="均衡调度"></a>均衡调度</h2><p>你可能已经注意到目前的调度方式还不完全是我们想要的。比如有两个工作者进程的情况下，当偶数消息的任务比较繁重，奇数消息的任务比较简单，这样的话一个工作者会持续繁忙而另一个工作者几乎不做任何工作。好吧，RabbitMQ不知道任何事情，仍然会均匀发送消息。</p>
 <p>这是因为RabbitMQ只是在消息进入队列时分派消息，它不查看消费者的未确认消息的数量，它只是盲目地向第n个消费者分派第n个消息。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/prefetch-count.png" alt="prefetch-count"></p>
+<p><img src="/image/prefetch-count.png" alt="prefetch-count"></p>
 <p>为了解决这个问题我们使用<code>basicQos</code>方法将<code>prefetchCount</code>的值设为1。这告诉RabbitMQ不要一次给一个工作者进程一个以上的消息。或者，换句话说，不要向工作者进程分派新消息，直到它处理并确认了前一个消息。取而代之，它会将其分派给下一个仍然不忙的工作者。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int prefetchCount = 1;</span><br><span class="line">channel.basicQos(prefetchCount);</span><br></pre></td></tr></table></figure>
 <blockquote>

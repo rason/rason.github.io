@@ -79,7 +79,7 @@
 </ul>
 <p>当从服务器对主服务器进行初次复制时，主服务器会将自己的运行 ID 传送给从服务器，而从服务器则会将这个运行 ID 保存起来。</p>
 <p>当从服务器断线并重新连上一个主服务器时，从服务器将向当前连接的主服务器发送之前保存的运行 ID：如果从服务器保存的运行 ID 和当前连接的主服务器的运行 ID 相同，那么说明从服务器断线之前复制的就是当前连接的这个主服务器，那么就可以尝试执行部分同步操作。</p>
-<h5 id="PSYNC-命令的实现"><a href="#PSYNC-命令的实现" class="headerlink" title="PSYNC 命令的实现"></a>PSYNC 命令的实现</h5><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/psync.png" alt="Data replicate"></p>
+<h5 id="PSYNC-命令的实现"><a href="#PSYNC-命令的实现" class="headerlink" title="PSYNC 命令的实现"></a>PSYNC 命令的实现</h5><p><img src="/image/psync.png" alt="Data replicate"></p>
 <h4 id="部分同步优化"><a href="#部分同步优化" class="headerlink" title="部分同步优化"></a>部分同步优化</h4><p>大家应该也很容易想到上面的部分同步功能存在的缺陷，如果存在主从切换的情况，部分同步就无法实现了，因为主服务器变了，runid 不一样了只能执行全量同步了。</p>
 <p>为了应对主从切换这种情况，Redis 4.0 对 PSYNC 进行了优化，引入了 master_replid 和 master_replid2 两个 ID。</p>
 <ul>

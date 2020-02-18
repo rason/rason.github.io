@@ -47,17 +47,17 @@
 <li><strong>单一功能通过集群实现伸缩</strong>：多台服务器部署相同的服务</li>
 </ul>
 <p>在网站的早期，通常会使用第一种方式，如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-1.png" alt="根据功能进行物理分离实现伸缩"></p>
+<p><img src="/image/architecture-scalable-1.png" alt="根据功能进行物理分离实现伸缩"></p>
 <a id="more"></a>
 <p>当然，根据功能分离也可以用于网站发展的任何阶段。具体还可以分为两种情况：</p>
 <ul>
 <li><strong>纵向分离（分层后分离）</strong>：将业务处理流程上的不同部分分离部署。</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-2.png" alt="纵向分离部署实现伸缩"></p>
+<p><img src="/image/architecture-scalable-2.png" alt="纵向分离部署实现伸缩"></p>
 <ul>
 <li><strong>横向分离（业务分割后分离）</strong>：将不同的业务模块分离部署。</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-3.png" alt="横向分离部署实现伸缩"></p>
+<p><img src="/image/architecture-scalable-3.png" alt="横向分离部署实现伸缩"></p>
 <p>当然，将不同功能分离之后可以实现一定程度的伸缩性，但是随着网站的访问量增加，及时分离到最小力度的独立部署，单一的服务器也会成为瓶颈。此时，就需要使用集群了，即多台服务器部署相同的服务。</p>
 <p><strong>当一头牛拉不动车的时候，不要去寻找一头更强壮的牛，而是用两头牛来拉车</strong></p>
 <p>具体来说，集群伸缩性分为两种：</p>
@@ -74,17 +74,17 @@
 <p>实现负载均衡的基础技术包含以下几种：</p>
 <p><strong>1.HTTP重定向负载均衡</strong><br><strong>2.DNS域名解析负载均衡</strong><br><strong>3.反向代理负载均衡</strong><br><strong>4.IP负载均衡</strong><br><strong>5.数据链路层负载均衡</strong></p>
 <h3 id="HTTP重定向负载均衡"><a href="#HTTP重定向负载均衡" class="headerlink" title="HTTP重定向负载均衡"></a>HTTP重定向负载均衡</h3><p>HTTP重定向服务器是一台普通的应用服务器，其唯一功能就是根据用户的HTTP请求计算一台真实的Web服务器地址，并强该Web服务器地址写入HTTP重定向响应中（响应状态吗302）返回给用户浏览器。如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-1.png" alt="HTTP重定向负载均衡原理"></p>
+<p><img src="/image/architecture-loadbalance-1.png" alt="HTTP重定向负载均衡原理"></p>
 <p>HTTP重定向服务器是根据一定的负载均衡算法找到真实的服务器。实际上这种方案很少使用，两次请求才能完成一次访问，性能太差。</p>
 <h3 id="DNS域名解析负载均衡"><a href="#DNS域名解析负载均衡" class="headerlink" title="DNS域名解析负载均衡"></a>DNS域名解析负载均衡</h3><p>就是<strong>在DNS服务器中配置多条A记录</strong>，将一个域名映射到多个IP地址，每个IP地址就是一个应用服务器,这种方式将负载均衡的工作交给了DNS。优点是，DNS会将域名解析成距离用户最近的服务器地址，加快访问；缺点是：某台服务器下线，DNS没那么快生效，会导致访问失败，而且负载均衡的控制器在域名服务商哪里，自己无法做更多改善。如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-2.png" alt="DNS域名解析负载均衡原理"></p>
+<p><img src="/image/architecture-loadbalance-2.png" alt="DNS域名解析负载均衡原理"></p>
 <p>这种方式通常会用于作为<strong>一级负载均衡手段</strong>，即DNS解析出来的IP地址对应的服务器是一组负载均衡服务器，不是实际提供应用服务的服务器。</p>
 <h3 id="反向代理负载均衡"><a href="#反向代理负载均衡" class="headerlink" title="反向代理负载均衡"></a>反向代理负载均衡</h3><p>反向代理不仅可以缓存一下静态资源，还可以实现负载均衡，其工作原理如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-3.png" alt="反向代理负载均衡原理"></p>
+<p><img src="/image/architecture-loadbalance-3.png" alt="反向代理负载均衡原理"></p>
 <p>在这种方式中，Web服务器不直接对外提供访问，因此Web服务器不需要使用外部IP地址，而<strong>反响代理服务器则需要配置双网卡和内部外部两套IP地址</strong>。</p>
 <p>由于反向代理服务器转发请求在HTTP协议层面，因此也叫应用层负载均衡。<strong>优点是部署简单，缺点是所有请求和响应的中转站，其性能可能会成为瓶颈</strong>。</p>
 <h3 id="IP负载均衡"><a href="#IP负载均衡" class="headerlink" title="IP负载均衡"></a>IP负载均衡</h3><p>所谓IP负载均衡，即<strong>在网络层通过修改目标地址进行负载均衡。</strong>如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-4.png" alt="IP负载均衡原理"></p>
+<p><img src="/image/architecture-loadbalance-4.png" alt="IP负载均衡原理"></p>
 <p>在这里需要处理关键的地方就是如何将集群内部服务器处理完后的数据返回给负载均衡服务器。解决办法：</p>
 <ul>
 <li><p>负载均衡服务器使用双网卡，一个对内一个对外，在修改请求数据包的目的IP的同时也修改源地址，将源地址设为自身的IP，即源地址转换，这样内部集群服务器响应会再回到负载均衡服务器；</p>
@@ -94,7 +94,7 @@
 </ul>
 <p>IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有更好的处理性能。但请求响应还是得经过负载均衡服务器，所以集群的最大响应数据吞吐量还是会受限于负载均衡服务器的网卡带宽。视频下载类网站就难以满足了。<strong>那么有没有方式让负载均衡服务器只转发请求，响应数据直接返回给用户？</strong></p>
 <h3 id="数据链路层负载均衡"><a href="#数据链路层负载均衡" class="headerlink" title="数据链路层负载均衡"></a>数据链路层负载均衡</h3><p><strong>数据链路层负载均衡是至在通信协议的数据链路层修改mac地址进行负载均衡</strong>，如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-5.png" alt="数据链路层负载均衡原理"></p>
+<p><img src="/image/architecture-loadbalance-5.png" alt="数据链路层负载均衡原理"></p>
 <p>这种数据传输方式又称作<strong>三角传输模式</strong>，可以避免负载均衡服务器网卡带宽成为瓶颈。这种负载均衡方式又称作<strong>直接路由方式（DR）</strong>。使用三角传输模式的链路层负载均衡是目前大型网站<strong>使用最广的一种负载均衡手段</strong>，在Linux平台上最好的链路层负载均衡开源产品是<strong>LVS</strong>。</p>
 <h3 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h3><p>前面描述了如何将请求数据发送到Web服务器，而具体的负载均衡算法通常有一下几种：</p>
 <ul>
@@ -107,11 +107,11 @@
 <h2 id="分布式缓存集群的伸缩性设计"><a href="#分布式缓存集群的伸缩性设计" class="headerlink" title="分布式缓存集群的伸缩性设计"></a>分布式缓存集群的伸缩性设计</h2><p>和应用服务器集群不同，分布式缓存服务器集群中不同服务器缓存的数据是不一样的。这个特点会严重制约分布式缓存集群的伸缩性设计，因为新上线的缓存服务器没有缓存任何数据，而已下线的缓存服务器还缓存着网站的许多热点数据。</p>
 <p>所以，让新上线的缓存服务器对整个分布式缓存集群影响最小，也就是说<strong>新加入缓存服务器后应使整个缓存服务器集群中已经缓存的数据尽可能还被访问到</strong>,这是分布式缓存集群伸缩性设计的主要目标。</p>
 <h3 id="Memcached分布式缓存集群的访问模型"><a href="#Memcached分布式缓存集群的访问模型" class="headerlink" title="Memcached分布式缓存集群的访问模型"></a>Memcached分布式缓存集群的访问模型</h3><p>以Memcached为代表的分布式缓存，访问模型如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-lb-1.png" alt="Memcached分布式缓存访问模型"></p>
+<p><img src="/image/architecture-cache-lb-1.png" alt="Memcached分布式缓存访问模型"></p>
 <p>该模型的简单路由算法可以<strong>使用KEY的Hash值求余得到一台服务器，然后进行读写操作</strong>。如果不考虑缓存服务器集群伸缩性，余数Hash几乎可以满足绝大多数的缓存路由需求。</p>
 <p>然后，当我们需要将缓存服务器扩容的时候，问题就来了。比如机器由3台变成4台，这样求余的话大约有75%的缓存不能命中了，这显然不能接受。所以我们需要改进路由算法，常用的就是<strong>分布式缓存的一致性Hash算法</strong>。</p>
 <p><strong>分布式缓存的一致性Hash算法</strong>：通过一个叫做一致性Hash环的数据结构实现KEY到缓存服务器的Hash映射。如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-hash-1.png" alt="一致性Hash算法原理"></p>
+<p><img src="/image/architecture-cache-hash-1.png" alt="一致性Hash算法原理"></p>
 <p>具体算法过程：先构造一个长度为0~2的32次方的整数环（这个环被称作一致性Hash环），根据节点名称的Hash值将缓存服务器节点放置在这个Hash环上。然后根据需要缓存的数据的KEY值计算得到其Hash值，然后在Hash环上顺时针查找距离这个KEY的Hash值最近的缓存服务器节点，完成KEY到服务器的Hash映射查找。</p>
 <p>这个算法，3台服务器扩容至4台，可以继续命中原有缓存数据的概率是75%，远高于余数Hash的25%，而且随着集群规模越大，继续命中原有缓存数据的概率也逐渐增大。</p>
 <p><strong>但是，上面描述的算法过程还存在点小问题，那就是负载均衡性还不够好。</strong></p>
@@ -123,14 +123,14 @@
 <li><strong>NoSQL数据库集群伸缩性</strong></li>
 </ul>
 <h3 id="关系数据库集群伸缩性设计"><a href="#关系数据库集群伸缩性设计" class="headerlink" title="关系数据库集群伸缩性设计"></a>关系数据库集群伸缩性设计</h3><p>使用数据复制功能可以对数据库进行简单伸缩，如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-db-cluster-1.png" alt="MySQL集群伸缩性方案"></p>
+<p><img src="/image/architecture-db-cluster-1.png" alt="MySQL集群伸缩性方案"></p>
 <p>这种架构中，主从复制，读写分离，另外前面提到的按业务分割模式也可以用在数据库，不同业务数据库表部署在不同的数据库集群上，俗称<strong>分库</strong>。分库方式的制约条件是跨库的表不能进行Join操作。</p>
 <p>可是，如果<strong>单表数据过大，还需要进行分片</strong>，将一张表拆开分别存储在多个数据库中。</p>
 <p>支持分片的分布式关系数据库产品主要有<strong>Amoeba</strong>和<strong>Cobar</strong>。</p>
 <p>以Cobar为例，部署模型如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-1.png" alt="Cobar部署模型"></p>
+<p><img src="/image/architecture-cobar-1.png" alt="Cobar部署模型"></p>
 <p>Cobar是一个分布式关系<strong>数据库访问代理</strong>，介于应用服务器和数据库服务器之间。应用程序通过JDBC驱动访问Cobar集群，Cobar服务器根据SQL和分库规则分解SQL，分发到MySql集群不同的数据库实例上执行。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-2.png" alt="Cobar系统组件模型"></p>
+<p><img src="/image/architecture-cobar-2.png" alt="Cobar系统组件模型"></p>
 <p><strong>那么Cobar如何做集群的伸缩？</strong></p>
 <p>两种方式：</p>
 <ul>
@@ -138,7 +138,7 @@
 <li>MySQL服务器集群的伸缩</li>
 </ul>
 <p>Cobar服务器可以看作是无状态的应用服务器，因此其集群伸缩性可以简单使用负载均衡的手段实现。而MySQL中存储着数据，想要保证集群扩容后数据一致负载均衡，必须要做数据迁移，将集群中原来机器中的数据迁移到新添加的机器中。如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-3.png" alt="Cobar集群伸缩性原理"></p>
+<p><img src="/image/architecture-cobar-3.png" alt="Cobar集群伸缩性原理"></p>
 <p>关于数据如何迁移问题，此处也不展开，自行搜索了解。</p>
 <h2 id="NoSQL数据库的伸缩性设计"><a href="#NoSQL数据库的伸缩性设计" class="headerlink" title="NoSQL数据库的伸缩性设计"></a>NoSQL数据库的伸缩性设计</h2><p>NoSQL，主要指非关系的、分布式的数据库设计模式。一般而已，NoSQL数据库产品放弃了关系数据库的两大重要基础：以关系代数为基础的结构化查询语言（SQL）和事务一致性保证（ACID）。而强化大型网站更关注的特点：高可用性和伸缩性。</p>
 <p>开源社区有各种的NoSQL产品，其支持的数据结构和伸缩特性也各不相同，目前看来，应用比较广泛的是Apache HBase。</p>

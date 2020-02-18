@@ -50,7 +50,7 @@
 <li>后序遍历：左子树，右子树，根节点</li>
 </ul>
 <p><strong>注意：</strong>这里要理解的是树，而不是孩子。举个例子：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/binaryTree" alt="二叉树"></p>
+<p><img src="/image/binaryTree" alt="二叉树"></p>
 <a id="more"></a>
 <p>上图中，根节点为1，{2,4,5，8}为左子树，{3,6,7,9,10}为右子树；再深入1的左子树，它也是一棵二叉树，根节点为2，左子树为{4}，右子树为{5、8}；依此类推。</p>
 <p>因此，上图中的各种遍历结果如下：</p>
@@ -66,7 +66,7 @@
 <p>由于本人智商比较拙计，看着上面那张图想了大半天没想出来怎么做。其中想过用栈的方式，但是想不出一个栈怎么整；其中又想了多个栈能不能实现，稀里糊涂地折腾了半天楞是没想出来。</p>
 <p>…<br>…<br>…</p>
 <p>后来，我干脆放弃上面那张图了，我为什么要按照上面那张那么复杂的图来想，我不会按照只有三个节点的二叉树的图来实现吗？这不就简单多了吗？</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/binaryTree2" alt="简单的二叉树"></p>
+<p><img src="/image/binaryTree2" alt="简单的二叉树"></p>
 <p>嘿嘿，我真的是太机智了，遍历上面只有三个节点的二叉树难道我不会？然后就吭哧吭哧的开始编码了。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Solution &#123;</span><br><span class="line">	public static List&lt;Integer&gt; inorderTraversal(TreeNode root) &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void printNode(TreeNode root)&#123;</span><br><span class="line">		System.out.println(root.left.val);</span><br><span class="line">		System.out.println(root.val);</span><br><span class="line">		System.out.println(root.right.val);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>更简单地，我干脆就先直接把它们打印出来，先不返回遍历之后的数组，打印成功了就证明我遍历成功啦。嘿嘿，有了上面的基础，然后我就想，左子树也是一棵树呢，那是不是也可以这样打印？同理，右子树应该也是一样的啊。于是，我就想到了递归的方式：</p>

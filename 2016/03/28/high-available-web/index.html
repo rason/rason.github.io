@@ -43,7 +43,7 @@
 <h2 id="架构高可用"><a href="#架构高可用" class="headerlink" title="架构高可用"></a>架构高可用</h2><p>撇开硬件软件，<strong>要达到网站的高可用，首先网站的架构设计应该是高可用的。</strong>那么，什么样的架构才是高可用的架构？</p>
 <p><strong>实现高可用的主要手段就是数据和服务的冗余备份和失效转移。</strong></p>
 <p>典型的网站设计通常基于分层模式：应用层、服务层、数据层。比如：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-three-level.png" alt="分层网站架构模型"></p>
+<p><img src="/image/architecture-three-level.png" alt="分层网站架构模型"></p>
 <p>分层架构中不同层次的服务器具有不同的可用性特点，因此我们需要采用不同的方式达到各层高可用的目的，最终达成一个高可用架构。</p>
 <a id="more"></a>
 <h3 id="1-应用层的高可用"><a href="#1-应用层的高可用" class="headerlink" title="1.应用层的高可用"></a>1.应用层的高可用</h3><p>应用层通常都是无状态的，多台服务器提供的功能是对等的，因此可以采取：</p>
@@ -85,7 +85,7 @@
 <li><strong>CAP原理</strong></li>
 </ul>
 <p>一个提供数据服务的存储系统无法同时满足<strong>数据一致性（Consistency）、数据可用性（Availablity）、分区耐受性（Patition Tolerance,系统具有跨网络分区的伸缩性）</strong>这三个条件。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cap.png" alt="CAP原理"></p>
+<p><img src="/image/architecture-cap.png" alt="CAP原理"></p>
 <p>大型网站通过会选择强化分布式存储系统的可用性（A）和伸缩性（P），而在某种成都上放弃一致性（C）。</p>
 <p>数据的一致性分为：<strong>数据强一致性、数据用户一致性、数据最终一致性。</strong></p>
 <p>数据强一致性难以满足，努力做到用户一致性，保证最终用户访问数据的正确性。</p>

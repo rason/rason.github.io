@@ -47,7 +47,7 @@ Sentinel 检测主观下线也是采用类似的">
 </ul>
 <p>Sentinel 配置文件中的 <code>down-after-milliseconds</code> 属性用于判断实例进入主观下线所需要的时间：即在 <code>down-after-milliseconds</code> 配置的毫秒数内，连续向 Sentinel 返回无效响应，则认为实例进入主观下线状态，此时会更新数据结构中的 flags 属性，打开 <code>SRI_S_DOWN</code> 标识。</p>
 <p>比如，主服务器在 <code>down-after-milliseconds</code> 时间范围内没有返回有效响应，则数据结构会更新如下：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sri_s_down.png" alt="Sentinel network"></p>
+<p><img src="/image/sri_s_down.png" alt="Sentinel network"></p>
 <p><strong>注意：</strong></p>
 <ul>
 <li><code>down-after-milliseconds</code> 不仅用于判断主服务器主观下线，还用于从服务器和其他 Sentinel</li>
@@ -70,7 +70,7 @@ Sentinel 检测主观下线也是采用类似的">
 <li>leader_epoch: 仅在 leader_runid 不为 <em> 时有效，leader_runid 为 </em> 时总是 0</li>
 </ul>
 <h4 id="接收-Sentinel-is-master-down-by-addr-命令的回复"><a href="#接收-Sentinel-is-master-down-by-addr-命令的回复" class="headerlink" title="接收 Sentinel is-master-down-by-addr 命令的回复"></a>接收 Sentinel is-master-down-by-addr 命令的回复</h4><p>Sentinel 根据回复统计其他 Sentinel 判断主服务已下线的数量，当这一数量达到配置指定的判断客观下线所需的数量时，Sentinel 就会将主服务 sentinelRedisInstance 数据结构中的 flags 属性 SRI_O_DOWN 标识打开，表示主服务已经进入客观下线状态。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sri_o_down.png" alt="Sentinel network"></p>
+<p><img src="/image/sri_o_down.png" alt="Sentinel network"></p>
 <p><strong>注意：</strong> 不同的 Sentinel 配置判断客观下线的数量可能存在不同</p>
 <h3 id="选举-Leader-Sentinel"><a href="#选举-Leader-Sentinel" class="headerlink" title="选举 Leader Sentinel"></a>选举 Leader Sentinel</h3><p>当一个主服务器被判断为客观下线时，监视这个下线主服务的各个 Sentinel 会进行协商，选举出一个 Leader Sentinel，并由 Leader Sentinel 对下线的主服务器执行故障转移。</p>
 <p>选举规则和方法：</p>

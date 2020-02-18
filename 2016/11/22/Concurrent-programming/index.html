@@ -60,7 +60,7 @@
 <h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><ul>
 <li>除了使用<code>test-and-set</code>指令来解决互斥问题，还可以使用更加强大的信号量。</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/semaphore-struct.png" alt="信号量数据结构"></p>
+<p><img src="/image/semaphore-struct.png" alt="信号量数据结构"></p>
 <p>如上图所示，对于一个互斥的信号量（比如互斥锁），count属性会被初始化为1，代表最多一个任务可以获得这个信号量。</p>
 <p>当一个任务调用<code>down（&amp;sem）</code>方法——这个方法会对减少count值,如果新的count值大于0(获得信号量)则会立即返回执行接下来的代码，否则，这个任务会被进入睡眠，即放到信号量的<code>task_list</code>等待队列。之后，当一个已经获得信号量的任务完成之后，调用<code>up(&amp;sem)</code>方法，count值就会增加，等待队列中的所有任务都会被唤醒。</p>
 <p>从上面的描述可知，使用信号量不仅可以解决互斥的问题，还可以解决<code>生产者-消费者</code>同步的问题。</p>

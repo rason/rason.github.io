@@ -49,7 +49,7 @@
 </li>
 </ul>
 <h2 id="端口号"><a href="#端口号" class="headerlink" title="端口号"></a>端口号</h2><p>数据链路层用MAC地址识别同一链路中的不同计算机、IP层用IP地址识别TCP/IP网络中互联的主机和路由器，而传输层用的是端口号。端口号用于识别同一台计算机中进行通信的不同应用程序，也称程序地址。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/dispatch-by-port.png" alt="根据端口号识别应用"></p>
+<p><img src="/image/dispatch-by-port.png" alt="根据端口号识别应用"></p>
 <a id="more"></a>
 <h3 id="通过IP地址、端口号、协议号进行通信识别"><a href="#通过IP地址、端口号、协议号进行通信识别" class="headerlink" title="通过IP地址、端口号、协议号进行通信识别"></a>通过IP地址、端口号、协议号进行通信识别</h3><p><strong>仅凭目标端口识别某一个通信是远远不够的。</strong></p>
 <p>TCP/IP或UDP/IP通信中通常采用5个信息来识别一个通信。它们是<strong>”源IP地址“、”目标IP地址“、”协议号“、”源端口号“、”目标端口号“</strong>。只要其中某一项不同，则被认为是其他通信。</p>
@@ -77,33 +77,33 @@
 <h3 id="TCP的特点及其目的"><a href="#TCP的特点及其目的" class="headerlink" title="TCP的特点及其目的"></a>TCP的特点及其目的</h3><p>为了通过IP数据报实现可靠性传输，需要考虑很多事情，例如<strong>数据的破坏、丢包、重复以及分片顺序混乱</strong>等问题。如不能解决这些问题，也就无从谈起可靠传输。</p>
 <p>TCP通过<strong>检验和、序列号、确认应答、重发控制、连接管理以及窗口控制等机制</strong>实现可靠性传输。</p>
 <h3 id="通过序列号与确认应答提高可靠性"><a href="#通过序列号与确认应答提高可靠性" class="headerlink" title="通过序列号与确认应答提高可靠性"></a>通过序列号与确认应答提高可靠性</h3><p>在TCP中，当发送端的数据到达接收主机时，接收端主机会返回一个已收到消息的通知。这个消息叫做确认应答（ACK）。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/normal-send-ack.png" alt="正常的数据传输"></p>
+<p><img src="/image/normal-send-ack.png" alt="正常的数据传输"></p>
 <p>如果有确认应答，说明数据已经成功达到对端。反之，则数据丢失的可能性很大。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/re-send.png" alt="数据包丢失的情况"></p>
+<p><img src="/image/re-send.png" alt="数据包丢失的情况"></p>
 <p>未收到确认应答并不意味着数据一定丢失。也有可能是数据对方已经收到，只是返回的确认应答在图中丢失。这种情况也会导致发送端因没有收到确认应答而认为数据没有达到目的地，从而进行重新发送。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/ack-dismiss-re-send.png" alt="确认应答丢失的情况"></p>
+<p><img src="/image/ack-dismiss-re-send.png" alt="确认应答丢失的情况"></p>
 <p>TCP是通过<strong>序列号</strong>机制实现确认应答处理、重发控制以及重复控制等功能的。序列号是按顺序给发送数据的每一个字节（8位字节）都标上号码的编号。接收端查询接收数据TCP首部中的序列号和数据的长度，将自己下一步应该接收的序号作为确认应答返回。就这样，通过序列号和确认应答号，TCP可以实现可靠传输。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-seq.png" alt="发送的数据"></p>
+<p><img src="/image/data-seq.png" alt="发送的数据"></p>
 <h3 id="重发超时如何确定"><a href="#重发超时如何确定" class="headerlink" title="重发超时如何确定"></a>重发超时如何确定</h3><p>重发超时是指在重发数据之前，等待确认应答到来的哪个特定时间间隔。如果超过了这个时间仍未收到确认应答，发送端将进行数据重发。那么这个重发超时的具体时间长度是如何确定的？</p>
 <p>最理想的是，找到一个最小时间，它能保证<strong>”确认应答一定能在这个时间内返回“</strong>。然而这个时间长短随着数据包途径的网络环境的不同而有所变化。即使是在同一个网络中，根据不同时间的网络拥堵程度时间的长短也会发生变化。</p>
 <p>为此，TCP在每次发包时都会计算<strong>往返时间及其偏差</strong>。将这个往返时间和偏差相加，重发超时的时间就是碧这个总和要稍大一点的值。在BSD的Unix以及Windows系统中，超时都以0.5秒为单位进行控制，因此重发超时都是0.5秒的整数倍。不过，由于最初的数据包还不知道往返时间，所以其重发超时一般设置为6秒左右。</p>
 <h3 id="连接管理"><a href="#连接管理" class="headerlink" title="连接管理"></a>连接管理</h3><p>TCP提供面向有连接的通信传输。面向有连接是指在数据通信开始之前先做好通信两端之间的准备工作。通过TCP首部用于控制的字段来管理TCP连接，一个连接的建立与断开，正常过程至少需要来回发送7个包才能完成。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/establist-shutdown.png" alt="TCP连接的建立与断开"></p>
+<p><img src="/image/establist-shutdown.png" alt="TCP连接的建立与断开"></p>
 <h3 id="TCP以段为单位发送数据"><a href="#TCP以段为单位发送数据" class="headerlink" title="TCP以段为单位发送数据"></a>TCP以段为单位发送数据</h3><p>在建立TCP连接的同时，也可以确定发送数据包的单位，我们也可以称其为<strong>”最大消息长度“(MSS:Maximun Segment Size)</strong>。最理想的情况是，最大消息长度正好是IP中不会被分片处理的最大数据长度。</p>
 <p><strong>TCP在传送大量数据时，是以MSS的大小将数据进行分割发送。进行重发时，也是以MSS为单位。</strong></p>
 <p><strong>MSS是在三次握手的时候，在两端主机之间被计算得出</strong>。两端的主机在发出建立连接的请求时，会在TCP首部中写入MSS选项，告诉对方自己的接口能够适应的MSS大小。然后会在两者之间选择一个较少的值投入使用。</p>
 <h3 id="利用窗口控制提高速度"><a href="#利用窗口控制提高速度" class="headerlink" title="利用窗口控制提高速度"></a>利用窗口控制提高速度</h3><p>TCP以1个段为单位，每发一个段进行一次确认应答处理，如下图。这样的传输方式有一个缺点。那就是，包的往返时间越长通信性能就越低。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/every-time-ack.png" alt="按数据包进行确认应答"></p>
+<p><img src="/image/every-time-ack.png" alt="按数据包进行确认应答"></p>
 <p>为了解决这个问题，TCP引入了<strong>窗口</strong>概念。如下图，确认应答不再是以每个分段，而是更大的单位进行确认时，转发时间将会被大幅度的缩短。即发送端主机在发送了一个段以后不必要一直等待确认应答，而是继续发送。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/window-ack.png" alt="用滑动窗口方式并行处理"></p>
+<p><img src="/image/window-ack.png" alt="用滑动窗口方式并行处理"></p>
 <p><strong>窗口大小就是指无需等待确认应答而可以继续发送数据的最大值。</strong>上图中，窗口大小为4个段。</p>
 <p>这个机制实现了使用大量的缓冲区，通过对多个段同时进行确认应答的功能。如果窗口中的数据有丢失，就必须重发，如果收到确认应答，则将窗口滑动到确认应答的序列号的位置。所以，这种机制也被称为滑动窗口控制。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/slide-window.png" alt="滑动窗口方式"></p>
+<p><img src="/image/slide-window.png" alt="滑动窗口方式"></p>
 <h3 id="窗口控制与重发控制"><a href="#窗口控制与重发控制" class="headerlink" title="窗口控制与重发控制"></a>窗口控制与重发控制</h3><p>在使用窗口控制中，如果出现段丢失该怎么办？</p>
 <p>首先，我们考虑确认应答未能返回的情况。在没有使用窗口控制的时候，没有收到确认应答的数据都会被重发。而使用了窗口控制，某些确认应答即便丢失也无需重发。如下图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/window-ack-dismiss.png" alt="没有确认应答也不受影响"></p>
+<p><img src="/image/window-ack-dismiss.png" alt="没有确认应答也不受影响"></p>
 <p>其次，我们来考虑一下某个报文段丢失的情况。如下图所示，接收主机如果收到一个自己应该接收的序号以外的数据时，会针对当前为止收到数据返回确认应答。发送端知己如果连续3次收到同一个确认应答，就会将其所对应的数据进行重发。这种机制比之前的超时管理更加高效，因此也被称作高速重发机制。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/window-data-send-dismiss.png" alt="高速重发控制"></p>
+<p><img src="/image/window-data-send-dismiss.png" alt="高速重发控制"></p>
 <h3 id="流控制"><a href="#流控制" class="headerlink" title="流控制"></a>流控制</h3><p>为防止网络流量无端浪费，TCP提供一种机制可以让<strong>发送端根据接收端的实际接收能力控制发送的数据量</strong>。具体操作是，接收端主机向发送端主机通知自己可以接收数据的大小，于是发送端会发送不超过这个限度的数据。该大小限度就被称作<strong>窗口大小</strong>。在前面介绍的窗口大小的值就是由接收端主机决定的。</p>
 <p>在TCP首部中，专门有一个字段用来通知窗口大小。如果接收端的这个缓冲区数据溢出，窗口大小的值也会随之被设置为一个更小的值通知发送端。如果缓冲区满了，就暂时停止接收数据，发送端可以时不时发送窗口探测，获取最新的窗口大小。</p>
 <h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>如果窗口比较大，一开始大家都发送大量数据包，就可能造成拥塞。TCP为了防止这个问题的出现，在通信开始的时候会通过<strong>慢启动</strong>算法得出数值，对发送数据量进行控制。</p>

@@ -42,36 +42,36 @@
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>俗话说，“站得高，望得远”。思想达到了一定的高度，看待问题的深度就不一样了。虽然现在的基础知识也不咋地，但是先拓展一下自己的视野可以更清晰地看到自己的不足。因此决定看一下《大型网站技术架构》一书，拓展自己的视野，更加系统化地了解大型网站需要具备哪些技术。此文一下读书笔记，简单记录一下核心知识，以便日后温故而知新。</p>
 <h2 id="大型网站架构演变历程"><a href="#大型网站架构演变历程" class="headerlink" title="大型网站架构演变历程"></a>大型网站架构演变历程</h2><p>任何大型网站都是从小型的网站发展起来的，大型网站并不是一蹴而就，而是根据业务的发展演变而成的。说句不好听的，绝大部分公司都还没到需要用上大型网站架构技术的时候就已经死掉了。因此，我们要深深地明白，技术是为业务服务的，技术的首要任务是解决业务问题，不要为了架构而架构。但是，我们在设计系统的时候，还是需要一些大局观，以便系统更易于扩展。那么，一个小型网站，是怎么逐步地演变成一个大型网站的？</p>
 <h3 id="初始阶段网站架构"><a href="#初始阶段网站架构" class="headerlink" title="初始阶段网站架构"></a>初始阶段网站架构</h3><p><strong>应用程序，数据库，文件等所有资源都在一台服务器上。</strong></p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-init-arc.png" alt="初始阶段网站架构"></p>
+<p><img src="/image/architecture-init-arc.png" alt="初始阶段网站架构"></p>
 <a id="more"></a>
 <h3 id="应用服务和数据服务分离"><a href="#应用服务和数据服务分离" class="headerlink" title="应用服务和数据服务分离"></a>应用服务和数据服务分离</h3><p>随着业务发展，<strong>越来越多用户访问导致性能越来越差，越来越多的数据导致存储空间不足</strong>。这时需要应用和数据分离。应用和数据分离后<strong>整个网站使用三台服务器：应用服务器，文件服务器和数据库服务器</strong>。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-data-splic-arc.png" alt="应用服务和数据服务分离"></p>
+<p><img src="/image/architecture-data-splic-arc.png" alt="应用服务和数据服务分离"></p>
 <p>应用服务器：处理大量业务逻辑，需要更强的CPU。<br>数据库服务器：快速磁盘检索和数据缓存，需要更快的硬盘和更大的内存。<br>文件服务器：存储用户上传的文件，需要更大的硬盘。</p>
 <h3 id="使用缓存改善网站的性能"><a href="#使用缓存改善网站的性能" class="headerlink" title="使用缓存改善网站的性能"></a>使用缓存改善网站的性能</h3><p><strong>用户逐渐增加，访问数据库压力变大，网站延迟</strong>。根据二八定律：<strong>80%的业务集中访问20%的数据</strong>。所以把20%的数据缓存起来，可以减少数据库的压力，提高整个网站的访问速度。网站缓存可以分为两种：缓存在应用服务器上的本地缓存和缓存在专门的分布式缓存服务器上的远程缓存。</p>
 <p><strong>本地缓存</strong>：访问速度快，但受应用服务器内存限制。<br><strong>远程缓存</strong>：可以使用多台集群，理论上可以做的内存不受限制。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-arc.png" alt="网站使用缓存"></p>
+<p><img src="/image/architecture-cache-arc.png" alt="网站使用缓存"></p>
 <h3 id="使用应用服务器集群改善网站的并发能力"><a href="#使用应用服务器集群改善网站的并发能力" class="headerlink" title="使用应用服务器集群改善网站的并发能力"></a>使用应用服务器集群改善网站的并发能力</h3><p>使用缓存后，数据访问压力得到有效缓解，但是<strong>单一的应用服务器能够处理的请求连接有限，在网站的高峰期，应用服务器成为整个网站的瓶颈</strong>。</p>
 <p><strong>使用集群是解决网站高并发，海量数据的常用手段。</strong>对网站架构而言，只要能通过增加一台服务器的方式改善负载压力，就可以以同样的方式持续增加服务器不断改善系统性能，从而实现系统的可伸缩性。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cluster-arc.png" alt="应用服务器使用集群"></p>
+<p><img src="/image/architecture-cluster-arc.png" alt="应用服务器使用集群"></p>
 <h3 id="数据读写分离"><a href="#数据读写分离" class="headerlink" title="数据读写分离"></a>数据读写分离</h3><p>网站使用缓存后，使绝大部分数据读操作访问都可以不通过数据库就能完成，但是仍有一<strong>部分读操作（缓存访问不命中，缓存过期）和全部的写操作</strong>需要访问数据库，在网站的用户达到一定规模后，<strong>数据库因为负载压力过高</strong>而成为网站的瓶颈。</p>
 <p>目前大部分的主流数据库都提供<strong>主从热备</strong>功能，通过配置两台数据库主从关系，可以将一台数据库服务器的数据更新同步到另一台服务器上。网站利用数据库的这一功能，实现<strong>数据库读写分离</strong>，从而改善数据库负载压力。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-read-write-arc.png" alt="数据库读写分离"></p>
+<p><img src="/image/architecture-read-write-arc.png" alt="数据库读写分离"></p>
 <p>为了便于应用程序访问读写分离后的数据库，通常在应用服务器端使用<strong>专门的数据访问模块</strong>，是数据库读写分离对应用透明。</p>
 <h3 id="使用反向代理和CDN加速网站响应"><a href="#使用反向代理和CDN加速网站响应" class="headerlink" title="使用反向代理和CDN加速网站响应"></a>使用反向代理和CDN加速网站响应</h3><p>随着网站业务不断发展，用户规模越来越大，由于中国复杂的网络环境，<strong>不同地区的用户访问网站时，速度差别也极大。</strong></p>
 <p><strong>CDN和反向代理的基本原理都是缓存</strong>，区别在于<strong>CDN部署在网络提供商的机房</strong>，使用户在请求网站服务时，可以从距离自己最近的网络提供商机房获取数据；而<strong>反向代理则部署在中心机房</strong>，当用户请求到达中心机房后，首先访问的服务器是反向代理服务器，如果反向代理服务器缓存着用户请求的资源，就将其直接返回给用户。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-proxy-cdn-arc.png" alt="网站使用CDN和反向代理加速访问"></p>
+<p><img src="/image/architecture-proxy-cdn-arc.png" alt="网站使用CDN和反向代理加速访问"></p>
 <p><strong>使用CDN和反向代理</strong>的目的都是尽早返回数据给用户，一方面加速用户访问速度，另一方面也减轻后端服务器的负载压力。</p>
 <h3 id="使用分布式文件系统和分布式数据库系统"><a href="#使用分布式文件系统和分布式数据库系统" class="headerlink" title="使用分布式文件系统和分布式数据库系统"></a>使用分布式文件系统和分布式数据库系统</h3><p>任何强大的单一服务器都满足不了大型网站持续增长的业务需求。分布式数据库是网站数据库拆分的最后手段，只有在单表数据规模非常庞大的时候才使用。不到不得已时，<strong>网站更常用的数据库拆分手段是业务分库，将不同业务的数据库部署在不同的物理服务器上</strong>。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-distribution-arc.png" alt="使用分布式文件和分布式数据库系统"></p>
+<p><img src="/image/architecture-distribution-arc.png" alt="使用分布式文件和分布式数据库系统"></p>
 <h3 id="使用NoSQL和搜索引擎"><a href="#使用NoSQL和搜索引擎" class="headerlink" title="使用NoSQL和搜索引擎"></a>使用NoSQL和搜索引擎</h3><p>随着网站业务越来越复杂，<strong>对数据存储和检索的需求也越来越复杂</strong>，网站需要采用一些非关系数据库技术如NoSQL和非数据库查询技术如搜索引擎。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-nosql-search-arc.png" alt="使用NoSQL系统和搜索引擎"></p>
+<p><img src="/image/architecture-nosql-search-arc.png" alt="使用NoSQL系统和搜索引擎"></p>
 <p>应用服务器通过统一的数据访问模块访问各种数据，减轻应用程序管理诸多数据源的麻烦。</p>
 <h3 id="业务拆分"><a href="#业务拆分" class="headerlink" title="业务拆分"></a>业务拆分</h3><p>大型网站为了应对日益复杂的业务场景，通过使用<strong>分而治之</strong>的手段将整个网站业务分成不同的产品线。如大型购物交易网站就会将首页，商铺，订单，卖家，买家等拆分成不同的产品线，分归不同的业务团队负责。</p>
 <p>具体到技术上，也会<strong>根据产品线划分，将一个网站拆分成许多不同应用</strong>，每个应用独立部署维护。应用之间可以通过一个超链接（在首页上的导航链接每个都指向不同的应用地址）建立关系，也可以通过消息队列进行数据分发，当然最多的还是通过访问同一个数据存储系统来构成一个完整系统。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-bussiness-splic-arc.png" alt="应用拆分"></p>
+<p><img src="/image/architecture-bussiness-splic-arc.png" alt="应用拆分"></p>
 <h3 id="分布式服务"><a href="#分布式服务" class="headerlink" title="分布式服务"></a>分布式服务</h3><p><strong>随着业务拆分越来越小，存储系统越来越庞大，应用系统的整体复杂度呈指数级增加，部署维护越来越困难。</strong>由于所有应用要和所有数据库系统连接，在数万台服务器规模的网站中，这些连接的数目是服务器规模的平方，导致存数据库连接资源不足，拒绝服务。</p>
 <p>既然每个应用系统都需要执行许多相同的业务操作，比如用户管理，商品管理等，那么<strong>可以将这些公用的业务提取出来，独立部署</strong>。由这些<strong>可复用的业务连接数据库</strong>，提供共用业务服务，而<strong>应用系统只需管理用户界面</strong>，通过<strong>分布式服务调用共用业务</strong>服务完成具体业务操作。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-distribution-service-arc.png" alt="分布式服务"></p>
+<p><img src="/image/architecture-distribution-service-arc.png" alt="分布式服务"></p>
 <p>大型网站的架构演变到这里，基本上大多数的技术问题都得以解决，诸如跨数据中心的实时同步和具体网站业务相关的问题也都可以通过组和改进现有技术架构来解决。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>时至今日，大型网站架构演变方案已经非常成熟，各种技术方案也逐渐产品化。许多小型网站已经慢慢不需要再经历大型网站经历的架构演变之路就可以逐步发展壮大，一in我现在越来越多的网站从建立之处就是搭建在大型网站提供的云计算服务基础之上，所需的一切技术资源：计算，存储，网络都可以按需购买，线性伸缩。但要成为网站架构师，对网站的演变过程还是要深刻了解，才能在技术选型和决策时有的放矢。</p>
 </section>

@@ -58,9 +58,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">struct sentinelRedisInstance &#123;</span><br><span class="line">	// 标识值，记录了实例的类型，以及该实例的当前状态</span><br><span class="line">	int flags;</span><br><span class="line"></span><br><span class="line">	// 实例的名字</span><br><span class="line">	// 主服务器的名字由用户在配置文件中指定</span><br><span class="line">	// 从服务器以及 Sentinel 的名字由 Sentinel 自动设置，格式为 IP:PORT</span><br><span class="line">	char *name;</span><br><span class="line"></span><br><span class="line">	// 实例运行ID</span><br><span class="line">	char *runid;</span><br><span class="line"></span><br><span class="line">	// 配置纪元，用于实现故障转移</span><br><span class="line">	uint64_t config_epoch;</span><br><span class="line"></span><br><span class="line">	// 实例的地址，这个数据结构保存的是实例的 IP 和 PORT</span><br><span class="line">	sentinelAddr *addr;</span><br><span class="line"></span><br><span class="line">	// 实例多少毫秒没响应被认为主观下线，由 SENTINEL down-after-milliseconds 指定</span><br><span class="line">	mstime_t down_after_period;</span><br><span class="line"></span><br><span class="line">	// 多少个实例认为主观下线之后变为客观下线，即 SENTINEL monitor &lt;master-name&gt; &lt;ip&gt; &lt;port&gt; &lt;quorum&gt; 中的 quorum 参数</span><br><span class="line">	int quorum;</span><br><span class="line"></span><br><span class="line">	// 在执行故障转移时，可以同时对新的主服务器进行同步的从服务器数量</span><br><span class="line">	int parallel_syncs;</span><br><span class="line"></span><br><span class="line">	// 故障转移超时时间</span><br><span class="line">	mstime_t failover_timeout;</span><br><span class="line"></span><br><span class="line">	// 这个属性只有 master 才有，保存的是该 master 下属的所有 slave。key 是 ip:port，value 是 sentinelRedisInstance 指针</span><br><span class="line">	dict *slaves;</span><br><span class="line"></span><br><span class="line">	// 这个属性只有 master 才有，保存的是监控该 master的所有 Sentinel。key 是 ip:port，value 是 sentinelRedisInstance 指针</span><br><span class="line">	dict *sentinels;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>核心的两个数据结构我们已经有所了解，为了让大家更有体感，我们来画一下具有三个 Sentinel 和一主两备的 Redis 实例的结构图。</p>
 <p>假设我们 sentinel.conf 配置文件中配置的 master 名字为 mymaster。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-deploy.png" alt="Sentinel deployment"></p>
+<p><img src="/image/sentinel-deploy.png" alt="Sentinel deployment"></p>
 <p>上面是部署结构图，三个 Sentinel 和一主两备的 Redis 实例，下面是数据结构。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-datastruct.png" alt="Sentinel data struct"></p>
+<p><img src="/image/sentinel-datastruct.png" alt="Sentinel data struct"></p>
 <h3 id="获取主服务器信息"><a href="#获取主服务器信息" class="headerlink" title="获取主服务器信息"></a>获取主服务器信息</h3><p>看完上面的示例，大家可能会有个疑问，在初始化的时候，我们配置文件只配置了 master 的相关信息，并没有配置 slave 的信息，Sentinel 是怎么获取到 slave 的信息并保存在数据结构中的呢？</p>
 <p>回想一下主从复制的部署过程，从服务会通过 SLAVEOF 命令来复制主服务器，建立了双方之间的联系，此时主服务器是有 slave 服务器的相关信息。所以，在 Sentinel 初始化的时候并不需要那么麻烦把 slave 服务器也配置到 sentinel.conf 配置文件中。</p>
 <p>Sentinel 初始化的最后一步是创建到主服务器的网络连接，包含命令连接和订阅连接：</p>
@@ -75,7 +75,7 @@
 </ul>
 <p>根据这些返回的信息，就可以更新上面的数据结构中的内容了。</p>
 <h3 id="获取从服务器信息"><a href="#获取从服务器信息" class="headerlink" title="获取从服务器信息"></a>获取从服务器信息</h3><p>从主服务器信息中获取到所有从服务器的 ip 和 port 之后，Sentinel 也会创建到从所有从服务器的命令连接和订阅连接，也就是说 Sentinel 对所有监控的 Redis 服务器（不管主从）都会建立命令连接和订阅连接。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-link.png" alt="Sentinel network"></p>
+<p><img src="/image/sentinel-link.png" alt="Sentinel network"></p>
 <p>创建命令连接之后，也是十秒一次的频率向从服务器发送 INFO 命令获取相关信息：</p>
 <ul>
 <li>从服务器 run_id, role, slave_priority, slave_repl_offset</li>
@@ -95,7 +95,7 @@
 <li>如果不同，证明是其他 Sentinel 发送过来的，然后就更新数据结构</li>
 </ul>
 <h3 id="创建连向其他-Sentinel-的命令连接"><a href="#创建连向其他-Sentinel-的命令连接" class="headerlink" title="创建连向其他 Sentinel 的命令连接"></a>创建连向其他 Sentinel 的命令连接</h3><p>通过 <code>__sentinel__:hello</code> 频道发现了其他的 Sentinel ，那么为了和其他 Sentinel 通信，需要建立与其他 Sentinel 的命令连接。最终监控同一个主服务的多个 Sentinel 将形成互相连接的网络：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-network.png" alt="Sentinel network"></p>
+<p><img src="/image/sentinel-network.png" alt="Sentinel network"></p>
 <p>通过命令连接相连的各个 Sentinel 可以通过向其他 Sentinel 发送命令请求来进行信息交换，下一篇文章要介绍的检测主观下线、客观下线就是通过信息交换来实现的。</p>
 <p>这里要注意的是，Sentinel 在连接主服务器和从服务器时，会同时创建命令连接和订阅连接，但是在连接其他 Sentinel 时，却只会创建命令连接，因为他们已经互相发现了，没必要用订阅连接。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>今天的文章由于篇幅关系其实还没有讲到核心功能，检测服务器状态和故障转移，但是有了这些基础之后就很简单了，现在做一个小结：</p>

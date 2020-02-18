@@ -49,7 +49,7 @@
 <li><p>方法二：通过上面的方式当然可以实现堆有序，然而需要遍历整个数组效率就比较低了，如果通过sink()方式就更高效了，因为它无需遍历整个数组即可实现堆有序。举个例子：</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/HeapSort1" alt="使用下沉（sink）的方式无需遍历整个数组"></p>
+<p><img src="/image/HeapSort1" alt="使用下沉（sink）的方式无需遍历整个数组"></p>
 <p>如上图所示，我们依次对位置5，4，3，2，1的元素依次调用sink（）方法是不是就可以将数组堆有序了？</p>
 <p>因此，<strong>使用sink()方法将数组堆有序只需遍历一半的数组</strong>，代码如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int N = a.length;</span><br><span class="line">for (int k = N/2; k &gt; 0; k--) &#123;</span><br><span class="line">	sink(a, k, N);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

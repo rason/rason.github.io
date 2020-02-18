@@ -41,7 +41,7 @@
 </article>
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>以前为了面试找工作，会专门地去学习一下设计模式。但长时间不注意去应用，以致现在很多模式只知道个名字，所以说，要学以致用才行。接着上篇文章，继续概括一下另外两种设计模式：门面模式（Facade）和观察者模式（Observer）。</p>
 <h1 id="门面模式（Facade）"><a href="#门面模式（Facade）" class="headerlink" title="门面模式（Facade）"></a>门面模式（Facade）</h1><p>门面模式，就是将一个东西封装成一个门面好与人家更加容易地进行交流。主要用在一个很大的系统中有多个子系统时，多个子系统肯定要互相通信，但是每个子系统又不能将自己的内部数据过多地暴露给其他系统。每个子系统都会设计一个门面，把别的系统感兴趣的数据封装起来，通过这个门面来进行访问。门面设计模式示意图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatternfacade.png" alt="门面设计模式"></p>
+<p><img src="/image/designpatternfacade.png" alt="门面设计模式"></p>
 <p>Client只能访问Facade中提供的数据是门面设计模式的关键，至于Client如何访问Facade和SubSystem，如何提供Facade门面设计模式并没有规定死。</p>
 <p>在Tomcat中，有很多地方都运用了Facade设计模式。比如Request和Response的封装，StandWrapper到ServletConfig的封装，ApplicationContext到ServletContext的封装等。</p>
 <a id="more"></a>

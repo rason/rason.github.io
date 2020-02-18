@@ -45,7 +45,7 @@
 <p>代码的逻辑不算复杂，这里重点是出现了FactoryBean。FactoryBean是一个生生产Bean的Bean，开发者可以通过继承FactoryBean的方式，实现其getObject()方法即可获得自己想要的Bean。也就是说FactoryBean可以让我们很灵活地获取想要的Bean。比如一个Bean的初始化有很多复杂的配置，我们是不是得在xml文件中填写很多配置项？而通过继承FactoryBean的方法，我们就可以很灵活地精简掉这些配置。另外，Spring获取FactoryBean本身的对象是通过前面加上&amp;来完成的。</p>
 <a id="more"></a>
 <p>实际上获取Bean的实例是通过AbstractBeanFactory的<code>getBean()</code>方法，该方法有点长，这里就不贴代码了。请看下面的总体流程图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/springpreInstantiateSingletons.jpeg" alt="实例化单例过程"></p>
+<p><img src="/image/springpreInstantiateSingletons.jpeg" alt="实例化单例过程"></p>
 <p>最终，我们可以看出，Bean的创建是在自动装配工厂<code>AbstractAutowireCapableBeanFactory</code>中的<code>createBean()</code>方法完成。</p>
 <h2 id="IOC扩展点"><a href="#IOC扩展点" class="headerlink" title="IOC扩展点"></a>IOC扩展点</h2><p>Spring支持一些扩展点可以让我们更灵活地得到想要的Bean,主要有：</p>
 <ul>
