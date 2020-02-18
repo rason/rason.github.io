@@ -73,7 +73,7 @@
 </ul>
 <p>ScheduledExecutorService接口的返回实例就不一一说了，大家看下JDK的源码即可，里面也有详细的解析。</p>
 <h2 id="线程池类图结构"><a href="#线程池类图结构" class="headerlink" title="线程池类图结构"></a>线程池类图结构</h2><p>说到这里，大家肯定已经被线程池所用到的一些类会接口搞乱了，借用一张类图让大家理清一下结构：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/threadpool.png" alt="线程池类图结构"></p>
+<p><img src="/image/threadpool.png" alt="线程池类图结构"></p>
 <p>类图还比较好理解，查看JDK源码直接从Executors入口，顺着查看很好理解，就不详说了。</p>
 <h2 id="executorService-execute"><a href="#executorService-execute" class="headerlink" title="executorService.execute"></a>executorService.execute</h2><p>还有一个重点就是<code>executorService.execute</code>方法究竟做了什么事情，具体内容见JDK源码，大概内容就正如我文章开头举得例子一样。</p>
 <ul>

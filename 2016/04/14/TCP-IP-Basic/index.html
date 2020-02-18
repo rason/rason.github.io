@@ -42,15 +42,15 @@
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇文章是《图解TCP/IP》一书的第二章阅读笔记，主要是介绍了一下TCP/IP的一些基础知识，基本上和上一篇文章所描述的内容差不多，但是内容会稍微丰富那么一点点。</p>
 <h2 id="TCP-IP的标准化"><a href="#TCP-IP的标准化" class="headerlink" title="TCP/IP的标准化"></a>TCP/IP的标准化</h2><p>TCP/IP网络协议的出现背景就不细说了，随着分组交换技术的出现和对分组通信的研究发展，TCP/IP的具体规范也随之出现。</p>
 <p>这里所说的TCP/IP并不是简单地指TCP/IP两种协议，虽然有时候确实是指这两种协议。在很多情况下，它只是利用IP进行通信时所必须用到的协议群的统称。如下图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/TCP-IP-%20protocol.png" alt="TCP/IP协议群"></p>
+<p><img src="/image/TCP-IP-%20protocol.png" alt="TCP/IP协议群"></p>
 <p>TCP/IP协议由IETF（The Internet Engineering Task Force）国际互联网工程任务组讨论制定，那些需要标准化的协议，被列入RFC（Request For Comment）征求意见表文档并在互联网上公布。RFC不仅记录了协议的规范内容，还包含了协议的实现和运用的相关信息，以及实验方面的信息。</p>
 <p>RFC信息可以通过<a href="http://www.rfc-editor.org/" target="_blank" rel="noopener">点击这里</a>查看。</p>
 <a id="more"></a>
 <h2 id="互联网结构"><a href="#互联网结构" class="headerlink" title="互联网结构"></a>互联网结构</h2><p>“互联网”由ARPANET发展而来、互联全世界的计算机网络，互联网进行通信时，需要相应的网络协议，TCP/IP原本就是为使用互联网而开发制定的协议族。因此互联网的协议就是TCP/IP，TCP/IP就是互联网的协议。</p>
 <p>互联网原意是网际网，意指连接一个又一个的网络，每一个网络都是由骨干网（BackBone）和末端网（Stub）组成的。每个网络之间通过NOC（Network Operation Center网络操作中心）相连，如果网络的运营商不同，连接方式和使用方法也会不同，需要IX（Internet Exchange网络交换中心）的支持连接异构的网络。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/Internet-structure.png" alt="互联网结构"></p>
+<p><img src="/image/Internet-structure.png" alt="互联网结构"></p>
 <h2 id="TCP-IP协议分层模型"><a href="#TCP-IP协议分层模型" class="headerlink" title="TCP/IP协议分层模型"></a>TCP/IP协议分层模型</h2><p>下图是各个协议与OSI参考模型中各个分层之间的对应关系。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tcp-ip-osi.png" alt="OSI参考模型与TCP/IP分层模型对应关系"></p>
+<p><img src="/image/tcp-ip-osi.png" alt="OSI参考模型与TCP/IP分层模型对应关系"></p>
 <ul>
 <li><p><strong>硬件（物理层）</strong>：负载数据传输的硬件，比如以太网或者电话线路等物理层的设备。</p>
 </li>
@@ -63,7 +63,7 @@
 <li><strong>应用层</strong>：在TCP/IP分层中，将OSI参考模型中的会话层、表示层和应用层的功能都集中到了应用程序中实现。</li>
 </ul>
 <h2 id="TCP-IP分层模型与通信示例"><a href="#TCP-IP分层模型与通信示例" class="headerlink" title="TCP/IP分层模型与通信示例"></a>TCP/IP分层模型与通信示例</h2><p>使用TCP/IP时，从应用层到物理媒介为止数据的处理流程。</p>
-<h3 id="数据包首部"><a href="#数据包首部" class="headerlink" title="数据包首部"></a>数据包首部</h3><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-package.png" alt="数据包示意图"></p>
+<h3 id="数据包首部"><a href="#数据包首部" class="headerlink" title="数据包首部"></a>数据包首部</h3><p><img src="/image/data-package.png" alt="数据包示意图"></p>
 <p>每个分层中，都会对所发送的数据附加一个首部，在这个首部中包含了该层必要的信息，如发送的目标地址以及协议相关信息。在下一层的角度看，从上一层收到的包全部都被认为是本层的数据。</p>
 <h3 id="发送数据包"><a href="#发送数据包" class="headerlink" title="发送数据包"></a>发送数据包</h3><p>假设是计算机A向计算机B发送一封内容为“早上好”的电子邮件。</p>
 <p><strong>1.应用程序处理</strong></p>
@@ -74,9 +74,9 @@
 <p>在TCP首部的前端加上IP的首部，包含接收端IP地址以及发送端IP地址，紧随IP首部的还有用来判断其后数据是TCP还是UDP的信息。<br>IP包生成后，参考路由控制表决定接受此IP包的路由或主机。随后，IP包将被发送给连接这些路由器或主机网络接口的驱动程序，以实现真正发送数据。</p>
 <p><strong>4.网络接口（以太网驱动）的处理</strong></p>
 <p>从IP传过来的IP包，对于以太网驱动来说不过就是数据。给这数据附加上以太网首部并进行发送处理，以太网首部包含接收端MAC地址、发送端MAC地址以及标志以太网类型的以太网数据的协议。根据上述信息产生的以太网数据包通过物理层传输给接收端。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tcp-ip-connection.png" alt="通信处理示意图"></p>
+<p><img src="/image/tcp-ip-connection.png" alt="通信处理示意图"></p>
 <h3 id="经过数据链路的包"><a href="#经过数据链路的包" class="headerlink" title="经过数据链路的包"></a>经过数据链路的包</h3><p>分组数据包经过以太网的数据链路层时的大致流程如下图所示，该图对各个包首部做了简化。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/package-data.png" alt="包结构"></p>
+<p><img src="/image/package-data.png" alt="包结构"></p>
 <p>每个包首部中至少都会包含两个信息：<strong>一个是发送端和接收端地址，另一个是上一层的协议类型</strong>。</p>
 <h3 id="数据包的处理"><a href="#数据包的处理" class="headerlink" title="数据包的处理"></a>数据包的处理</h3><p><strong>5.网络接口（以太网驱动）的处理</strong></p>
 <p>主机收到以太网包以后，首先从以太网的包首部找到MAC地址判断是否为发给自己的包。如果不是则丢弃数据，如果是则查找以太网包首部中的类型域从而确定以太网协议所传送过来的数据类型。比如，如果数据类型是IP包，则交给IP子程序处理，如果是ARP的协议，则交给ARP处理。</p>

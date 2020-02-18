@@ -42,11 +42,11 @@
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>公司内部版本管理使用SVN，一直就觉得挺麻烦的，所以就自个折腾一下把版本管理转移到git。后续的问题当然就是要将发布系统搭建起来，大概搜索了一下情况，决定使用Gitlab+Jenkins来做持续集成。</p>
 <h2 id="Gitlab安装"><a href="#Gitlab安装" class="headerlink" title="Gitlab安装"></a>Gitlab安装</h2><p><a href="https://about.gitlab.com/downloads/" target="_blank" rel="noopener">Gitlab官网</a>上有教程，选择适合自己的操作系统按照步骤一步步安装就可以了。安装过程可能会遇到一两个小问题，谷歌一下应该可以解决。</p>
 <p>安装完成之后，在浏览器中输入<code>127.0.0.1</code>或者<code>localhost</code>回车即可，Gitlab默认监听80端口。然后注册一个账户即可进入系统。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitlab-home.png" alt="首页"></p>
+<p><img src="/image/gitlab-home.png" alt="首页"></p>
 <h2 id="Gitlab使用"><a href="#Gitlab使用" class="headerlink" title="Gitlab使用"></a>Gitlab使用</h2><p>如果你有Github的使用经验，Gitlab使用起来应该就非常熟练了，不过没有经验的话也是相当简单的。</p>
 <h3 id="New-project"><a href="#New-project" class="headerlink" title="New project"></a>New project</h3><p>点击右上角的<code>New project</code>创建一个新的工程，输入工程名称、工程描述和选择访问权限点击<code>Create project</code>即可。</p>
 <a id="more"></a>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/new-project.png" alt="New project"></p>
+<p><img src="/image/new-project.png" alt="New project"></p>
 <h3 id="推送代码到Gitlab"><a href="#推送代码到Gitlab" class="headerlink" title="推送代码到Gitlab"></a>推送代码到Gitlab</h3><p>两种方式：</p>
 <ul>
 <li>创建一个新的git仓库</li>
@@ -62,16 +62,16 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -</span><br><span class="line">sudo sh -c &apos;echo deb http://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list&apos;</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install jenkins</span><br></pre></td></tr></table></figure>
 <p>安装完成之后在浏览器输入<code>localhost:8080</code>即可访问，Jenkins默认监听8080端口。由于我们做Java开发的通常都会用到8080端口，所以可以通过<code>/etc/default/jenkins</code>文件中的<code>HTTP_PORT=8080</code>这一行来修改端口号。然后<code>/etc/init.d/jenkins restart</code>重启一下即可。</p>
 <p>第一次进入Jenkins会让你选择安装一些插件，直接选择默认就行了，因为缺少的插件之后可以在Jenkins系统管理-管理插件中安装。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/jenkins-sys-man.png" alt="Jenkins系统管理"></p>
+<p><img src="/image/jenkins-sys-man.png" alt="Jenkins系统管理"></p>
 <h2 id="Jenkins新建项目"><a href="#Jenkins新建项目" class="headerlink" title="Jenkins新建项目"></a>Jenkins新建项目</h2><p>点击左上角的<code>新建</code>，可以创建一个新的构建项目，输入名字和选择类型点击确定即可。</p>
 <h3 id="项目配置"><a href="#项目配置" class="headerlink" title="项目配置"></a>项目配置</h3><p>重点就是项目的配置了，每个配置的右边都有个问号的图标，如果不太清楚这项配置是什么作用，点击这个问号会有解析。</p>
 <h3 id="源码管理"><a href="#源码管理" class="headerlink" title="源码管理"></a>源码管理</h3><p>即Jenkins从哪里拉取代码进行构建，这里我们可以选择Git或者SVN，如果没有Git选项，那就是没有安装git的插件，需要到管理插件中先安装Git的插件。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/git-source.png" alt="源码管理"></p>
+<p><img src="/image/git-source.png" alt="源码管理"></p>
 <p>输入相应的仓库地址和构建的分支即可。</p>
 <h3 id="Build"><a href="#Build" class="headerlink" title="Build"></a>Build</h3><p>使用maven进行编译打包。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/build.png" alt="Build"></p>
+<p><img src="/image/build.png" alt="Build"></p>
 <h3 id="Post-Steps"><a href="#Post-Steps" class="headerlink" title="Post Steps"></a>Post Steps</h3><p>编译打包完之后就是如何将产品上传到服务器进行发布了，可以在<code>Post Steps</code>配置编译打包完的后置操作。这里我选择通过SSH将代码上传到服务器，你也可以选择SCP或者是FTP的方式。每种方式都有相应的插件，通过SSH上传需要安装<code>publish over ssh</code>插件。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/publish-over-ssh.png" alt="Publish over ssh"></p>
+<p><img src="/image/publish-over-ssh.png" alt="Publish over ssh"></p>
 <p>上面的配置如果看不懂的话，可以<a href="https://wiki.jenkins-ci.org/display/JENKINS/Publish+Over#PublishOver-promotions" target="_blank" rel="noopener">点击这里</a>查看使用示例。</p>
 <p>其中<code>Exec command</code>配置项可以在上传完代码之后执行一些命令，比如进行Tomcat的重启，这里我就不举例了。</p>
 <p>配置了以上几项基本上就可以将整个持续集成环境跑起来了，当然Jenkins还有还多其它丰富的构建配置项就不细说了。</p>

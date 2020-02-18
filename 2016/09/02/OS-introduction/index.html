@@ -41,7 +41,7 @@
 </article>
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>接下来的一段时间打算学习一下操作系统方面的知识，正好看到一技术公众账号有推荐《现代操作系统》一书，便决定下载看看。阅读了一章书之后感觉还可以，就选定此书作为接下来的学习资料了。</p>
 <h2 id="什么是操作系统"><a href="#什么是操作系统" class="headerlink" title="什么是操作系统"></a>什么是操作系统</h2><p>我们都知道计算机系统由CPU、主存、磁盘、打印机、键盘、鼠标、显示器以及其他的输入/输出设备组成。我们程序员跟不可能直接跟这些底层硬件打交道吧？那不是累死累活。我们都知道解耦，面向接口编程思想，操作系统的作用正是如此。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/os-position" alt="操作系统所处的位置"></p>
+<p><img src="/image/os-position" alt="操作系统所处的位置"></p>
 <p>从上图可以看出，操作系统就是架设在用户和硬件之间的一层软件，其作用大致有一下两点：</p>
 <ul>
 <li>隐藏硬件，呈现给程序（以及程序员）良好、清晰、优雅、一致的抽象。</li>
@@ -56,7 +56,7 @@
 <p>此外，图中还有一项用户接口程序是什么鬼？比如shell和GUI，它们处于用户态程序中的最低层次，允许用户运行其他程序，比如浏览器等。</p>
 <a id="more"></a>
 <h2 id="计算机硬件介绍"><a href="#计算机硬件介绍" class="headerlink" title="计算机硬件介绍"></a>计算机硬件介绍</h2><p>一台简单的个人计算机可以抽象为类似下图中的模型。CPU、内存以及I/O设备都由一条系统总线连接起来并通过总线与其他设备通信。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/pc-component" alt="简单的个人计算机的一些部件"></p>
+<p><img src="/image/pc-component" alt="简单的个人计算机的一些部件"></p>
 <h3 id="处理器"><a href="#处理器" class="headerlink" title="处理器"></a>处理器</h3><p>CPU就是计算机的大脑，它从内存中取出指令并执行之。在每个CPU基本周期中，首先从内存中取出指令，解码以确定其类型和操作数，接着执行之，然后取指、解码并执行下一条指令。</p>
 <p>由于访问内存得到指令或数据的时间比执行指令的时间长得多，所以CPU内部有一些用来保存关键变量和临时数据的寄存器。除此之外，还有一些程序员可见的寄存器：</p>
 <ul>
@@ -69,7 +69,7 @@
 </ul>
 <p>操作系统必须知晓所有的寄存器，在时间多路复用CPU中，操作系统经常会终止正在运行的某个程序并启动另一个程序。这时就需要保存所有的寄存器，当程序再次运行时，可以把这些寄存器重新装入。</p>
 <h3 id="存储器"><a href="#存储器" class="headerlink" title="存储器"></a>存储器</h3><p>上面说到的寄存器和内存都是存储器的一种，那么计算机究竟有多少存储器，它们之间的区别是什么？请看下图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/memory-structure" alt="典型的存储层次结构，数据是粗略估计"></p>
+<p><img src="/image/memory-structure" alt="典型的存储层次结构，数据是粗略估计"></p>
 <p>从上图可以看出，没有两全其美的方案，速度快的容量小（材料、制作成本高），速度慢的容量大（材料、制作成本低）。需要提到的是高速缓存，当某个程序需要读取一个存储字时，高速缓存硬件检查所需要的高速缓存行是否在高速缓存中，如果缓存命中则不需要访问内存了。缓存在计算机科学的许多领域中都起着重要的作用。</p>
 <h3 id="I-O设备"><a href="#I-O设备" class="headerlink" title="I/O设备"></a>I/O设备</h3><p>I/O设备一般包括两个部分：设备控制器和设备本身。控制器是插在电路板上的一块芯片或一组芯片，它从操作系统接收命令。例如，从设备读取数据，并且完成数据的处理。</p>
 <p>在许多情况下，对这些设备的控制是非常复杂和具体的，所以，控制器的任务是为操作系统提供一个简单的接口（不过还是很复杂的）。这其实就是面向接口编程的思想。操作系统看到的是对控制器的接口，这个接口可能和设备接口有很多大区别。</p>
@@ -81,7 +81,7 @@
 <li><strong>直接存储器访问</strong>：为I/O使用一种特殊的直接存储器（DMA）访问芯片，它可以控制在内存和某些控制器之间的位流，而无须持续的CPU干预。</li>
 </ul>
 <h3 id="总线"><a href="#总线" class="headerlink" title="总线"></a>总线</h3><p>随着处理器和存储器速度越来越快，单总线很难处理总线的交通流量，因此就出现了其它总线，它们处理I/O设备以及CPU到存储器的速度都更快。目前一个较大的Pentium系统的结构如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/bus-structure" alt="大型Pentium系统的结构"></p>
+<p><img src="/image/bus-structure" alt="大型Pentium系统的结构"></p>
 <ul>
 <li>ISA（Industry Standard Architecture）总线：即原先的IBM PC/AT总线，可并行传送2字节，速度较慢。</li>
 <li>PCI（Peripheral Component Interconnect）总线：ISA总线的后继者，可并行传送8字节，速度较快。目前多数高速I/O设备采用PCI总线。</li>

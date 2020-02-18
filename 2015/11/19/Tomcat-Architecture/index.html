@@ -51,7 +51,7 @@
 <h3 id="Connector"><a href="#Connector" class="headerlink" title="Connector"></a>Connector</h3><p>Connector是用于处理与客户端的通讯。在tomcat有多个可用的Connector，包括HTTP connector和 AJP connector。HTTP connector通常用于把tomcat当做一个单一的server时，而AJP connector通常用于将tomcat连接到一个web server（例如Apache HTTPD server）。</p>
 <h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3><p>一个Context就代表一个 web application。一个Host可能包含多个Context，每一个都有唯一的路径。</p>
 <h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p>根据以上分析，我们可以用一个图来表示上述关系：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcat.png" alt="Tomcat架构"></p>
+<p><img src="/image/tomcat.png" alt="Tomcat架构"></p>
 <h2 id="Tomcat启动流程"><a href="#Tomcat启动流程" class="headerlink" title="Tomcat启动流程"></a>Tomcat启动流程</h2><h3 id="1-从命令行运行org-apache-catalina-startup-Bootstrap"><a href="#1-从命令行运行org-apache-catalina-startup-Bootstrap" class="headerlink" title="1.从命令行运行org.apache.catalina.startup.Bootstrap"></a>1.从命令行运行org.apache.catalina.startup.Bootstrap</h3><ul>
 <li>初始化classloaders</li>
 <li>通过反射初始化启动类org.apache.catalina.startup.Catalina</li>

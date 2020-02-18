@@ -54,11 +54,11 @@
 </ul>
 <a id="more"></a>
 <p>以上的内容一定很熟悉，因为<a href="http://rason.me/2015/11/19/Tomcat-Architecture/" target="_blank" rel="noopener">Tomcat架构</a>文章就介绍过，原来他们都实现了同一个接口，我们来看看Container接口里面都有些什么方法：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/container.png" alt="Container接口方法"></p>
+<p><img src="/image/container.png" alt="Container接口方法"></p>
 <p>方法比较多，但从名字上我们大概就知道用途，不多做解析。我们可以看到有一个<code>addChild(Container child)</code>添加子容器的方法，从<a href="http://rason.me/2015/11/19/Tomcat-Architecture/" target="_blank" rel="noopener">Tomcat架构</a>文章中的构架图可以看出，Tomcat中的Container是一层接一层的。那么，Tomcat是怎么将这些容器组件有效地管理起来呢？</p>
 <h2 id="Lifecycle（生命周期）"><a href="#Lifecycle（生命周期）" class="headerlink" title="Lifecycle（生命周期）"></a>Lifecycle（生命周期）</h2><p>Container接口扩展于Lifecycle接口，因此可以知道Tomcat正是通过Lifecycle来管理上面那些容器组件的。我们知道Servlet是有init，service，destroy这些生命周期的，Tomcat中的容器（Container）生命周期和Servlet的生命周期类似。</p>
 <p>先看一下Lifecycle的结构和方法：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/lifecycle.png" alt="Lifecycle数据结构和方法"></p>
+<p><img src="/image/lifecycle.png" alt="Lifecycle数据结构和方法"></p>
 <p>可以看出Lifecycle主要有<strong>init，start，stop，destroy</strong>四个过程。而对应的生命周期状态却有以下几种：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public enum LifecycleState &#123;</span><br><span class="line">    NEW(false, null),</span><br><span class="line">    INITIALIZING(false, Lifecycle.BEFORE_INIT_EVENT),</span><br><span class="line">    INITIALIZED(false, Lifecycle.AFTER_INIT_EVENT),</span><br><span class="line">    STARTING_PREP(false, Lifecycle.BEFORE_START_EVENT),</span><br><span class="line">    STARTING(true, Lifecycle.START_EVENT),</span><br><span class="line">    STARTED(true, Lifecycle.AFTER_START_EVENT),</span><br><span class="line">    STOPPING_PREP(true, Lifecycle.BEFORE_STOP_EVENT),</span><br><span class="line">    STOPPING(false, Lifecycle.STOP_EVENT),</span><br><span class="line">    STOPPED(false, Lifecycle.AFTER_STOP_EVENT),</span><br><span class="line">    DESTROYING(false, Lifecycle.BEFORE_DESTROY_EVENT),</span><br><span class="line">    DESTROYED(false, Lifecycle.AFTER_DESTROY_EVENT),</span><br><span class="line">    FAILED(false, null),</span><br><span class="line">    MUST_STOP(true, null),</span><br><span class="line">    MUST_DESTROY(false, null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
@@ -67,7 +67,7 @@
 </ul>
 <p>另外我们还注意到Lifecycle接口中还有<code>addLifecycleListener(LifecycleListener listener)</code>方法。很显然这是一个<strong>监听器</strong>模式，监听事件的常量也可以在接口中看到，当生命周期变化时可以调用<code>fireLifecycleEvent</code>方法通知相应的监听器。</p>
 <h2 id="Tomcat的启动流程"><a href="#Tomcat的启动流程" class="headerlink" title="Tomcat的启动流程"></a>Tomcat的启动流程</h2><p><strong>Tomcat的启动是基于观察者模式设计的，所有的容器会继承Lifecycle接口，它管理着容器的整个生命周期，所有容器的修改和状态改变都会由它去通知已注册的观察者。</strong>Tomcat的启动时序图如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcat_start.png" alt="Tomcat启动时序图"></p>
+<p><img src="/image/tomcat_start.png" alt="Tomcat启动时序图"></p>
 <p>有了Container和Lifecycle的基础之后，理解上图应该不是很困难，容器之间是层层关联起来的。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li><strong>1.我们需要知道Engine，Host，Context，Wrapper都实现了Container接口。</strong></li>

@@ -64,7 +64,7 @@
 <p>那么为了实现均衡分配，我们可以先随机选择一个 broker（假设是 0 ），然后使用轮询的方式将分区 Leader 副本分配到 broker 上。于是，分区 0 的 Leader 副本会在 broker 0 上，分区 1 的 Leader 副本会在 broker 1 上，分区 2 的 Leader 副本会在 broker 3 上，以此类推。 </p>
 <p>Leader 副本分配完之后，依次分配 Follower 副本。如果分区 0 的 Leader 在 broker 0 上，那么它的第一个 Follower 副本会在 broker 1 上，第二个 Follower 副本会在 broker 2 上。分区 1 的 Leader 在 broker 1 上，那么它的第一个 Follower 副本在 broker 2 上，第二个 Follower 副本在 broker 0 上，以此类推。</p>
 <p>最终一个 Topic 三个分区，三个副本分配的结果如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/kafka-replica.png" alt="Kafka Replication"></p>
+<p><img src="/image/kafka-replica.png" alt="Kafka Replication"></p>
 <p>这也解析了上面说到的为什么 Kafka 不需要读写分离，因为负载已经均衡到每一个 broker 上了。</p>
 <h3 id="首选-Leader"><a href="#首选-Leader" class="headerlink" title="首选 Leader"></a>首选 Leader</h3><p>我们试想一下上图的情景，假设 broker 2 挂了，那么 Leader 2 也就挂了，此时 Kafka 会从 broker 0 或者 broker 1 中选择一个 Follower 2 提升为 Leader。当 broker 2 再次启动起来之后，原来的 Leader 2 将变成 Follower 2，此时 broker 2 没有 Leader 副本了， broker 0 或者 broker 1 将会有两个 Leader，这样就会导致负载不均衡了。</p>
 <p>为了解决上面的问题， Kafka 中引入<strong>首选 Leader</strong>的概念，也就是优先会成为 Leader 的副本。默认情况下，Kafka 的 <code>auto.leader.rebalance. enable</code> 被设为 true，它会检查首选 Leader 是不是当前 Leader ，如果不是，并且该副本是同步的，那么就会触发 Leader 选举，让首选 Leader 成为当前 Leader，让负载变得更均衡。</p>

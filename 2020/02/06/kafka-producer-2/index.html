@@ -49,7 +49,7 @@
 <li>将 socketChannel 注册到 nioSelector，对该 socketChannel 感兴趣的事件是 SelectionKey.OP_CONNECT</li>
 </ol>
 <p>简单来说，nioSelector 就是用于监视我们所注册的所有 Channel，当 Channel 上发生注册时感兴趣的事情时，nioSelector 通知应用程序处理请求。一个 nioSelector 实例可以监视多个 Socket Channel，从而达到监视更多连接的作用。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/nioSelector.png" alt="NIO Selector"></p>
+<p><img src="/image/nioSelector.png" alt="NIO Selector"></p>
 <p>将 Channel 注册到 nioSelector ，会为每个 Channel 返回 <code>SelectionKey</code>。SelectionKey 是一个标识 Channel 的对象，它包含有关 Channel 状态的信息（例如准备接受请求），我们可以通过 SelectionKey 随时修改在该 Channel 上感兴趣的事件。</p>
 <p>简单的复习之后，我们开始探讨 Kafka producer 网络方面的源码。</p>
 <h3 id="发起建立连接"><a href="#发起建立连接" class="headerlink" title="发起建立连接"></a>发起建立连接</h3><p>要发送网络请求，首先得建立连接，所以我们先从建立连接的部分代码开始看，建立连接的方法是 <code>org.apache.kafka.clients.NetworkClient#initiateConnect</code>。</p>

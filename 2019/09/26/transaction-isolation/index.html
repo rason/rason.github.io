@@ -56,7 +56,7 @@
 <p>…</p>
 <p>不断地去思考，不断地去刨根问底，我们才能真正的把一个知识理解透。 </p>
 <h4 id="数据库的隔离级别"><a href="#数据库的隔离级别" class="headerlink" title="数据库的隔离级别"></a>数据库的隔离级别</h4><p>我们先来看一下数据库定义的几种隔离级别，偷个懒直接网上找个图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/isolation-level.jpg" alt="isolation-level"></p>
+<p><img src="/image/isolation-level.jpg" alt="isolation-level"></p>
 <p>我们发现，隔离级别的关键字是<strong>“读”</strong>。也就是说，隔离级别的作用是为了有效保证并发<strong>读取</strong>数据的正确性。这就回答了第一个问题。</p>
 <h4 id="数据库的隔离级别实现"><a href="#数据库的隔离级别实现" class="headerlink" title="数据库的隔离级别实现"></a>数据库的隔离级别实现</h4><p>那么，这几种隔离级别怎么实现的呢？我们可以先试想一下，如果用读写锁来实现，要怎么加锁才能达到效果？</p>
 <p><strong>注意：</strong>这里是假设用锁来实现，MySQL 的实现原理实际并不是这样的，下面我们会谈到。</p>

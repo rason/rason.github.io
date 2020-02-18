@@ -146,10 +146,10 @@
 <h2 id="同步配置文件"><a href="#同步配置文件" class="headerlink" title="同步配置文件"></a>同步配置文件</h2><p>初步测试地一台机器没问题的话就可以把配置文件同步到另外两台机器，然后启动相关服务进行测试。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ scp -r etc/ root@10.16.1.25:/home/laixs/hadoop-2.8.0/</span><br><span class="line">$ scp -r etc/ root@10.16.2.28:/home/laixs/hadoop-2.8.0/</span><br></pre></td></tr></table></figure>
 <p>当所有节点的服务都启动起来之后，可以通过管理界面<code>http://10.16.1.24:50070</code>查看DataNode状态:</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/datanode.png" alt="DataNode"></p>
+<p><img src="/image/datanode.png" alt="DataNode"></p>
 <h2 id="测试MapReduce"><a href="#测试MapReduce" class="headerlink" title="测试MapReduce"></a>测试MapReduce</h2><p>在NameNode节点上跑一个MapReduce作业，可以在<code>http://10.16.1.25:8088</code>查看进度：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /test/ /test/out</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/yarn.png" alt="YARN"></p>
+<p><img src="/image/yarn.png" alt="YARN"></p>
 <p>作业执行完之后，可以通过<code>$ bin/hdfs dfs -cat /test/out/*</code>命令查看输出结果。</p>
 <h2 id="可能存在的问题"><a href="#可能存在的问题" class="headerlink" title="可能存在的问题"></a>可能存在的问题</h2><p>在启动机器2的时候出现<code>java.net.UnknownHostException: QHEE-T-Crawler2: QHEE-T-Crawler2: Name or service not known</code>异常。</p>
 <p>这是因为我一开始没有配置<code>/etc/hosts</code>文件，所有导致Host解析失败。</p>

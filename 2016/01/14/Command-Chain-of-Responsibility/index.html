@@ -48,13 +48,13 @@
 <li><strong>Receiver: 接收者</strong></li>
 <li><strong>Client:客户类</strong></li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatternCommand.jpg" alt="Command模式结构"></p>
+<p><img src="/image/designpatternCommand.jpg" alt="Command模式结构"></p>
 <a id="more"></a>
 <p>它们之间的调用关系大致如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatternCommandSeq.jpg" alt="Command模式时序图"></p>
+<p><img src="/image/designpatternCommandSeq.jpg" alt="Command模式时序图"></p>
 <p>在Tomcat中，Connector和Container之间的调用就是典型的命令模式。</p>
 <p>在<a href="http://rason.me/2015/12/01/How-do-Tomcat-find-the-specific-servlet/" target="_blank" rel="noopener">Tomcat如何找到正确的Servlet</a>这篇文章中曾经引用了一张请求处理时序图，现简要截图如下：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatterntomcatseq.png" alt="Tomcat请求时序简图"></p>
+<p><img src="/image/designpatterntomcatseq.png" alt="Tomcat请求时序简图"></p>
 <p>在这张图中，可以很显然地看出Connector与容器之间的信息交互通过了Http11Processor,这个Http11Processor就是具体的命令类。完整的关系如下：</p>
 <ul>
 <li>Client客户类，就是Tomcat的Server组件，创建请求者对象Connector。</li>
@@ -71,7 +71,7 @@
 <li><strong>ConcreteHandler（具体处理者）</strong>：处理请求的具体类</li>
 </ul>
 <p>Tomcat中的容器就是责任链模式，容器这方面的知识在Tomcat研究的时候已经比较熟悉了，在Tomcat请求时序图就完整地展示了责任链模式。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatrequest-process.png" alt="Tomcat请求处理时序图"></p>
+<p><img src="/image/tomcatrequest-process.png" alt="Tomcat请求处理时序图"></p>
 <p>与标准的责任链模式不同的是，这里引入了Pipeline和Valve接口，扩展了这个链的功能，使得在链往下传的时候能够接收外界的干预。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li><strong>命令模式</strong>：封装命令对象将调用者和接受者分离</li>

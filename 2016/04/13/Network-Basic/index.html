@@ -41,11 +41,11 @@
 </article>
 <section id="post-body"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间大概浏览了一下大型网站技术架构一书，在学习的过程中发现自己的基础知识还是不太扎实，所以最近想补充一下自身的基础知识。首先是打算从网络这方面入手，先从简单的《图解TCP/IP》开始，所以接下来的博客会记录一下该书的读书笔记。</p>
 <h2 id="协议的分层"><a href="#协议的分层" class="headerlink" title="协议的分层"></a>协议的分层</h2><p>OSI模型将通信协议进行了分层，目的是为了让比较复杂的网络协议更加简单化。每个分层都接收由它下一层提供的特定服务，并且为自己的上一层提供特定的服务。上下层之间进行交互时所遵循的约定叫做“接口”，同一层之间的交互所遵循的约定叫做“协议”。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-level.png" alt="分层模型"></p>
+<p><img src="/image/networkprotocol-level.png" alt="分层模型"></p>
 <a id="more"></a>
 <p>协议的分层跟软件开发中的模块化作用类似，通过分层将每层独立使用，即使系统中某些分层变化，也不会波及整个系统。因此，可以构造一个扩展性和灵活性都较强的系统。</p>
 <p>此外，通过分层能够细分通信功能，更易于单独实现每个分层的协议，并界定每个分层的具体责任和义务。</p>
-<h2 id="OSI模型"><a href="#OSI模型" class="headerlink" title="OSI模型"></a>OSI模型</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-level-func.png" alt="OSI模型"></p>
+<h2 id="OSI模型"><a href="#OSI模型" class="headerlink" title="OSI模型"></a>OSI模型</h2><p><img src="/image/networkprotocol-level-func.png" alt="OSI模型"></p>
 <ul>
 <li><strong>应用层</strong>：为应用程序提供服务并规定应用程序中通信相关的细节。</li>
 <li><strong>表示层</strong>：将设备固有的数据格式转换为网络标准传输格式，因为不同设备对同一比特流解析的结果可能会不同。</li>
@@ -60,14 +60,14 @@
 <li>每个分层上，在处理上一层传过来的数据时可以附上当前分层的协议所必须的”首部“信息。</li>
 <li>接收端对收到的数据进行数据”首部“与”内容“的分离，再转发给上一层，并最终将发送端的数据恢复为原状。</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-connection.png" alt="OSI模型通信"></p>
+<p><img src="/image/networkprotocol-connection.png" alt="OSI模型通信"></p>
 <h2 id="传输方式的分类"><a href="#传输方式的分类" class="headerlink" title="传输方式的分类"></a>传输方式的分类</h2><p>按照不同的分类方法会有不同的分类。</p>
 <ul>
 <li><strong>面向有连接与面向无连接</strong></li>
 <li><strong>电路交换与分组交换</strong></li>
 <li><strong>根据接收端分离：单播、广播、多播、任播</strong></li>
 </ul>
-<h2 id="网络的构成要素"><a href="#网络的构成要素" class="headerlink" title="网络的构成要素"></a>网络的构成要素</h2><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/networknetwork-device.png" alt="网络设备及其作用"></p>
+<h2 id="网络的构成要素"><a href="#网络的构成要素" class="headerlink" title="网络的构成要素"></a>网络的构成要素</h2><p><img src="/image/networknetwork-device.png" alt="网络设备及其作用"></p>
 <ul>
 <li><strong>中继器</strong>：工作在OSI模型第1层，对减弱的信息进行放大和发送的设备。</li>
 <li><strong>网桥</strong>：工作在OSI模型第2层，根据数据帧的内容转发数据给相邻的其他网络，根据MAC地址处理。</li>

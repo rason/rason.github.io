@@ -57,14 +57,14 @@
 <li>开发某个网站。</li>
 </ul>
 <p>我们新建了一个仓库拥有一个master分支，为了简单起见，我们就直接在master分支上愉快地工作（实际上不建议直接在master上进行合作开发），提交了一些代码更新，测试稳定并发布到服务器了，现在的分支是这样子的：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch1.png" alt="图一"></p>
+<p><img src="/image/gitbranch1.png" alt="图一"></p>
 <ul>
 <li>为实现某个新的需求，创建一个分支。</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b iss53</span><br><span class="line">Switched to a new branch &apos;iss53&apos;</span><br></pre></td></tr></table></figure>
 <p>这个命令相当于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git branch iss53</span><br><span class="line">$ git checkout iss53</span><br></pre></td></tr></table></figure></p>
 <p>创建完分支之后的情况是这样子的：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch2.png" alt="图二"></p>
+<p><img src="/image/gitbranch2.png" alt="图二"></p>
 <blockquote>
 <p>Git 中的分支，其实本质上仅仅是个指向 commit 对象的可变指针。分支其实就是从某个提交对象往回看的历史。</p>
 </blockquote>
@@ -72,7 +72,7 @@
 <li>在这个分支上开展工作。</li>
 </ul>
 <p>我们在新的分支上进行开发并提交更新会大概变成这样子：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch3.png" alt="图三"></p>
+<p><img src="/image/gitbranch3.png" alt="图三"></p>
 <h3 id="突然发现一个紧急Bug，要赶紧回去擦屁股了"><a href="#突然发现一个紧急Bug，要赶紧回去擦屁股了" class="headerlink" title="突然发现一个紧急Bug，要赶紧回去擦屁股了"></a>突然发现一个紧急Bug，要赶紧回去擦屁股了</h3><ul>
 <li>返回到原先已经发布到生产服务器上的分支。</li>
 </ul>
@@ -86,13 +86,13 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b hotfix</span><br><span class="line">Switched to a new branch &apos;hotfix&apos;</span><br></pre></td></tr></table></figure>
 <p>修完Bug提交之后分支的情况会变成这样子：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch4.png" alt="图四"></p>
+<p><img src="/image/gitbranch4.png" alt="图四"></p>
 <ul>
 <li>通过测试后，回到生产服务器所在的分支，将修补分支合并进来，然后再推送到生产服务器上。</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout master</span><br><span class="line">$ git merge hotfix</span><br></pre></td></tr></table></figure>
 <p>合并完之后的工作状态是这样子的：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch5.png" alt="图五"></p>
+<p><img src="/image/gitbranch5.png" alt="图五"></p>
 <p>然后hotfix分支已经没用的，运行以下命令将它删除掉：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git branch -d hotfix</span><br></pre></td></tr></table></figure>
 <ul>
@@ -100,13 +100,13 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout iss53</span><br><span class="line">Switched to branch &apos;iss53&apos;</span><br></pre></td></tr></table></figure>
 <p>继续开发提交更新之后是这样子的：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch6.png" alt="图六"></p>
+<p><img src="/image/gitbranch6.png" alt="图六"></p>
 <p>开发完成之后可以合并回master分支了</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout master</span><br><span class="line">$ git merge iss53</span><br></pre></td></tr></table></figure>
 <p>请注意，这次合并操作的底层实现，并不同于之前 hotfix 的并入方式。因为这次你的开发历史是从更早的地方开始分叉的。由于当前 master 分支所指向的提交对象（C4）并不是 iss53 分支的直接祖先，Git 不得不进行一些额外处理。就此例而言，Git 会用两个分支的末端（C4 和 C5）以及它们的共同祖先（C2）进行一次简单的三方合并计算。下图用红框标出了 Git 用于合并的三个提交对象：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch7.png" alt="图七"></p>
+<p><img src="/image/gitbranch7.png" alt="图七"></p>
 <p>这次，Git 没有简单地把分支指针右移，而是对三方合并后的结果重新做一个新的快照，并自动创建一个指向它的提交对象（C6），见下图。这个提交对象比较特殊，它有两个祖先（C4 和 C5）。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitbranch8.png" alt="图八"></p>
+<p><img src="/image/gitbranch8.png" alt="图八"></p>
 <p>之前的工作成果已经合并到 master 了，那么 iss53 也就没用了，你可以就此删除它。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git branch -d iss53</span><br></pre></td></tr></table></figure>
 <p><strong> 以上为Git-book学习笔记，详情请参考<a href="http://git-scm.com/book/zh/v1/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E7%9A%84%E6%96%B0%E5%BB%BA%E4%B8%8E%E5%90%88%E5%B9%B6" target="_blank" rel="noopener">Git-book</a>。</strong></p>

@@ -50,7 +50,7 @@
 <p>这就好比国家与国家之间的交流有对外政策，国家内部的治理有对内政策，这样管理起来逻辑就简单清晰很多了。</p>
 <h3 id="自治系统与路由协议"><a href="#自治系统与路由协议" class="headerlink" title="自治系统与路由协议"></a>自治系统与路由协议</h3><p>企业内部的管理方针，往往由企业内部自行决定。因此每个企业或组织机构对网络管理和运维的方法都不尽相同。</p>
 <p>制定自己的路由策略，并以此为准在一个或多个网络群体中采用的小型单位叫做<strong>自治系统（AS：Autonomous System）</strong>或<strong>路由选择域(Routing Domain)</strong>。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/EGP&amp;IGP.png" alt="EGP与IGP"></p>
+<p><img src="/image/EGP&amp;IGP.png" alt="EGP与IGP"></p>
 <p>上图中，区域网络与ISP（互联网服务提供商）就是自治系统的典型例子。</p>
 <p>自治系统内部动态路由采用的协议是域内路由协议，即IGP。而自治系统之间的路由控制采用的是域间路由协议，即EGP。</p>
 <h3 id="IGP与EGP"><a href="#IGP与EGP" class="headerlink" title="IGP与EGP"></a>IGP与EGP</h3><p>如前面所述，路由协议大致分为两大类：</p>
@@ -135,10 +135,10 @@
 </ul>
 <h2 id="OSPF"><a href="#OSPF" class="headerlink" title="OSPF"></a>OSPF</h2><p>OSPF协议是“开放式最短路径优先(Open Shortest Path First)”的缩写，属于链路状态路由协议。</p>
 <p>OSPF提出了“区域（area）”的概念，每个区域中所有路由器维护着一个相同的链路状态数据库（LSDB）。区域又分为骨干区域（骨干区域的编号必须为0）和非骨干区域（非0编号区域），如果一个运行OSPF的网络只存在单一区域，则该区域可以是骨干区域或者非骨干区域。如果该网络存在多个区域，那么必须存在骨干区域，并且所有非骨干区域必须和骨干区域直接相连。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/AS&amp;AREA.png" alt="AS与区域"></p>
+<p><img src="/image/AS&amp;AREA.png" alt="AS与区域"></p>
 <p>OSPF利用所维护的链路状态数据库，通过最短路径优先算法（SPF算法）计算得到路由表。OSPF的收敛速度较快。由于其特有的开放性以及良好的扩展性，目前OSPF协议在各种网络中广泛部署。</p>
 <h2 id="BGP"><a href="#BGP" class="headerlink" title="BGP"></a>BGP</h2><p>BGP（Border Gateway Protocol），边界网关协议是连接不同组织机构（或者说连接不同自治系统）的一种协议。因此，它属于外部网关协议（EGP）。只有BGP、RIP和OSPF共同进行路由控制，才能够进行整个互联网的路由控制。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/BGP.png" alt="BGP使用AS号管理网络信息"></p>
+<p><img src="/image/BGP.png" alt="BGP使用AS号管理网络信息"></p>
 <p>ISP、区域网络等会将每个网络域编配成一个个自治系统进行管理。它们为每个自治系统分配一个16比特的AS编号。BGP就是根据这个编号进行相应的路由控制。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文简单介绍了什么是路由控制、静态路由和动态路由概念，路由控制范围、路由算法、路由协议（内部网关协议和外部网关协议）等基本知识，只是达到了知道了这个概念的水平，并无深入知识。</p>
 </section>

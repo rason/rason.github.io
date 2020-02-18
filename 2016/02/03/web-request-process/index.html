@@ -46,7 +46,7 @@
 <li>服务端（Server）基础统一的HTTP协议。</li>
 </ul>
 <p>与传统的C/S采用长连接的模式不同，B/S采用无状态的短连接方式，一次请求完成一次数据交互。采用这种模式能够同时服务更多的用户，因为现在的互联网每天都会处理上亿的请求，不可能用户访问一次就一直保持这个连接。<br>基于Http协议本身的特点，目前的B/S网络架构大都采用类似下图所示的设计：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-cdn-structure.png" alt="CDN架构"></p>
+<p><img src="/image/web-cdn-structure.png" alt="CDN架构"></p>
 <a id="more"></a>
 <h2 id="请求发起"><a href="#请求发起" class="headerlink" title="请求发起"></a>请求发起</h2><p>发起一个Http请求的过程就是建立一个Socket连接的过程。当我们在浏览器键入一个连接并回车，浏览器会根据URL组装成一个get类型的Http请求头，通过outputStream.write()发送到目标服务器，服务器等待inputStream.read()返回数据，最后断开这个连接。因此我们可以模拟浏览器来发起Http请求，只要我们outputStream.write()写的二进制字节数据格式符合Http协议即可。当然Java中已经有一些开源项目可以直接供我们使用，比如HttpClient。</p>
 <p>在Linux中也可以简单地使用<code>curl+URL</code>发起一个Http请求。</p>
@@ -175,7 +175,7 @@
 <li>返回域名对应的IP和TTL值，LDNS会缓存这个IP对应关系，缓存时间有TTL值决定</li>
 <li>把解析结果返回给用户，用户根据TTL值缓存在本地系统中，域名解析过程结束</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-dns-resolv.png" alt="DNS解析"></p>
+<p><img src="/image/web-dns-resolv.png" alt="DNS解析"></p>
 <h3 id="跟踪域名解析过程"><a href="#跟踪域名解析过程" class="headerlink" title="跟踪域名解析过程"></a>跟踪域名解析过程</h3><ul>
 <li>Linux和windows都可以用<code>nslookup</code></li>
 <li>Linux还可以用<code>dig 域名</code></li>
@@ -200,11 +200,11 @@
 <ul>
 <li>链路负载均衡：通过DNS负载均衡服务器解析成不同的IP，然后用户根据这个IP来访问不同的目标服务器。优点：无代理访问快，缺点：本地和LDNS都有缓存，一台服务器挂了缓存没更新会导致访问失败。</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-link-lb.png" alt="链路负载均衡"></p>
+<p><img src="/image/web-link-lb.png" alt="链路负载均衡"></p>
 <ul>
 <li><p>集群负载均衡：分为硬件负载均衡和软件负载均衡。<br>   硬件负载均衡：使用一台专门的转发设备来转发请求，如F5。优点：性能好，缺点：贵。<br>   软件负载均衡：使用最普遍，使用廉价的PC即可搭建。优点：成本低，缺点：多次代理，网络延时。</p>
-<p>   <img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-hard-lb.png" alt="硬件负载均衡"></p>
-<p>   <img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-soft-lb.png" alt="软件负载均衡"></p>
+<p>   <img src="/image/web-hard-lb.png" alt="硬件负载均衡"></p>
+<p>   <img src="/image/web-soft-lb.png" alt="软件负载均衡"></p>
 <p>   上图中，上面两台是LVS，使用四层负载均衡，也就是通过网络层利用IP地址进行地址转发。下面三台使用HAProxy进行七层负载，也就是可以通过根据访问用户的Http请求头来进行负载均衡，如可以根据不同的URL来请求转发到特定机器或者根据用户的Cookie信息来指定访问的机器。</p>
 </li>
 <li><p>操作系统负载均衡：利用操作系统级别的软中断或者硬件中断来达到负载均衡，如可以设置多队列网卡来实现。</p>

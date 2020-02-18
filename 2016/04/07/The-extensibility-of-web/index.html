@@ -45,14 +45,14 @@
 <p>在大型网站中，这些模块通过分布式部署的方式，独立的模块部署在独立的服务器集群上，从物理上分离模块之间的耦合关系，进一步降低耦合性提高复用性。<strong>模块分布式部署以后具体聚合方式主要有分布式消息队列和分布式服务。</strong></p>
 <a id="more"></a>
 <h2 id="利用分布式消息队列降低系统耦合性"><a href="#利用分布式消息队列降低系统耦合性" class="headerlink" title="利用分布式消息队列降低系统耦合性"></a>利用分布式消息队列降低系统耦合性</h2><p><strong>事件驱动架构：</strong>通过在低耦合的模块之间传递事件消息，以保持模块的松散耦合，并借助事件消息的通信完成模块之间合作，典型案例就是生产者消费者模式。在大型网站架构中，<strong>最常用的是用分布式消息队列来实现</strong>，如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-eda.png" alt="利用消息队列实现的事件驱动架构"></p>
+<p><img src="/image/mq-eda.png" alt="利用消息队列实现的事件驱动架构"></p>
 <p>消息队列利用<strong>发布-订阅模式</strong>工作，消息发送者发布消息，一个或者多个消息接收者订阅消息。他们直接没有直接耦合，实现网站的可扩展设计。</p>
 <p>队列是一种先进先出的数据结构，分布式消息队列可以看作将这种数据结构部署到独立的服务器上，应用程序可以通过远程访问接口使用分布式消息队列，进行消息存取操作，进而实现分布式的异步调用，基本原理如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-work.png" alt="分布式消息队列架构原理"></p>
+<p><img src="/image/mq-work.png" alt="分布式消息队列架构原理"></p>
 <p>目前开源的和商业的分布式消息队列产品有很多，比如Apache ActiveMQ等，这些产品处理实现分布式消息队列的一般功能，在可用性、伸缩性、数据一致性、性能和可管理性方面也做了很多改善。</p>
 <h2 id="利用分布式服务打造可复用的业务平台"><a href="#利用分布式服务打造可复用的业务平台" class="headerlink" title="利用分布式服务打造可复用的业务平台"></a>利用分布式服务打造可复用的业务平台</h2><p><strong>使用分布式服务是降低系统耦合性的另一个重要手段。</strong>如果说分布式消息队列通过消息对象分解系统耦合性，不同子系统处理同一消息；那么分布式服务则通过接口分解系统耦合性，不同子系统通过相同的接口描述进行服务调用。</p>
 <p>回顾网站的发展历程，网站由小到大的演化过程，表现为整个网站是由单一的应用系统逐步膨胀发展成一个巨无霸，如图：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility1.png" alt="巨无霸系统示意图"></p>
+<p><img src="/image/extensibility1.png" alt="巨无霸系统示意图"></p>
 <p>这样的一个巨无霸系统聚合了大量的应用和服务组件，给整个网站的开发、维护、部署带来了巨大的麻烦。</p>
 <p>因此，我们需要对其进行拆分，将模块独立部署，降低系统耦合性。拆分有两种方式：</p>
 <ul>
@@ -60,7 +60,7 @@
 <li><strong>将可复用业务拆分出来，独立部署为分布式服务</strong></li>
 </ul>
 <p>经过拆分之后，巨无霸系统应该是变成以下样子：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility2.png" alt="业务及模块拆分独立部署的分布式服务架构"></p>
+<p><img src="/image/extensibility2.png" alt="业务及模块拆分独立部署的分布式服务架构"></p>
 <p>应用拆分相对比较简单，通过梳理业务，将较少相关的业务剥离，使其成为独立的Web应用。而对于可复用业务的拆分，不但需要识别哪些是可复用业务，设计服务接口，规范服务依赖关系，还需要一个完善的<strong>分布式服务管理框架。</strong></p>
 <p>这个分布式服务管理框架，不仅仅能提供<strong>服务的注册与发现，服务调用</strong>等标准功能，还应具有以下特性：</p>
 <ul>
@@ -73,11 +73,11 @@
 <li><strong>实时监控</strong></li>
 </ul>
 <p>幸运的是，这样的一个分布式服务框架已经有了开源产品，这就是阿里巴巴的<strong>Dubbo</strong>。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/dubbo.png" alt="分布式服务框架Dubbo的架构原理"></p>
+<p><img src="/image/dubbo.png" alt="分布式服务框架Dubbo的架构原理"></p>
 <p>关于Dubbo的具体介绍就不陈列了，自行搜索了解。</p>
 <h2 id="可扩展的数据结构"><a href="#可扩展的数据结构" class="headerlink" title="可扩展的数据结构"></a>可扩展的数据结构</h2><p>传统的关系数据库需要指定表的schema-字段名称，数据类型等。可是在实际的开发中，这种僵硬的数据结构难以面对需求变更带来的挑战，有时候我们会通过冗余字段来应对，不过这显然是一种糟糕的数据库设计。</p>
 <p>那么有没有办法能够做到可扩展的数据结构设计，无需修改表结构就可以新增字段呢？许多NoSQL数据库使用的ColumnFamily（列族）设计就是一个解决方案。</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/columnfamily.png" alt="ColumnFamily数据存储格式"></p>
+<p><img src="/image/columnfamily.png" alt="ColumnFamily数据存储格式"></p>
 <p>使用支持ColumnFamily结构的NoSQL结构的NoSQL数据库，创建表的时候，只需指定ColumnFamily的名字，无需指定字段（Column），可以在数据写入时再指定，通过这种方式，使得应用程序的数据结构可以随意扩展。而在查询时，可以通过指定任意字段名称和值进行查询。</p>
 <h2 id="利用开放平台建设网站生态圈"><a href="#利用开放平台建设网站生态圈" class="headerlink" title="利用开放平台建设网站生态圈"></a>利用开放平台建设网站生态圈</h2><p>比如淘宝开放平台，微信公众账号开发平台等，此处不展开。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>通过这几章读书笔记，我们应当深知系统拆分的重要性，优秀的架构师就体现在是否具有优秀的拆分能力。</p>

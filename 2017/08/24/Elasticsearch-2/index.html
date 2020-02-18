@@ -47,22 +47,22 @@
 <h2 id="更复杂的搜索"><a href="#更复杂的搜索" class="headerlink" title="更复杂的搜索"></a>更复杂的搜索</h2><p>搜索姓氏为Smith 的雇员，并且年龄大于30的：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /megacorp/employee/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot; : &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;must&quot;: &#123;</span><br><span class="line">                &quot;match&quot; : &#123;</span><br><span class="line">                    &quot;last_name&quot; : &quot;smith&quot; </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;filter&quot;: &#123;</span><br><span class="line">                &quot;range&quot; : &#123;</span><br><span class="line">                    &quot;age&quot; : &#123; &quot;gt&quot; : 30 &#125; </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>目前无需太多担心语法问题，后续会更详细地介绍。只需明确我们添加了一个 过滤器 用于执行一个范围查询，并复用之前的 match 查询。由于现在的查询请求JSON 太长了，直接在终端使用curl 输入将十分麻烦，所以我们可以使用Kibana 的 Console来进行查询。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-search.png" alt="复杂查询"></p>
+<p><img src="/image/elasticsearch-search.png" alt="复杂查询"></p>
 <p>现在结果只返回了一个雇员，叫 Jane Smith，32 岁。</p>
 <a id="more"></a>
 <h2 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h2><p>现在来尝试一下稍微高级一点的全文搜索——一项传统数据库很难搞定的任务。</p>
 <p>搜索一下所有喜欢攀岩(rock climbing) 的雇员：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-complex-search.png" alt="全文搜索"></p>
+<p><img src="/image/elasticsearch-complex-search.png" alt="全文搜索"></p>
 <p>返回结果中的<code>_score</code> 属性表示相关性得分。</p>
 <p>Elasticsearch 默认按照相关性得分排序，即每个文档跟查询的匹配程度。第一个最高得分的结果很明显：John Smith 的 about 属性清楚地写着 “rock climbing” 。</p>
 <p>但为什么 Jane Smith 也作为结果返回了呢？原因是她的 about 属性里提到了 “rock” 。因为只有 “rock” 而没有 “climbing” ，所以她的相关性得分低于 John 的。</p>
 <p>Elasticsearch中的 相关性 概念非常重要，也是完全区别于传统关系型数据库的一个概念，数据库中的一条记录要么匹配要么不匹配。</p>
 <h2 id="短语搜索"><a href="#短语搜索" class="headerlink" title="短语搜索"></a>短语搜索</h2><p>上面的情况，如果我不想 Jane Smith 也被搜索出来该怎么办？</p>
 <p>很简单，只需对<code>match</code>查询稍作调整，使用一个叫做<code>match_phrase</code>的查询：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-phrase-search.png" alt="短语搜索"></p>
+<p><img src="/image/elasticsearch-phrase-search.png" alt="短语搜索"></p>
 <p>这样，就只匹配含有“rock climbing” 这个短语的雇员。</p>
 <h2 id="高亮搜索"><a href="#高亮搜索" class="headerlink" title="高亮搜索"></a>高亮搜索</h2><p>在实际的应用中，我们希望在搜索结果列表中高亮搜索关键字，使用Elasticsearch也很容易做到，只需增加一个新的<code>highlight</code> 参数：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-highlight.png" alt="高亮搜索"></p>
+<p><img src="/image/elasticsearch-highlight.png" alt="高亮搜索"></p>
 <p>当执行该查询时，返回结果与之前一样，与此同时结果中还多了一个叫做 highlight 的部分。</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>Elasticsearch 有一个功能叫聚合（aggregations），允许我们基于数据生成一些精细的分析结果。聚合与 SQL 中的 GROUP BY 类似但更强大。</p>
 <p>比如，挖掘出雇员中最受欢迎的兴趣爱好：</p>
@@ -70,7 +70,7 @@
 <p>上述的搜索可能会报出以下的错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;Fielddata is disabled on text fields by default. Set fielddata=true on [interests] in order to load fielddata in memory by uninverting the inverted index.</span><br></pre></td></tr></table></figure>
 <p>按照提示，需要将interests 属性的fielddata 设置为true：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-mapping.png" alt="设置fielddata"></p>
+<p><img src="/image/elasticsearch-mapping.png" alt="设置fielddata"></p>
 <p>设置完之后再次运行上面的查询语句，返回结果：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   ...</span><br><span class="line">   &quot;hits&quot;: &#123; ... &#125;,</span><br><span class="line">   &quot;aggregations&quot;: &#123;</span><br><span class="line">      &quot;all_interests&quot;: &#123;</span><br><span class="line">         &quot;buckets&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">               &quot;key&quot;:       &quot;music&quot;,</span><br><span class="line">               &quot;doc_count&quot;: 2</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">               &quot;key&quot;:       &quot;forestry&quot;,</span><br><span class="line">               &quot;doc_count&quot;: 1</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">               &quot;key&quot;:       &quot;sports&quot;,</span><br><span class="line">               &quot;doc_count&quot;: 1</span><br><span class="line">            &#125;</span><br><span class="line">         ]</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可以看到，两位员工对音乐感兴趣，一位对林地感兴趣，一位对运动感兴趣。这些聚合并非预先统计，而是从匹配当前查询的文档中即时生成。如果想知道叫 Smith 的雇员中最受欢迎的兴趣爱好，可以直接添加适当的查询来组合查询：</p>

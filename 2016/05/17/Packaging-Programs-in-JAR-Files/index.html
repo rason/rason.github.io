@@ -88,22 +88,22 @@
 <ul>
 <li>使用<code>jar cf</code>命令打包，如下图：</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf1.png" alt="创建一个JAR文件"></p>
+<p><img src="/image/cf1.png" alt="创建一个JAR文件"></p>
 <p>上面的<code>.</code>表示将当前文件夹下的内容作为input-file(s)，也可以使用通配符<code>*</code>达到同样的效果。</p>
 <ul>
 <li>另外，还可以使用选项<code>v</code>在打包过程中输入一些打包信息，如下图所示：</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf2.png" alt="使用v输出打包信息"></p>
+<p><img src="/image/cf2.png" alt="使用v输出打包信息"></p>
 <ul>
 <li>使用选项<code>m</code>指定入口类</li>
 </ul>
 <p>首先，根据上一篇文章中classpath的知识，我们需要回到包含包的根的文件夹中进行打包工作，才能让程序正确运行。</p>
 <p>其次，我们需要创建一个Manifest.txt文件，文件的内容是<code>Main-Class: com.rason.algs4.binarysearch.Test</code>,用于指定入口类。</p>
 <p>然后再进行打包工作，如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf3.png" alt="指定入口类进行打包"></p>
+<p><img src="/image/cf3.png" alt="指定入口类进行打包"></p>
 <p>打包完成之后，使用<code>java -jar</code>命令执行了一下这个jar文件，并将<code>rason</code>字符串作为参数传递给入口程序的main函数，输出结果正确。</p>
 <h2 id="查看JAR文件的内容"><a href="#查看JAR文件的内容" class="headerlink" title="查看JAR文件的内容"></a>查看JAR文件的内容</h2><p>使用<code>jar tf jar-file</code>查看内容，如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/tf.png" alt="查看JAR文件内容"></p>
+<p><img src="/image/tf.png" alt="查看JAR文件内容"></p>
 <h2 id="将classes添加到JAR文件的Classpath中"><a href="#将classes添加到JAR文件的Classpath中" class="headerlink" title="将classes添加到JAR文件的Classpath中"></a>将classes添加到JAR文件的Classpath中</h2><p>如果打出来的JAR文件，用到另一个JAR文件中的class，那么就需要在当前的JAR文件中指定Classpath为引用的JAR文件。</p>
 <p>同样是在Manifest.txt文件中设置，如下所示：</p>
 <p><code>Class-Path: jar1-name jar2-name directory-name/jar3-name</code></p>
@@ -111,16 +111,16 @@
 <p><strong>第一步：</strong>新建了一个新的工程2，编写了一个Test2.java类</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.ref;</span><br><span class="line"></span><br><span class="line">public class Test2 &#123;</span><br><span class="line">	public String sex(int sex)&#123;</span><br><span class="line">		if(sex == 0)&#123;</span><br><span class="line">			return &quot;女&quot;;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			return &quot;男&quot;;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>第二步：</strong>对Test2.java类进行编译打包，如图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf-classpath1.png" alt="Test2编译打包"></p>
+<p><img src="/image/cf-classpath1.png" alt="Test2编译打包"></p>
 <p><strong>第三步：</strong>工程1中的Test.java引用工程2中的Test2.java类</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">package com.rason.algs4.binarysearch;</span><br><span class="line"></span><br><span class="line">import com.rason.ref.Test2;</span><br><span class="line"></span><br><span class="line">public class Test &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Test2 t2 = new Test2();</span><br><span class="line">		System.out.println(&quot;Hello world!Hello &quot; + args[0] + &quot;, sex: &quot;+t2.sex(Integer.parseInt(args[1])));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>第四步：</strong>不设置<code>Manifest.txt</code>中的<code>Class-Path</code>对Test.java进行编译、打包、执行，如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf-classpath2.png" alt="不设置Manifest.txt中Class-Path的结果"></p>
+<p><img src="/image/cf-classpath2.png" alt="不设置Manifest.txt中Class-Path的结果"></p>
 <p>发现报错，没有找到Test2.class的定义，证明不设置Class-Path是有问题的。</p>
 <p><strong>第五步：</strong>在<code>Manifest.txt</code>中添加<code>Class-Path</code>对Test.java进行编译、打包、执行</p>
 <p>在<code>Manifest.txt</code>中添加Class-Path,如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Main-Class: com.rason.algs4.binarysearch.Test</span><br><span class="line">Class-Path: Test2.jar</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf-classpath3.png" alt="设置Manifest.txt中Class-Path的结果"></p>
+<p><img src="/image/cf-classpath3.png" alt="设置Manifest.txt中Class-Path的结果"></p>
 <p>如下图所示，当我们设置了Class-Path后打包执行还是报错，是因为Test2.jar没有跟rason.jar在同一个目录下。使用<code>cp</code>命令将其移动到同一目录下，执行成功。</p>
 <h2 id="其它信息"><a href="#其它信息" class="headerlink" title="其它信息"></a>其它信息</h2><p>Manifest中还可以设置<code>Name</code>，<code>Specification-Title</code>，<code>Specification-Version</code>等信息，具体可自行搜索。<br>另还有一些关于签名增强安全性等内容也可以自行了解，此处只做一些简单应用的介绍。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文主要介绍了JAR文件的使用，包括如何创建，查看，提取和执行，还介绍了如何将另一个JAR文件作为Classpath引用。</p>

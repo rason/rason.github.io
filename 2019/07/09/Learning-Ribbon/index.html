@@ -67,7 +67,7 @@
 <p>现在, 我们再看下 execute 方法内容</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; T execute(String serviceId, ServiceInstance serviceInstance, LoadBalancerRequest&lt;T&gt; request) throws IOException &#123;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">		T returnVal = request.apply(serviceInstance);</span><br><span class="line">		statsRecorder.recordStats(returnVal);</span><br><span class="line">		return returnVal;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>注意, 上面的代码我简化掉了, 只留下了我们需要关注的核心逻辑. 实际上就是调用了 request.apply(serviceInstance) 方法, 就是将请求应用于挑选出来的那个服务系统.</p>
-<h3 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h3><p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/ribbon-loadbalancer.png" alt="Ribbon"></p>
+<h3 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h3><p><img src="/image/ribbon-loadbalancer.png" alt="Ribbon"></p>
 <p>本文只是简单梳理了 Ribbon 实现负载均衡的核心流程, 但是具体的负载均衡算法没有去深入考究, 也就是 ILoadBalancer 里面的方法实现, 涉及到 IRule, IRule, ServerList, 有兴趣的可以继续深入研究.</p>
 </section>
     

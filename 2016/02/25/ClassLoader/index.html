@@ -85,7 +85,7 @@
 <p>因此，结合ClassLoader的loadClass方法和上面的委托关系可知，<strong>加载一个类时，首先BootStrap进行寻找，找不到再由Extension ClassLoader寻找，最后才是App ClassLoader。</strong></p>
 <p>将ClassLoader设计成委托模型的一个重要原因是出于安全考虑，比如在Applet中，如果编写了一个java.lang.String类并具有破坏性。假如不采用这种委托机制，就会将这个具有破坏性的String加载到了用户机器上，导致破坏用户安全。但采用这种委托机制则不会出现这种情况。因为要加载java.lang.String类时，系统最终会由Bootstrap进行加载，这个具有破坏性的String永远没有机会加载</p>
 <p>通常一个应用中类加载器的委托结构如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-ClassLoaderLevel.png" alt="应用中类加载器的委托层次"></p>
+<p><img src="/image/web-ClassLoaderLevel.png" alt="应用中类加载器的委托层次"></p>
 <p>其中App1ClassLoader和App2ClassLoader是应用中自定义的类加载器。有些文章把Bootstrap ClassLoader列在ExtClassLoader的上一级中，其实Bootstrap ClassLoader并不属于JVM的类委托层次，因为Bootstrap ClassLoader并没有遵循ClassLoader的加载规则。另外它并没有子类，ExtClassLoader的父类也不是Bootstrap ClassLoader，ExtClassLoader并没有父类，我们应用中能取到的顶层父类是ExtClassLoader。</p>
 <p>如果java应用中没有定义其他ClassLoader，那么除了System.getProperty(“java.ext.dirs”)目录下的类是由ExtClassLoader加载外，其他类都由AppClassLoader来加载。</p>
 <p>JVM加载class文件到内存有两种方式。</p>
@@ -96,7 +96,7 @@
 </li>
 </ul>
 <h2 id="如何加载class文件"><a href="#如何加载class文件" class="headerlink" title="如何加载class文件"></a>如何加载class文件</h2><p>ClassLoader加载一个class文件到JVM时需要经过以下步骤：</p>
-<p><img src="https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-JVM-load.png" alt="JVM加载类的阶段"></p>
+<p><img src="/image/web-JVM-load.png" alt="JVM加载类的阶段"></p>
 <ul>
 <li><strong>第一阶段：找到.class文件并把这个文件包含的字节码加载到内存中。</strong></li>
 <li><strong>第二阶段：分为三个步骤，分别是字节码验证，Class类数据结构分析及相应的内存分配和最后的符号表的链接。</strong></li>
