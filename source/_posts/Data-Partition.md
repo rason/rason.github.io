@@ -23,7 +23,7 @@ description: Data Partition
 
 因此，我们可以抽象出以下模型：
 
-![数据分片与路由抽象模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/partition.png)
+![数据分片与路由抽象模型](/image/partition.png)
 
 从上面的模型可以看出，Key-partition映射解决的是如何分片的问题，partition-machine映射解决的是分片存储到哪里的问题。这两级映射都是多对一关系，多条记录映射到一个分片，多个分片保存到一台机器。
 
@@ -81,7 +81,7 @@ key 到虚拟桶的映射还是使用哈希取模的方式，而虚拟桶到机�
 
 假设哈希函数的输出值范围在0～31之间，有5台机器，如下图所示：
 
-![一致性哈希算法](https://raw.githubusercontent.com/rason/rason.github.io/master/image/hash-partition.png)
+![一致性哈希算法](/image/hash-partition.png)
 
 环上的大圆表示机器节点，比如N14 节点负责存储主键经过哈希后落在6～14范围内的键值数据，而N5 节点则存储30～31以及0～5范围内的键值数据。
 

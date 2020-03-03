@@ -31,7 +31,7 @@ description: 排序性能总结
 
 ## 性能比较
 
-![各大算法性能比较](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sort_summary)
+![各大算法性能比较](/image/sort_summary)
 
 ## 总结
 

@@ -23,7 +23,7 @@ TCP/IP中有两个具有代表性的传输层协议，它们分别是TCP和UDP�
 
 数据链路层用MAC地址识别同一链路中的不同计算机、IP层用IP地址识别TCP/IP网络中互联的主机和路由器，而传输层用的是端口号。端口号用于识别同一台计算机中进行通信的不同应用程序，也称程序地址。如下图所示：
 
-![根据端口号识别应用](https://raw.githubusercontent.com/rason/rason.github.io/master/image/dispatch-by-port.png)
+![根据端口号识别应用](/image/dispatch-by-port.png)
 
 <!-- more -->
 
@@ -78,19 +78,19 @@ TCP通过**检验和、序列号、确认应答、重发控制、连接管理以
 
 在TCP中，当发送端的数据到达接收主机时，接收端主机会返回一个已收到消息的通知。这个消息叫做确认应答（ACK）。如下图所示：
 
-![正常的数据传输](https://raw.githubusercontent.com/rason/rason.github.io/master/image/normal-send-ack.png)
+![正常的数据传输](/image/normal-send-ack.png)
 
 如果有确认应答，说明数据已经成功达到对端。反之，则数据丢失的可能性很大。如下图所示：
 
-![数据包丢失的情况](https://raw.githubusercontent.com/rason/rason.github.io/master/image/re-send.png)
+![数据包丢失的情况](/image/re-send.png)
 
 未收到确认应答并不意味着数据一定丢失。也有可能是数据对方已经收到，只是返回的确认应答在图中丢失。这种情况也会导致发送端因没有收到确认应答而认为数据没有达到目的地，从而进行重新发送。如下图所示：
 
-![确认应答丢失的情况](https://raw.githubusercontent.com/rason/rason.github.io/master/image/ack-dismiss-re-send.png)
+![确认应答丢失的情况](/image/ack-dismiss-re-send.png)
 
 TCP是通过**序列号**机制实现确认应答处理、重发控制以及重复控制等功能的。序列号是按顺序给发送数据的每一个字节（8位字节）都标上号码的编号。接收端查询接收数据TCP首部中的序列号和数据的长度，将自己下一步应该接收的序号作为确认应答返回。就这样，通过序列号和确认应答号，TCP可以实现可靠传输。如下图所示：
 
-![发送的数据](https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-seq.png)
+![发送的数据](/image/data-seq.png)
 
 ### 重发超时如何确定
 
@@ -104,7 +104,7 @@ TCP是通过**序列号**机制实现确认应答处理、重发控制以及重�
 
 TCP提供面向有连接的通信传输。面向有连接是指在数据通信开始之前先做好通信两端之间的准备工作。通过TCP首部用于控制的字段来管理TCP连接，一个连接的建立与断开，正常过程至少需要来回发送7个包才能完成。如下图所示：
 
-![TCP连接的建立与断开](https://raw.githubusercontent.com/rason/rason.github.io/master/image/establist-shutdown.png)
+![TCP连接的建立与断开](/image/establist-shutdown.png)
 
 ### TCP以段为单位发送数据
 
@@ -118,17 +118,17 @@ TCP提供面向有连接的通信传输。面向有连接是指在数据通信�
 
 TCP以1个段为单位，每发一个段进行一次确认应答处理，如下图。这样的传输方式有一个缺点。那就是，包的往返时间越长通信性能就越低。
 
-![按数据包进行确认应答](https://raw.githubusercontent.com/rason/rason.github.io/master/image/every-time-ack.png)
+![按数据包进行确认应答](/image/every-time-ack.png)
 
 为了解决这个问题，TCP引入了**窗口**概念。如下图，确认应答不再是以每个分段，而是更大的单位进行确认时，转发时间将会被大幅度的缩短。即发送端主机在发送了一个段以后不必要一直等待确认应答，而是继续发送。
 
-![用滑动窗口方式并行处理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/window-ack.png)
+![用滑动窗口方式并行处理](/image/window-ack.png)
 
 **窗口大小就是指无需等待确认应答而可以继续发送数据的最大值。**上图中，窗口大小为4个段。
 
 这个机制实现了使用大量的缓冲区，通过对多个段同时进行确认应答的功能。如果窗口中的数据有丢失，就必须重发，如果收到确认应答，则将窗口滑动到确认应答的序列号的位置。所以，这种机制也被称为滑动窗口控制。如下图所示：
 
-![滑动窗口方式](https://raw.githubusercontent.com/rason/rason.github.io/master/image/slide-window.png)
+![滑动窗口方式](/image/slide-window.png)
 
 ### 窗口控制与重发控制
 
@@ -136,11 +136,11 @@ TCP以1个段为单位，每发一个段进行一次确认应答处理，如下�
 
 首先，我们考虑确认应答未能返回的情况。在没有使用窗口控制的时候，没有收到确认应答的数据都会被重发。而使用了窗口控制，某些确认应答即便丢失也无需重发。如下图：
 
-![没有确认应答也不受影响](https://raw.githubusercontent.com/rason/rason.github.io/master/image/window-ack-dismiss.png)
+![没有确认应答也不受影响](/image/window-ack-dismiss.png)
 
 其次，我们来考虑一下某个报文段丢失的情况。如下图所示，接收主机如果收到一个自己应该接收的序号以外的数据时，会针对当前为止收到数据返回确认应答。发送端知己如果连续3次收到同一个确认应答，就会将其所对应的数据进行重发。这种机制比之前的超时管理更加高效，因此也被称作高速重发机制。
 
-![高速重发控制](https://raw.githubusercontent.com/rason/rason.github.io/master/image/window-data-send-dismiss.png)
+![高速重发控制](/image/window-data-send-dismiss.png)
 
 ### 流控制
 

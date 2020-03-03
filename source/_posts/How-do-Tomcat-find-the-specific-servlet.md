@@ -11,7 +11,7 @@ description: How do tomcat find the specific servlet
 
 ## Tomcat请求处理流程图
 
-![Tomcat请求处理流程图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatrequest-process.png)
+![Tomcat请求处理流程图](/image/tomcatrequest-process.png)
 
 上图是Tomcat8请求处理的完整流程图，如看不清晰请在新窗口打开。
 
@@ -21,7 +21,7 @@ description: How do tomcat find the specific servlet
 
 Tomcat接收到请求首先会创建org.apache.coyote.Request和org.apache.coyote.Response,这两个类是Tomcat内部使用的描述一次请求和响应的信息类，作用就是在服务器接收到请求后，经过简单解析将这个请求快速分配后续线程去处理。接下去当一个用户线程来处理这个请求时又创建org.apache.catalina.connector.Request和org.apache.catalina.connector.Response对象。这两个对象一直贯穿整个Servlet容器直到要传给的Servlet，传给Servlet的是Request和Response的门面类RequestFacade和ResponseFacade。如下图所示：
 
-![Request和Response的转变过程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatrequest-change.png)
+![Request和Response的转变过程](/image/tomcatrequest-change.png)
 
 ## Tomcat如何找到特定的Servlet
 
@@ -92,7 +92,7 @@ Tomcat接收到请求首先会创建org.apache.coyote.Request和org.apache.coyot
 
 那么，现在初始化把所有容器都添加进去了，如果容器变化了将会怎么样？这就是上面所说的监听器的作用，容器变化了，MapperListener作为监听者会被通知，然后就会更新mapper。如下图所示：
 
-![请求路由图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatrequest-routes.png)
+![请求路由图](/image/tomcatrequest-routes.png)
 
 现在，我们知道了请求如何到达正确的Wrapper容器，但是请求到达最终的Servlet还要完成一些步骤，必须要执行Filter链，以及要通知你在web.xml中定义的listener。
 

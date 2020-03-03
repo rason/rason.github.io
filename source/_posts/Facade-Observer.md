@@ -13,7 +13,7 @@ description: Facade&Observer DesignPattern
 
 门面模式，就是将一个东西封装成一个门面好与人家更加容易地进行交流。主要用在一个很大的系统中有多个子系统时，多个子系统肯定要互相通信，但是每个子系统又不能将自己的内部数据过多地暴露给其他系统。每个子系统都会设计一个门面，把别的系统感兴趣的数据封装起来，通过这个门面来进行访问。门面设计模式示意图：
 
-![门面设计模式](https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatternfacade.png)
+![门面设计模式](/image/designpatternfacade.png)
 
 Client只能访问Facade中提供的数据是门面设计模式的关键，至于Client如何访问Facade和SubSystem，如何提供Facade门面设计模式并没有规定死。
 

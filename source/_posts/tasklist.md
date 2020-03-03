@@ -66,13 +66,13 @@ description: Linux任务列表
 
 ## 任务在虚拟内存中的布局
 
-![任务在虚拟内存中的布局](https://raw.githubusercontent.com/rason/rason.github.io/master/image/task-layout-in-vm.png)
+![任务在虚拟内存中的布局](/image/task-layout-in-vm.png)
 
 <!-- more -->
 
 ## Linux进程描述符
 
-![Linux进程描述符](https://raw.githubusercontent.com/rason/rason.github.io/master/image/process-descriptor.png)
+![Linux进程描述符](/image/process-descriptor.png)
 
 ## 任务状态
 
@@ -91,7 +91,7 @@ description: Linux任务列表
 - Linux使用任务内核栈页框的一部分来存储`thread-info`
 - 这个`thread-info`包含一个指向进程描述符数据结构的指针
 
-![thread-info](https://raw.githubusercontent.com/rason/rason.github.io/master/image/thread-info.png)
+![thread-info](/image/thread-info.png)
 
 ## 如何找到任务的thread-info？
 
@@ -122,7 +122,7 @@ struct task_struct  *task = info->task;
 - 向前：task = next_task( task )
 - 向后：task = prev_task( task )
 
-![任务双向环形链表](https://raw.githubusercontent.com/rason/rason.github.io/master/image/doubly-linked-cricular-list.png)
+![任务双向环形链表](/image/doubly-linked-cricular-list.png)
 
 ## Demo
 
@@ -198,7 +198,7 @@ MODULE_LICENSE("GPL");
 
 使用`$ cat /proc/tasklist`来查看，我的机器部分输出如下：
 
-![当前活动任务](https://raw.githubusercontent.com/rason/rason.github.io/master/image/current-active-task.png)
+![当前活动任务](/image/current-active-task.png)
 
 ## 总结
 

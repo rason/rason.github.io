@@ -125,4 +125,4 @@ interface TProcessor {
 
 ## 整体架构
 
-![Thrift 架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Apache_Thrift_architecture.png)
+![Thrift 架构](/image/Apache_Thrift_architecture.png)

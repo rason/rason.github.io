@@ -10,7 +10,7 @@ description: Flume HDFS
 
 本着从日志分析这个实际案例来学习Hadoop相关大数据技术，搜索了相关的日志分析方案，决定采用下图的方式：
 
-![Hadoop log analysis](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Log-Analysis-in-Hadoop.jpg)
+![Hadoop log analysis](/image/Log-Analysis-in-Hadoop.jpg)
 
 那么第一步当然就是将日志收集到HDFS中，前面两篇博客已经简单地入门了Flume和Hadoop的部署，那么就在此基础上进行日志收集工作。
 
@@ -124,7 +124,7 @@ org.apache.hadoop.security.AccessControlException: Permission denied: user=xxx, 
 
 启动Flume如果没有问题，那么在Hadoop的控制台页面应该能看到收集的日志，如下图所示：
 
-![Collected Log](https://raw.githubusercontent.com/rason/rason.github.io/master/image/flume-log.png)
+![Collected Log](/image/flume-log.png)
 
 ## 总结
 

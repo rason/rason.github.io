@@ -17,7 +17,7 @@ description: 网站架构演变
 
 **应用程序，数据库，文件等所有资源都在一台服务器上。**
 
-![初始阶段网站架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-init-arc.png)
+![初始阶段网站架构](/image/architecture-init-arc.png)
 
 <!-- more -->
 
@@ -25,7 +25,7 @@ description: 网站架构演变
 
 随着业务发展，**越来越多用户访问导致性能越来越差，越来越多的数据导致存储空间不足**。这时需要应用和数据分离。应用和数据分离后**整个网站使用三台服务器：应用服务器，文件服务器和数据库服务器**。
 
-![应用服务和数据服务分离](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-data-splic-arc.png)
+![应用服务和数据服务分离](/image/architecture-data-splic-arc.png)
 
 应用服务器：处理大量业务逻辑，需要更强的CPU。
 数据库服务器：快速磁盘检索和数据缓存，需要更快的硬盘和更大的内存。
@@ -38,7 +38,7 @@ description: 网站架构演变
 **本地缓存**：访问速度快，但受应用服务器内存限制。
 **远程缓存**：可以使用多台集群，理论上可以做的内存不受限制。
 
-![网站使用缓存](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-arc.png)
+![网站使用缓存](/image/architecture-cache-arc.png)
 
 ### 使用应用服务器集群改善网站的并发能力
 
@@ -46,7 +46,7 @@ description: 网站架构演变
 
 **使用集群是解决网站高并发，海量数据的常用手段。**对网站架构而言，只要能通过增加一台服务器的方式改善负载压力，就可以以同样的方式持续增加服务器不断改善系统性能，从而实现系统的可伸缩性。
 
-![应用服务器使用集群](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cluster-arc.png)
+![应用服务器使用集群](/image/architecture-cluster-arc.png)
 
 ### 数据读写分离
 
@@ -54,7 +54,7 @@ description: 网站架构演变
 
 目前大部分的主流数据库都提供**主从热备**功能，通过配置两台数据库主从关系，可以将一台数据库服务器的数据更新同步到另一台服务器上。网站利用数据库的这一功能，实现**数据库读写分离**，从而改善数据库负载压力。
 
-![数据库读写分离](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-read-write-arc.png)
+![数据库读写分离](/image/architecture-read-write-arc.png)
 
 为了便于应用程序访问读写分离后的数据库，通常在应用服务器端使用**专门的数据访问模块**，是数据库读写分离对应用透明。
 
@@ -64,7 +64,7 @@ description: 网站架构演变
 
 **CDN和反向代理的基本原理都是缓存**，区别在于**CDN部署在网络提供商的机房**，使用户在请求网站服务时，可以从距离自己最近的网络提供商机房获取数据；而**反向代理则部署在中心机房**，当用户请求到达中心机房后，首先访问的服务器是反向代理服务器，如果反向代理服务器缓存着用户请求的资源，就将其直接返回给用户。
 
-![网站使用CDN和反向代理加速访问](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-proxy-cdn-arc.png)
+![网站使用CDN和反向代理加速访问](/image/architecture-proxy-cdn-arc.png)
 
 **使用CDN和反向代理**的目的都是尽早返回数据给用户，一方面加速用户访问速度，另一方面也减轻后端服务器的负载压力。
 
@@ -72,13 +72,13 @@ description: 网站架构演变
 
 任何强大的单一服务器都满足不了大型网站持续增长的业务需求。分布式数据库是网站数据库拆分的最后手段，只有在单表数据规模非常庞大的时候才使用。不到不得已时，**网站更常用的数据库拆分手段是业务分库，将不同业务的数据库部署在不同的物理服务器上**。
 
-![使用分布式文件和分布式数据库系统](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-distribution-arc.png)
+![使用分布式文件和分布式数据库系统](/image/architecture-distribution-arc.png)
 
 ### 使用NoSQL和搜索引擎
 
 随着网站业务越来越复杂，**对数据存储和检索的需求也越来越复杂**，网站需要采用一些非关系数据库技术如NoSQL和非数据库查询技术如搜索引擎。
 
-![使用NoSQL系统和搜索引擎](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-nosql-search-arc.png)
+![使用NoSQL系统和搜索引擎](/image/architecture-nosql-search-arc.png)
 
 应用服务器通过统一的数据访问模块访问各种数据，减轻应用程序管理诸多数据源的麻烦。
 
@@ -88,7 +88,7 @@ description: 网站架构演变
 
 具体到技术上，也会**根据产品线划分，将一个网站拆分成许多不同应用**，每个应用独立部署维护。应用之间可以通过一个超链接（在首页上的导航链接每个都指向不同的应用地址）建立关系，也可以通过消息队列进行数据分发，当然最多的还是通过访问同一个数据存储系统来构成一个完整系统。
 
-![应用拆分](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-bussiness-splic-arc.png)
+![应用拆分](/image/architecture-bussiness-splic-arc.png)
 
 ### 分布式服务
 
@@ -96,7 +96,7 @@ description: 网站架构演变
 
 既然每个应用系统都需要执行许多相同的业务操作，比如用户管理，商品管理等，那么**可以将这些公用的业务提取出来，独立部署**。由这些**可复用的业务连接数据库**，提供共用业务服务，而**应用系统只需管理用户界面**，通过**分布式服务调用共用业务**服务完成具体业务操作。
 
-![分布式服务](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-distribution-service-arc.png)
+![分布式服务](/image/architecture-distribution-service-arc.png)
 
 大型网站的架构演变到这里，基本上大多数的技术问题都得以解决，诸如跨数据中心的实时同步和具体网站业务相关的问题也都可以通过组和改进现有技术架构来解决。
 

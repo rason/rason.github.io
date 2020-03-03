@@ -15,7 +15,7 @@ description: ClassLoader工作机制
 
 当Tomcat启动，会创建一系列class loader并会组织成以下的父子关系：
 
-![Tomcat中加载器父子关系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-Tomcat-ClassLoader.png)
+![Tomcat中加载器父子关系](/image/web-Tomcat-ClassLoader.png)
 
 <!-- more -->
 

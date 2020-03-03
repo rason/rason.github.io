@@ -23,13 +23,13 @@ description: 网站的扩展性
 
 **事件驱动架构：**通过在低耦合的模块之间传递事件消息，以保持模块的松散耦合，并借助事件消息的通信完成模块之间合作，典型案例就是生产者消费者模式。在大型网站架构中，**最常用的是用分布式消息队列来实现**，如图：
 
-![利用消息队列实现的事件驱动架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-eda.png)
+![利用消息队列实现的事件驱动架构](/image/mq-eda.png)
 
 消息队列利用**发布-订阅模式**工作，消息发送者发布消息，一个或者多个消息接收者订阅消息。他们直接没有直接耦合，实现网站的可扩展设计。
 
 队列是一种先进先出的数据结构，分布式消息队列可以看作将这种数据结构部署到独立的服务器上，应用程序可以通过远程访问接口使用分布式消息队列，进行消息存取操作，进而实现分布式的异步调用，基本原理如图：
 
-![分布式消息队列架构原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mq-work.png)
+![分布式消息队列架构原理](/image/mq-work.png)
 
 目前开源的和商业的分布式消息队列产品有很多，比如Apache ActiveMQ等，这些产品处理实现分布式消息队列的一般功能，在可用性、伸缩性、数据一致性、性能和可管理性方面也做了很多改善。
 
@@ -39,7 +39,7 @@ description: 网站的扩展性
 
 回顾网站的发展历程，网站由小到大的演化过程，表现为整个网站是由单一的应用系统逐步膨胀发展成一个巨无霸，如图：
 
-![巨无霸系统示意图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility1.png)
+![巨无霸系统示意图](/image/extensibility1.png)
 
 这样的一个巨无霸系统聚合了大量的应用和服务组件，给整个网站的开发、维护、部署带来了巨大的麻烦。
 
@@ -50,7 +50,7 @@ description: 网站的扩展性
 
 经过拆分之后，巨无霸系统应该是变成以下样子：
 
-![业务及模块拆分独立部署的分布式服务架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/extensibility2.png)
+![业务及模块拆分独立部署的分布式服务架构](/image/extensibility2.png)
 
 应用拆分相对比较简单，通过梳理业务，将较少相关的业务剥离，使其成为独立的Web应用。而对于可复用业务的拆分，不但需要识别哪些是可复用业务，设计服务接口，规范服务依赖关系，还需要一个完善的**分布式服务管理框架。**
 
@@ -66,7 +66,7 @@ description: 网站的扩展性
 
 幸运的是，这样的一个分布式服务框架已经有了开源产品，这就是阿里巴巴的**Dubbo**。
 
-![分布式服务框架Dubbo的架构原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/dubbo.png)
+![分布式服务框架Dubbo的架构原理](/image/dubbo.png)
 
 关于Dubbo的具体介绍就不陈列了，自行搜索了解。
 
@@ -76,7 +76,7 @@ description: 网站的扩展性
 
 那么有没有办法能够做到可扩展的数据结构设计，无需修改表结构就可以新增字段呢？许多NoSQL数据库使用的ColumnFamily（列族）设计就是一个解决方案。
 
-![ColumnFamily数据存储格式](https://raw.githubusercontent.com/rason/rason.github.io/master/image/columnfamily.png)
+![ColumnFamily数据存储格式](/image/columnfamily.png)
 
 使用支持ColumnFamily结构的NoSQL结构的NoSQL数据库，创建表的时候，只需指定ColumnFamily的名字，无需指定字段（Column），可以在数据写入时再指定，通过这种方式，使得应用程序的数据结构可以随意扩展。而在查询时，可以通过指定任意字段名称和值进行查询。
 

@@ -13,7 +13,7 @@ description: 操作系统介绍
 
 我们都知道计算机系统由CPU、主存、磁盘、打印机、键盘、鼠标、显示器以及其他的输入/输出设备组成。我们程序员跟不可能直接跟这些底层硬件打交道吧？那不是累死累活。我们都知道解耦，面向接口编程思想，操作系统的作用正是如此。如下图所示：
 
-![操作系统所处的位置](https://raw.githubusercontent.com/rason/rason.github.io/master/image/os-position)
+![操作系统所处的位置](/image/os-position)
 
 从上图可以看出，操作系统就是架设在用户和硬件之间的一层软件，其作用大致有一下两点：
 
@@ -35,7 +35,7 @@ description: 操作系统介绍
 
 一台简单的个人计算机可以抽象为类似下图中的模型。CPU、内存以及I/O设备都由一条系统总线连接起来并通过总线与其他设备通信。
 
-![简单的个人计算机的一些部件](https://raw.githubusercontent.com/rason/rason.github.io/master/image/pc-component)
+![简单的个人计算机的一些部件](/image/pc-component)
 
 ### 处理器
 
@@ -55,7 +55,7 @@ CPU就是计算机的大脑，它从内存中取出指令并执行之。在每�
 
 上面说到的寄存器和内存都是存储器的一种，那么计算机究竟有多少存储器，它们之间的区别是什么？请看下图：
 
-![典型的存储层次结构，数据是粗略估计](https://raw.githubusercontent.com/rason/rason.github.io/master/image/memory-structure)
+![典型的存储层次结构，数据是粗略估计](/image/memory-structure)
 
 从上图可以看出，没有两全其美的方案，速度快的容量小（材料、制作成本高），速度慢的容量大（材料、制作成本低）。需要提到的是高速缓存，当某个程序需要读取一个存储字时，高速缓存硬件检查所需要的高速缓存行是否在高速缓存中，如果缓存命中则不需要访问内存了。缓存在计算机科学的许多领域中都起着重要的作用。
 
@@ -77,7 +77,7 @@ I/O设备一般包括两个部分：设备控制器和设备本身。控制器�
 
 随着处理器和存储器速度越来越快，单总线很难处理总线的交通流量，因此就出现了其它总线，它们处理I/O设备以及CPU到存储器的速度都更快。目前一个较大的Pentium系统的结构如下图所示：
 
-![大型Pentium系统的结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/bus-structure)
+![大型Pentium系统的结构](/image/bus-structure)
 
 - ISA（Industry Standard Architecture）总线：即原先的IBM PC/AT总线，可并行传送2字节，速度较慢。
 - PCI（Peripheral Component Interconnect）总线：ISA总线的后继者，可并行传送8字节，速度较快。目前多数高速I/O设备采用PCI总线。

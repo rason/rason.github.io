@@ -74,7 +74,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 
 ##### PSYNC 命令的实现
 
-![Data replicate](https://raw.githubusercontent.com/rason/rason.github.io/master/image/psync.png)
+![Data replicate](/image/psync.png)
 
 #### 部分同步优化
 

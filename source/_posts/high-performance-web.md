@@ -27,12 +27,12 @@ description: 高性能网站
 
 <!-- more -->
 
-![性能测试曲线](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-high-performance-1.png)
-![并发用户访问响应时间曲线](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-high-performance-2.png)
+![性能测试曲线](/image/architecture-high-performance-1.png)
+![并发用户访问响应时间曲线](/image/architecture-high-performance-2.png)
 
 ## 性能测试报告
 
-![性能测试结果报告](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-high-performance-3.png)
+![性能测试结果报告](/image/architecture-high-performance-3.png)
 
 ## 性能优化策略
 

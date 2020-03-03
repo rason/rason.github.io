@@ -13,7 +13,7 @@ description: Spring基本结构
 
 Spring的组件有十来个，但核心的组件只有几个，下面是Spring框架的总体架构图：
 
-![Spring总体架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springspring-structure.png)
+![Spring总体架构](/image/springspring-structure.png)
 
 由上图可以看出，Spring的核心组件只有三个：Bean，Context和Core组件。这三个组件是Spring框架的基础，没有它们不可能有AOP，WEB等上层特性功能。因此要了解Spring的整体架构，就要首先了解这三个组件存在的意义。
 
@@ -33,7 +33,7 @@ Spring解决了什么问题？众所周知，Spring可以让对象的依赖关�
 
 它们之间的关系可以用下图表示：
 
-![核心组件关系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springspring-relation.png)
+![核心组件关系](/image/springspring-relation.png)
 
 ## Bean组件
 
@@ -42,7 +42,7 @@ Bean组件在org.springframework.beans包下，这个包下的类主要解决了
 Spring中Bean的创建是典型的工厂模式，它的顶层接口是BeanFactory。BeanFactory的实现类会拥有许多的Bean定义，每一个都会由一个字符串名字来区分。根据Bean的定义，BeanFactory会返回一个独立的 Bean实例或者一个共享的Bean实例（单例模式），具体返回哪种类型会由Bean工厂的配置决定。
 
 BeanFactory的设计目的就是作为应用组件的注册中心和集中管理，Spring的依赖注入功能就是用BeanFactory接口和它的子接口来实现。通常BeanFactory会通过配置源来加载Bean的定义，比如XML文件，然后用org.springframework.beans包下的类来组装成Bean。因此BeanFactory就是一个最基本的IOC容器，前面我们谈到Context是一个Bean关系的集合，也是一个IOC容器，因此可以猜测到Context直接或者间接实现了BeanFactory接口。下图是BeanFactory的继承层次关系：
-![BeanFactory继承层次关系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springspring-beanfactory.png)
+![BeanFactory继承层次关系](/image/springspring-beanfactory.png)
 
 BeanFactory有三个子接口：ListableBeanFactory，HierarchicalBeanFactory和AutowireCapableBeanFactory。而它的默认实现类是DefaultListableBeanFactory，它实现了所有的三个接口。为什么会有那么多个接口？因为每个接口都有它的使用场合，主要是区分在spring内部对象的传输和转化过程中，对对象的数据访问所做的限制。例如ListableBeanFactory接口表示这些Bean是可列表的，而HierarchicalBeanFactory表示这些Bean是有继承关系的，也就是每个Bean可能有父Bean。这几个接口共同定义了Bean的集合，Bean之间的关系和Bean的行为。
 
@@ -50,7 +50,7 @@ Bean的定义由BeanDefinition来描述。Bean的定义完整地描述了在Spri
 
 Bean的解析过程比较复杂，功能被分得很细。Bean的解析主要就是对Spring配置文件的解析，这个解析过程主要通过以下的类来完成：
 
-![Bean的解析类](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springspring-xmlreader.png)
+![Bean的解析类](/image/springspring-xmlreader.png)
 
 ## Context组件
 
@@ -68,7 +68,7 @@ ApplicationContext是Context的顶级父类，是为应用提供配置的中心�
 
 ApplicationContext的相关类结构如下图所示:
 
-![Context相关类结构图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springspring-context-relation.png)
+![Context相关类结构图](/image/springspring-context-relation.png)
 
 由上图可知，ApplicationContext的子类主要包含两个方面：
 

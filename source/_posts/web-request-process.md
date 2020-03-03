@@ -19,7 +19,7 @@ B/S网络架构有两个好处：
 与传统的C/S采用长连接的模式不同，B/S采用无状态的短连接方式，一次请求完成一次数据交互。采用这种模式能够同时服务更多的用户，因为现在的互联网每天都会处理上亿的请求，不可能用户访问一次就一直保持这个连接。
 基于Http协议本身的特点，目前的B/S网络架构大都采用类似下图所示的设计：
 
-![CDN架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-cdn-structure.png)
+![CDN架构](/image/web-cdn-structure.png)
 
 <!-- more -->
 
@@ -88,7 +88,7 @@ DNS解析的工作就是将域名解析成IP地址，过程如下：
 - 返回域名对应的IP和TTL值，LDNS会缓存这个IP对应关系，缓存时间有TTL值决定
 - 把解析结果返回给用户，用户根据TTL值缓存在本地系统中，域名解析过程结束
 
-![DNS解析](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-dns-resolv.png)
+![DNS解析](/image/web-dns-resolv.png)
 
 ### 跟踪域名解析过程
 
@@ -124,15 +124,15 @@ CDN即内容分布网络（Content Delivery Network），它是构建在现有In
 
 - 链路负载均衡：通过DNS负载均衡服务器解析成不同的IP，然后用户根据这个IP来访问不同的目标服务器。优点：无代理访问快，缺点：本地和LDNS都有缓存，一台服务器挂了缓存没更新会导致访问失败。
 
-![链路负载均衡](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-link-lb.png)
+![链路负载均衡](/image/web-link-lb.png)
 
 - 集群负载均衡：分为硬件负载均衡和软件负载均衡。
 	 硬件负载均衡：使用一台专门的转发设备来转发请求，如F5。优点：性能好，缺点：贵。
 	 软件负载均衡：使用最普遍，使用廉价的PC即可搭建。优点：成本低，缺点：多次代理，网络延时。
 
-	 ![硬件负载均衡](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-hard-lb.png)
+	 ![硬件负载均衡](/image/web-hard-lb.png)
 
-	 ![软件负载均衡](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-soft-lb.png)
+	 ![软件负载均衡](/image/web-soft-lb.png)
 
 	 上图中，上面两台是LVS，使用四层负载均衡，也就是通过网络层利用IP地址进行地址转发。下面三台使用HAProxy进行七层负载，也就是可以通过根据访问用户的Http请求头来进行负载均衡，如可以根据不同的URL来请求转发到特定机器或者根据用户的Cookie信息来指定访问的机器。
 

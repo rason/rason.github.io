@@ -40,7 +40,7 @@ channel.queueBind(queueName, EXCHANGE_NAME, "black");
 
 为了演示这个模式，请看下图：
 
-![direct-exchange](https://raw.githubusercontent.com/rason/rason.github.io/master/image/direct-exchange.png)
+![direct-exchange](/image/direct-exchange.png)
 
 上图中，我们可以看到一个`direct` 类型的exchange X有两个队列绑定到它。第一个队列使用`binding key` orange 来绑定，第二个队列有两个bindings，一个是black一个是green。
 
@@ -50,7 +50,7 @@ channel.queueBind(queueName, EXCHANGE_NAME, "black");
 
 ## Multiple bindings
 
-![direct-exchange-multiple](https://raw.githubusercontent.com/rason/rason.github.io/master/image/direct-exchange-multiple.png)
+![direct-exchange-multiple](/image/direct-exchange-multiple.png)
 
 用相同的`binding key` 绑定多个队列是完全合法的。在我们的例子中可以使用`binding key` black 添加多一个`binding` ，如上图所示。这样的话，`direct` 类型的exchange 可以像 `fanout` 类型的exchange 一样将消息广播到所有匹配的队列中。`routing key` 为black 的消息会被同时发送到Q1和Q2。
 
@@ -86,7 +86,7 @@ for(String severity : argv){
 
 ## 将它们结合到一起
 
-![日志消息路由](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-four.png)
+![日志消息路由](/image/python-four.png)
 
 下面是` EmitLogDirect.java `的代码：
 

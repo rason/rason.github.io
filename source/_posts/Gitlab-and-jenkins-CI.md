@@ -15,7 +15,7 @@ description: Gitlab+Jenkins持续集成
 
 安装完成之后，在浏览器中输入`127.0.0.1`或者`localhost`回车即可，Gitlab默认监听80端口。然后注册一个账户即可进入系统。
 
-![首页](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitlab-home.png)
+![首页](/image/gitlab-home.png)
 
 ## Gitlab使用
 
@@ -27,7 +27,7 @@ description: Gitlab+Jenkins持续集成
 
 <!-- more -->
 
-![New project](https://raw.githubusercontent.com/rason/rason.github.io/master/image/new-project.png)
+![New project](/image/new-project.png)
 
 ### 推送代码到Gitlab
 
@@ -75,7 +75,7 @@ sudo apt-get install jenkins
 
 第一次进入Jenkins会让你选择安装一些插件，直接选择默认就行了，因为缺少的插件之后可以在Jenkins系统管理-管理插件中安装。
 
-![Jenkins系统管理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/jenkins-sys-man.png)
+![Jenkins系统管理](/image/jenkins-sys-man.png)
 
 ## Jenkins新建项目
 
@@ -89,7 +89,7 @@ sudo apt-get install jenkins
 
 即Jenkins从哪里拉取代码进行构建，这里我们可以选择Git或者SVN，如果没有Git选项，那就是没有安装git的插件，需要到管理插件中先安装Git的插件。
 
-![源码管理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/git-source.png)
+![源码管理](/image/git-source.png)
 
 输入相应的仓库地址和构建的分支即可。
 
@@ -97,13 +97,13 @@ sudo apt-get install jenkins
 
 使用maven进行编译打包。
 
-![Build](https://raw.githubusercontent.com/rason/rason.github.io/master/image/build.png)
+![Build](/image/build.png)
 
 ### Post Steps
 
 编译打包完之后就是如何将产品上传到服务器进行发布了，可以在`Post Steps`配置编译打包完的后置操作。这里我选择通过SSH将代码上传到服务器，你也可以选择SCP或者是FTP的方式。每种方式都有相应的插件，通过SSH上传需要安装`publish over ssh`插件。
 
-![Publish over ssh](https://raw.githubusercontent.com/rason/rason.github.io/master/image/publish-over-ssh.png)
+![Publish over ssh](/image/publish-over-ssh.png)
 
 上面的配置如果看不懂的话，可以[点击这里](https://wiki.jenkins-ci.org/display/JENKINS/Publish+Over#PublishOver-promotions)查看使用示例。
 

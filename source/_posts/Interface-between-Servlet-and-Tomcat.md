@@ -19,7 +19,7 @@ description: The interfaces between servlet and tomcat
 
 我们知道StandardWrapper的父容器是StandardContext，因此StandardWrapper的初始化工作应该在StandardContext中寻找。先看一下在[Tomcat的Container和Lifecycle](http://rason.me/2015/11/23/Tomcat-s-Container-Lifecycle/)文章中画的Tomcat启动流程图：
 
-![Tomcat启动流程图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcat_start.png)
+![Tomcat启动流程图](/image/tomcat_start.png)
 
 上图中**步骤12**，`ContextConfig`实现了生命周期监听器接口`LifecycleListener`监听StandardContext的生命周期状态变化,在StandardContext状态变化时会触发ContextConfig.lifecycleEvent方法。在StandardContext初始化时会触发ContextConfig的init方法，该方法中完成了每个Web应用的配置解析。
 
@@ -153,7 +153,7 @@ public synchronized Servlet loadServlet() throws ServletException {
 
 ## Context初始化流程图
 
-![Context初始化流程图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatcontext.png)
+![Context初始化流程图](/image/tomcatcontext.png)
 
 ## 总结
 

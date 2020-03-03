@@ -30,7 +30,7 @@ RabbitMQ的消息传递模型的核心思想是，生产者从不会将任何消
 
 相反，生产者只能向exchange发送消息。exchange是非常简单的东西，一边从生产者接收消息，另一边将消息推送到队列。exchange必须确切知道对接收到的消息做什么，是将它添加到一个特定的队列？还是添加到多个队列？或者是应该丢弃。这个规则的定义是由exchange的类型来决定的。
 
-![exchange](https://raw.githubusercontent.com/rason/rason.github.io/master/image/exchanges.png)
+![exchange](/image/exchanges.png)
 
 有几种可用的exchange：`direct, topic, headers , fanout`。今天我们将关注最后一个——`fanout`。先让我们创建一个这个类型的exchange，将其命名为`logs`。
 
@@ -101,7 +101,7 @@ String queueName = channel.queueDeclare().getQueue();
 
 ## Bindings
 
-![Bindings](https://raw.githubusercontent.com/rason/rason.github.io/master/image/bindings.png)
+![Bindings](/image/bindings.png)
 
 我们已经创建了一个fanout类型的exchange和一个队列。现在我们需要告诉exchange发送消息到我们的队列。exchange和queue之间的关系成为绑定。
 
@@ -115,7 +115,7 @@ channel.queueBind(queueName, "logs", "");
 
 ## 将它们结合到一起
 
-![Pub/Sub](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-three-overall.png)
+![Pub/Sub](/image/python-three-overall.png)
 
 生产者程序发出日志消息，跟之前的教程没有太大的不同。最重要的改变就是将原来发送到未命名的exchange改为发送到我们的`logs` exchange。当发送消息时我们需要提供`routingKey`，但是它的值会被`fanout`类型的exchange忽略。下面就是我们的`EmitLog.java`程序代码：
 

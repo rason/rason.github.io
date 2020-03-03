@@ -13,7 +13,7 @@ description: 字符设备驱动
 
 假设一台32位的计算机，2G的内存，会分为如下三个区域：
 
-![物理内存分区](https://raw.githubusercontent.com/rason/rason.github.io/master/image/ram-zone.png)
+![物理内存分区](/image/ram-zone.png)
 
 ### 遗留DMA
 
@@ -36,7 +36,7 @@ description: 字符设备驱动
 - 如果物理内存大于1G，则无法进行直接映射
 - 所以内核要访问物理内存的高位区域，需要进行临时的映射，如下图
 
-![物理内存高位区域映射](https://raw.githubusercontent.com/rason/rason.github.io/master/image/kmap.png)
+![物理内存高位区域映射](/image/kmap.png)
 
 <!-- more -->
 

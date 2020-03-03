@@ -27,7 +27,7 @@ description: 虚拟内存
 
 在不使用分页的时候，执行一条简单的指令可能只访问一次内存，即从内存中取出指令。有了分页，则因为要访问页表而引起更多次的内存访问。这样的话性能就下降了一半，因此需要使用**缓存**的思想减少内存的访问。计算机中是用一个小型的硬件设备来实现这一功能，将虚拟地址直接映射到物理地址，而不必再访问页表。这种设备称为**转换检测缓冲区（Translation Lookaside Buffer, TLB）**。如下图所示：
 
-![TLB加速分页](https://raw.githubusercontent.com/rason/rason.github.io/master/image/TLB-SPEED-UP)
+![TLB加速分页](/image/TLB-SPEED-UP)
 
 <!-- more -->
 
@@ -47,7 +47,7 @@ TLB通常在MMU中，包含少量的表项，在上图中为8个，在实际中�
 
 举个例子，如下图所示，32位的虚拟地址被划分为10位的PT1域、10位的PT2域和12位的Offset域。因为偏移量是12位，所以页面长度是4KB，共有2的20次方个页面。
 
-![二级页表](https://raw.githubusercontent.com/rason/rason.github.io/master/image/L2-TABLE)
+![二级页表](/image/L2-TABLE)
 
 在上图中，左边的是顶级页表，它具有1024个表项，对应于10位的PT1域。当一个虚拟地址被送到MMU时：
 
@@ -73,7 +73,7 @@ TLB通常在MMU中，包含少量的表项，在上图中为8个，在实际中�
 
 还好我们之前学过缓存的思想和查找算法。顺序查找显然不科学，所以我们可以用散列表将虚拟地址散列，并结合TLB。问题得到解决！如下图所示：
 
-![传统页表与倒排页表的对比](https://raw.githubusercontent.com/rason/rason.github.io/master/image/REVERTED-TABLE)
+![传统页表与倒排页表的对比](/image/REVERTED-TABLE)
 
 ## 总结
 

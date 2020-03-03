@@ -15,7 +15,7 @@ description: 文件系统实现
 
 文件系统存放在磁盘上。多数磁盘划分为一个或多个分区，每个分区中有一个独立的文件系统。如下图所示：
 
-![一个可能的文件系统布局](https://raw.githubusercontent.com/rason/rason.github.io/master/image/fs-layout.png)
+![一个可能的文件系统布局](/image/fs-layout.png)
 
 - **主引导记录(Master Boot Record, MBR)**：位于磁盘的0号扇区，由BIOS读入并执行；作用是确定活动分区，读入并执行其引导块，引导块中的程序装载该分区的操作系统。
 
@@ -45,7 +45,7 @@ description: 文件系统实现
 
 最简单的分配方案是把每个文件作为一连串数据块存储在磁盘上。如下图a)所示：
 
-![a)为5个文件连续分配空间；b)删除文件D后磁盘的状态](https://raw.githubusercontent.com/rason/rason.github.io/master/image/continuous-block.png)
+![a)为5个文件连续分配空间；b)删除文件D后磁盘的状态](/image/continuous-block.png)
 
 连续磁盘分配方案有两大优势：
 
@@ -61,7 +61,7 @@ description: 文件系统实现
 
 存储文件的第二种方法是为每个文件构造磁盘块链表。如下图所示，每个块的第一个字作为指向下一块的指针，块的其他部分存放数据。
 
-![以磁盘块的链表形式存储文件](https://raw.githubusercontent.com/rason/rason.github.io/master/image/link-block.png)
+![以磁盘块的链表形式存储文件](/image/link-block.png)
 
 这种方案可以充分利用每个磁盘块，不会因为磁盘碎片（处理最后一块中的内部碎片）而浪费空间。同样，在目录项中，只需要存放第一块的磁盘地址，文件的其他块就可以从这个首块地址查找到。
 
@@ -75,7 +75,7 @@ description: 文件系统实现
 
 为了解决上面中的第二个缺点，把指针链表放在内存中的一个表中。如下图所示：
 
-![在内存中使用文件分配表的链表分配](https://raw.githubusercontent.com/rason/rason.github.io/master/image/FAT.png)
+![在内存中使用文件分配表的链表分配](/image/FAT.png)
 
 上图中，文件A依次使用了磁盘块4，7，2，10，12；文件B依次使用了磁盘块6,3,11,14。利用上图中的表，可以从第4块开始，顺着链表走到最后，找到A的全部磁盘块，链表以一个不属于有效磁盘编号的特殊标记（如-1）结束。内存中的这样一个表格称为**文件分配表（File Allocation Table， FAT）**。
 
@@ -87,7 +87,7 @@ description: 文件系统实现
 
 最后一个记录各个文件分别包含哪些磁盘块的方法是给每个文件赋予一个称为i节点（index-node）的数据结构，其中列出了文件属性和文件块的磁盘地址。如下图所示：
 
-![i节点的例子](https://raw.githubusercontent.com/rason/rason.github.io/master/image/index-node.png)
+![i节点的例子](/image/index-node.png)
 
 这种方式相对于FAT方式具有很大优势，即有在文件被打开时，其i节点才在内存中。
 
@@ -105,13 +105,13 @@ i节点的一个问题是，如果每个i节点只能存储固定数量的磁盘
 
 - 对于采用i节点的系统，可以把文件属性存放在i节点中而不是目录项中。这样的话，目录项中只需记录文件名和i节点号。
 
-![a)简单目录，包含固定大小的目录项，在目录项中有磁盘地址和属性；b)每个目录项只引用i节点的目录](https://raw.githubusercontent.com/rason/rason.github.io/master/image/fs-directory.png)
+![a)简单目录，包含固定大小的目录项，在目录项中有磁盘地址和属性；b)每个目录项只引用i节点的目录](/image/fs-directory.png)
 
 上图中的两种处理方法分别对应Windows和Unix。
 
 到目前为止，我们假设了文件名是固定长度，才能设定所有目录项大小都一样。可是，如果文件名长度固定，典型值为255个字符，遇到文件名很短的话就浪费空间了。为了节约空间，有两种解决方案，如下图所示：
 
-![在目录中处理长文件名的两种方法：a)在行中；b)在堆中](https://raw.githubusercontent.com/rason/rason.github.io/master/image/deal-directory-filename.png)
+![在目录中处理长文件名的两种方法：a)在行中；b)在堆中](/image/deal-directory-filename.png)
 
 - 第一种方法如上图a)所示，缺点很显然，移走文件后，就引入了一个长度可变的空隙，而下一个进来的文件不一定正好适合这个空隙。
 
@@ -139,7 +139,7 @@ i节点的一个问题是，如果每个i节点只能存储固定数量的磁盘
 
 即使在同一台计算机上同一个操作系统下，也会使用很多不同的文件系统。虚拟文件系统就是为用户进程提供统一的接口。如下图所示：
 
-![虚拟文件系统的位置](https://raw.githubusercontent.com/rason/rason.github.io/master/image/VFS.png)
+![虚拟文件系统的位置](/image/VFS.png)
 
 ## 总结
 

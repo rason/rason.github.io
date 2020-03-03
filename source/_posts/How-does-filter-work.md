@@ -13,7 +13,7 @@ description: How does filter work
 
 正如名字一样，Filter是过滤器，过滤器的作用当然是过滤掉一些东西。比如，我们日常用的洗手盆，在排水处会有个滤网，就是为了避免大块的物品流水了下水管导致阻塞。同理，Servlet技术中的Filter作用也是一样的，就是在请求到达Servlet之前先对请求进行过滤。那么，这样的一个功能，用代码是如何实现的？请先看一个示意图：
 
-![Filter工作示意图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatFilterWork.png)
+![Filter工作示意图](/image/tomcatFilterWork.png)
 
 从上图可以看出，请求在到达Servlet之前会经过若干个Filter，而这些Filter是保存在一个FilterChain里面。
 
@@ -62,7 +62,7 @@ description: How does filter work
 
 ## Filter在Tomcat中的调用
 
-![Tomcat中Filter调用过程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatfilter.png)
+![Tomcat中Filter调用过程](/image/tomcatfilter.png)
 
 ## Filter来自哪里
 

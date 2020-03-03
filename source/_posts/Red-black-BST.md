@@ -24,7 +24,7 @@ description: 红黑树
 
 如下图所示：
 
-![由一条红色链接相连的两个2-结点表示一个3-结点](https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-encoding.png)
+![由一条红色链接相连的两个2-结点表示一个3-结点](/image/redblack-encoding.png)
 
 这种表示法的一个优点是，我们**无需修改**就可以直接使用标准二叉查找树的get()方法。对于任意的2-3树，只要对结点进行转换，我们都可以立即派生出一棵对应的二叉查找树。
 
@@ -48,7 +48,7 @@ description: 红黑树
 
 如下图所示：
 
-![红黑树和2-3树的一一对应关系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-1-1.png)
+![红黑树和2-3树的一一对应关系](/image/redblack-1-1.png)
 
 所以，**红黑树既是二叉查找树，也是2-3树，能够满足二叉查找树中的简洁高效的查找算法和2-3树中的高效平衡插入算法。**
 
@@ -56,7 +56,7 @@ description: 红黑树
 
 每个结点都智慧有一条指向自己的链接（从它的父结点指向它），我们将链接的颜色保存在表示结点的Node数据类型的布尔变量color中。如果指向它的链接是红色，那么该变量为true，黑色则为false。我们约定空链接为黑色，当我们提到一个结点的颜色时，我们指的是指向该结点的链接的颜色。代码如下：
 
-![红黑树的结点表示](https://raw.githubusercontent.com/rason/rason.github.io/master/image/redblack-color.png)
+![红黑树的结点表示](/image/redblack-color.png)
 
 ```
 public static final boolean RED = true;
@@ -93,7 +93,7 @@ public boolean isRed(Node node){
 - 假设有一条红色的右链接需要被转换为左链接，称为**左旋转**；
 - 假设有一条红色的左链接需要被转换为右链接，称为**右旋转**。
 
-![左旋转h的右链接和右旋转h的左链接](https://raw.githubusercontent.com/rason/rason.github.io/master/image/rotate.png)
+![左旋转h的右链接和右旋转h的左链接](/image/rotate.png)
 
 ```
 public Node rotateLeft(Node h){
@@ -127,17 +127,17 @@ public Node rotateRight(Node h){
 
 ### 向2-结点插入新键
 
-![向2-结点插入新键](https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert2-node.png)
+![向2-结点插入新键](/image/insert2-node.png)
 
 ### 向3-结点插入新键
 
-![向3-结点插入新键](https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert3-node.png)
+![向3-结点插入新键](/image/insert3-node.png)
 
 ### 颜色变换
 
 上图中有涉及将一个结点的两个红色子结点转换成黑色，我们也将其用一个方法flipColor()来实现。除了将子结点的颜色由红变黑之外，我们同时还要将父结点的颜色由黑变红。这项操作最重要的性质在于和旋转操作一样是局部变换，不会影响**整棵树的黑色平衡性**。
 
-![颜色变换](https://raw.githubusercontent.com/rason/rason.github.io/master/image/color-flip.png)
+![颜色变换](/image/color-flip.png)
 
 为什么父结点要由黑变红？其实就是和2-3树一样，不断地分解提升到父结点中，所以就是红色的。
 
@@ -147,7 +147,7 @@ public Node rotateRight(Node h){
 
 ### 向树底部的3-结点插入新键
 
-![向树底部的3-结点插入新键](https://raw.githubusercontent.com/rason/rason.github.io/master/image/insert3-node-bottom.png)
+![向树底部的3-结点插入新键](/image/insert3-node-bottom.png)
 
 只要谨慎地使用左旋转、右旋转和颜色转换三种简单的操作，我们就能够保证插入操作后红黑树和2-3树的一一对应关系。在沿着插入点到根节点的路径向上移动时在所经过的每个结点中顺序完成一下操作，我们就能完成插入操作：
 
@@ -204,7 +204,7 @@ private Node put(Node node, Key k,Value v){
 
 红黑树最吸引人的一点是它的实现中最复杂的代码仅限于插入和删除方法。二叉查找树中的查找最大和最小键、select()、rank()、floor()、ceiling()和范围查找方法**不作任何改变**即可继续使用，因为红黑树也是二叉查找树而这些操作也不会涉及结点的颜色。
 
-![各种符号表实现性能总结](https://raw.githubusercontent.com/rason/rason.github.io/master/image/st-performance)
+![各种符号表实现性能总结](/image/st-performance)
 
 ## 总结
 

@@ -416,7 +416,7 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
 
 下图是简单的符号表实现的成本总结：
 
-![简单的符号表实现的成本总结](https://raw.githubusercontent.com/rason/rason.github.io/master/image/symboltable)
+![简单的符号表实现的成本总结](/image/symboltable)
 
 可以看出，两种方式都不能高效地实现查找和插入操作。因此，**符号表的核心问题就在于我们能否找到能够同时保证查找和插入操作都是对数级别的算法和数据结构**。
 

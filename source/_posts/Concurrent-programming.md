@@ -59,7 +59,7 @@ lock = false;
 
 - 除了使用`test-and-set`指令来解决互斥问题，还可以使用更加强大的信号量。
 
-![信号量数据结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/semaphore-struct.png)
+![信号量数据结构](/image/semaphore-struct.png)
 
 如上图所示，对于一个互斥的信号量（比如互斥锁），count属性会被初始化为1，代表最多一个任务可以获得这个信号量。
 

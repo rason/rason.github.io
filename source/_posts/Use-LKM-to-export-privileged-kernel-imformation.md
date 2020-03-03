@@ -68,7 +68,7 @@ int main( int argc, char *argv[] )
 - CMOS内存中的前十个字节保存的就是时间日期信息，如下图所示
 - 通过索引端口0x70和数据端口0x71来进行读取
 
-![十个时钟日期字节](https://raw.githubusercontent.com/rason/rason.github.io/master/image/clock-calendar-bytes.png)
+![十个时钟日期字节](/image/clock-calendar-bytes.png)
 
 ## cmos.c
 

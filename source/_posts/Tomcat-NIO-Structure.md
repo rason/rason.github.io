@@ -13,7 +13,7 @@ description: Tomcat NIO 基本架构
 
 这篇文章打算先从整体概括一下Tomcat NIO基本架构，然后再具体分析。先看一下基本的架构图：
 
-![Tomcat NIO](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatnio-strcuture.png)
+![Tomcat NIO](/image/tomcatnio-strcuture.png)
 
 <!-- more -->
 
@@ -104,7 +104,7 @@ Executor线程池负责数据处理和业务调用。Poller接收到的请求soc
 
 上面的描述在表达上可能有点欠缺，不保证严格的准确性。为了更好地理解这一流转过程，我们看一下请求流转图：
 
-![Connector请求流转](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatnio-dispath.png)
+![Connector请求流转](/image/tomcatnio-dispath.png)
 
 ## 总结
 

@@ -21,7 +21,7 @@ description: 归并排序
 
 那么，通过上面概念的描述，我想一般人都无法写出归并排序的代码，甚至连归并排序的过程是怎么样的也不一定能在脑海中浮现。正所谓一图胜千言，归并排序过程如下图所示：
 
-![归并排序](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Merge-sort-example-300px.gif)
+![归并排序](/image/Merge-sort-example-300px.gif)
 
 上图的效果应该是十分直观了，就是将序列不断地分成两份，到最后变成了单个元素与单个元素相比、归并；再利用归并完的序列比较、归并，依次类推。
 
@@ -86,7 +86,7 @@ public class MergeSort extends Sort {
 
 递归方式的归并排序是一种**自顶向下**的方式，其轨迹如下图所示：
 
-![自顶向下的归并排序中归并结果轨迹](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mergesort1)
+![自顶向下的归并排序中归并结果轨迹](/image/mergesort1)
 
 根据上图和递归的代码可以看出，排序的过程是先递归排序左边部分，然后再递归排序后边部分，再进行总体的归并操作。
 
@@ -107,7 +107,7 @@ private void iteraterSort(Comparable[] a){
 
 迭代方式的归并排序是一种**自底向上**的方式，其轨迹如下图所示：
 
-![自底向上的归并排序中归并结果轨迹](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mergesort2)
+![自底向上的归并排序中归并结果轨迹](/image/mergesort2)
 
 代码中定义了一个block，可以理解为子序列中元素的个数，为两倍递增。也就是先相邻的1个元素进行排序，排序完之后两个为一组和相邻的两个元素进行比较排序；以此类推。
 
@@ -169,7 +169,7 @@ mergeSort time:545.0
 
 我们可以通过下图的树状图来理解上面的结论，这棵树正好有n层(2的n次方等于N)。对于0到n-1之间的任意k，自顶向下的第k层有2的k次方个子数组，每个子数组的长度为2的n-k次方，归并最多需要2的n-k次方比较。因此每层的比较次数为2的k次方乘2的n-k次方=2的n次方，n层总共为n乘2的n次方=NlgN。
 
-![N=16时归并排序中子数组的依赖树](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mergesort3)
+![N=16时归并排序中子数组的依赖树](/image/mergesort3)
 
 通过上面的结论我们知道归并排序所需的实际和NlgN成正比。这跟选择排序、插入排序不可同日而语，它表明我们只需要比表里整个数据多个对数因子的实际就能将一个庞大的数组排序。**可以用归并排序处理数百万甚至更大规模的数组，这是插入排序或者选择排序做不到的**。**归并排序的主要缺点是辅助数组所使用的额外空间和N的大小成正比。**
 

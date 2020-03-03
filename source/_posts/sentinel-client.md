@@ -66,7 +66,7 @@ spring:
 
 我们回头看一下，在 SpringBoot 中使用 Redis 只引入了依赖和配置参数，并没有编写任何一行代码，这其实是 SpringBoot 的 AutoConfiguration 帮我们“偷偷”干了活。由于篇幅原因这部分就不展开了，我画了一个大致的关系图：
 
-![SpringBoot AutoConfigruation](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springboot-autoconfiguration.png)
+![SpringBoot AutoConfigruation](/image/springboot-autoconfiguration.png)
 
 由上图可知，`RedisAutoConfiguration` 帮我们实现了 Redis 的自动装配，我们看下 RedisAutoConfiguration 顶部的注解内容：
 

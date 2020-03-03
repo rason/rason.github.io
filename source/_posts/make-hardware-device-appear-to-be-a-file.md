@@ -73,7 +73,7 @@ data = inb( 0x71 );
 
 ## 如何访问设备
 
-![设备访问工作原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/device-access-works.png)
+![设备访问工作原理](/image/device-access-works.png)
 
 ## cmosram.c驱动
 
@@ -227,7 +227,7 @@ int main( int argc, char *argv[] )
 - 用法：`$ ./dump /dev/cmos`
 - 可以看到CMOS内存中的128个字节中的内容如下图所示
 
-![CMOS内存中的内容](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cmos-memery.png)
+![CMOS内存中的内容](/image/cmos-memery.png)
 
 对应上篇博客中每个字节表示的内容，可以看出系统的硬件时间。
 

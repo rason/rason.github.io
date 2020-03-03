@@ -70,7 +70,7 @@ Cookie是HTTP协议的一个配置项，映射到Java中就是一个Cookie对象
 
 当服务器设置了Cookie返回的时候，我们在浏览器中的Response Headers中可以看到，如图：
 
-![浏览器中Set-Cookie](https://raw.githubusercontent.com/rason/rason.github.io/master/image/javaweb-set-cookie.png)
+![浏览器中Set-Cookie](/image/javaweb-set-cookie.png)
 
 从上图可以看出每设置一个Cookie，Response Headers都有一个Set-Cookie熟悉，这里设置了两个Cookie，因此有两个Set-Cookie。图片是随便打开一个网站截取的，因此跟上述代码的Cookie名字不一样。
 

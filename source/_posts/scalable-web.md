@@ -20,7 +20,7 @@ description: 网站的伸缩性
 
 在网站的早期，通常会使用第一种方式，如图：
 
-![根据功能进行物理分离实现伸缩](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-1.png)
+![根据功能进行物理分离实现伸缩](/image/architecture-scalable-1.png)
 
 <!-- more -->
 
@@ -28,11 +28,11 @@ description: 网站的伸缩性
 
 - **纵向分离（分层后分离）**：将业务处理流程上的不同部分分离部署。
 
-![纵向分离部署实现伸缩](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-2.png)
+![纵向分离部署实现伸缩](/image/architecture-scalable-2.png)
 
 - **横向分离（业务分割后分离）**：将不同的业务模块分离部署。
 
-![横向分离部署实现伸缩](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-scalable-3.png)
+![横向分离部署实现伸缩](/image/architecture-scalable-3.png)
 
 当然，将不同功能分离之后可以实现一定程度的伸缩性，但是随着网站的访问量增加，及时分离到最小力度的独立部署，单一的服务器也会成为瓶颈。此时，就需要使用集群了，即多台服务器部署相同的服务。
 
@@ -63,7 +63,7 @@ description: 网站的伸缩性
 
 HTTP重定向服务器是一台普通的应用服务器，其唯一功能就是根据用户的HTTP请求计算一台真实的Web服务器地址，并强该Web服务器地址写入HTTP重定向响应中（响应状态吗302）返回给用户浏览器。如图所示：
 
-![HTTP重定向负载均衡原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-1.png)
+![HTTP重定向负载均衡原理](/image/architecture-loadbalance-1.png)
 
 HTTP重定向服务器是根据一定的负载均衡算法找到真实的服务器。实际上这种方案很少使用，两次请求才能完成一次访问，性能太差。
 
@@ -71,7 +71,7 @@ HTTP重定向服务器是根据一定的负载均衡算法找到真实的服务�
 
 就是**在DNS服务器中配置多条A记录**，将一个域名映射到多个IP地址，每个IP地址就是一个应用服务器,这种方式将负载均衡的工作交给了DNS。优点是，DNS会将域名解析成距离用户最近的服务器地址，加快访问；缺点是：某台服务器下线，DNS没那么快生效，会导致访问失败，而且负载均衡的控制器在域名服务商哪里，自己无法做更多改善。如图所示：
 
-![DNS域名解析负载均衡原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-2.png)
+![DNS域名解析负载均衡原理](/image/architecture-loadbalance-2.png)
 
 这种方式通常会用于作为**一级负载均衡手段**，即DNS解析出来的IP地址对应的服务器是一组负载均衡服务器，不是实际提供应用服务的服务器。
 
@@ -79,7 +79,7 @@ HTTP重定向服务器是根据一定的负载均衡算法找到真实的服务�
 
 反向代理不仅可以缓存一下静态资源，还可以实现负载均衡，其工作原理如下图所示：
 
-![反向代理负载均衡原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-3.png)
+![反向代理负载均衡原理](/image/architecture-loadbalance-3.png)
 
 在这种方式中，Web服务器不直接对外提供访问，因此Web服务器不需要使用外部IP地址，而**反响代理服务器则需要配置双网卡和内部外部两套IP地址**。
 
@@ -89,7 +89,7 @@ HTTP重定向服务器是根据一定的负载均衡算法找到真实的服务�
 
 所谓IP负载均衡，即**在网络层通过修改目标地址进行负载均衡。**如图所示：
 
-![IP负载均衡原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-4.png)
+![IP负载均衡原理](/image/architecture-loadbalance-4.png)
 
 在这里需要处理关键的地方就是如何将集群内部服务器处理完后的数据返回给负载均衡服务器。解决办法：
 
@@ -103,7 +103,7 @@ IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有
 
 **数据链路层负载均衡是至在通信协议的数据链路层修改mac地址进行负载均衡**，如图所示：
 
-![数据链路层负载均衡原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-loadbalance-5.png)
+![数据链路层负载均衡原理](/image/architecture-loadbalance-5.png)
 
 这种数据传输方式又称作**三角传输模式**，可以避免负载均衡服务器网卡带宽成为瓶颈。这种负载均衡方式又称作**直接路由方式（DR）**。使用三角传输模式的链路层负载均衡是目前大型网站**使用最广的一种负载均衡手段**，在Linux平台上最好的链路层负载均衡开源产品是**LVS**。
 
@@ -127,7 +127,7 @@ IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有
 
 以Memcached为代表的分布式缓存，访问模型如图：
 
-![Memcached分布式缓存访问模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-lb-1.png)
+![Memcached分布式缓存访问模型](/image/architecture-cache-lb-1.png)
 
 该模型的简单路由算法可以**使用KEY的Hash值求余得到一台服务器，然后进行读写操作**。如果不考虑缓存服务器集群伸缩性，余数Hash几乎可以满足绝大多数的缓存路由需求。
 
@@ -135,7 +135,7 @@ IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有
 
 **分布式缓存的一致性Hash算法**：通过一个叫做一致性Hash环的数据结构实现KEY到缓存服务器的Hash映射。如图所示：
 
-![一致性Hash算法原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cache-hash-1.png)
+![一致性Hash算法原理](/image/architecture-cache-hash-1.png)
 
 具体算法过程：先构造一个长度为0~2的32次方的整数环（这个环被称作一致性Hash环），根据节点名称的Hash值将缓存服务器节点放置在这个Hash环上。然后根据需要缓存的数据的KEY值计算得到其Hash值，然后在Hash环上顺时针查找距离这个KEY的Hash值最近的缓存服务器节点，完成KEY到服务器的Hash映射查找。
 
@@ -158,7 +158,7 @@ IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有
 
 使用数据复制功能可以对数据库进行简单伸缩，如图所示：
 
-![MySQL集群伸缩性方案](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-db-cluster-1.png)
+![MySQL集群伸缩性方案](/image/architecture-db-cluster-1.png)
 
 这种架构中，主从复制，读写分离，另外前面提到的按业务分割模式也可以用在数据库，不同业务数据库表部署在不同的数据库集群上，俗称**分库**。分库方式的制约条件是跨库的表不能进行Join操作。
 
@@ -168,11 +168,11 @@ IP负载均衡在内核进程完成数据分发，较反向代理负载均衡有
 
 以Cobar为例，部署模型如图：
 
-![Cobar部署模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-1.png)
+![Cobar部署模型](/image/architecture-cobar-1.png)
 
 Cobar是一个分布式关系**数据库访问代理**，介于应用服务器和数据库服务器之间。应用程序通过JDBC驱动访问Cobar集群，Cobar服务器根据SQL和分库规则分解SQL，分发到MySql集群不同的数据库实例上执行。
 
-![Cobar系统组件模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-2.png)
+![Cobar系统组件模型](/image/architecture-cobar-2.png)
 
 **那么Cobar如何做集群的伸缩？**
 
@@ -183,7 +183,7 @@ Cobar是一个分布式关系**数据库访问代理**，介于应用服务器�
 
 Cobar服务器可以看作是无状态的应用服务器，因此其集群伸缩性可以简单使用负载均衡的手段实现。而MySQL中存储着数据，想要保证集群扩容后数据一致负载均衡，必须要做数据迁移，将集群中原来机器中的数据迁移到新添加的机器中。如图所示：
 
-![Cobar集群伸缩性原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cobar-3.png)
+![Cobar集群伸缩性原理](/image/architecture-cobar-3.png)
 
 关于数据如何迁移问题，此处也不展开，自行搜索了解。
 

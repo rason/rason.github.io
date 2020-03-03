@@ -29,7 +29,7 @@ SelectionKey key = socketChannel.register(nioSelector, SelectionKey.OP_CONNECT);
 
 简单来说，nioSelector 就是用于监视我们所注册的所有 Channel，当 Channel 上发生注册时感兴趣的事情时，nioSelector 通知应用程序处理请求。一个 nioSelector 实例可以监视多个 Socket Channel，从而达到监视更多连接的作用。如下图所示：
 
-![NIO Selector](https://raw.githubusercontent.com/rason/rason.github.io/master/image/nioSelector.png)
+![NIO Selector](/image/nioSelector.png)
 
 将 Channel 注册到 nioSelector ，会为每个 Channel 返回 `SelectionKey`。SelectionKey 是一个标识 Channel 的对象，它包含有关 Channel 状态的信息（例如准备接受请求），我们可以通过 SelectionKey 随时修改在该 Channel 上感兴趣的事件。
 

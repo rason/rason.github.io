@@ -55,7 +55,7 @@ public void preInstantiateSingletons() throws BeansException {
 
 实际上获取Bean的实例是通过AbstractBeanFactory的`getBean()`方法，该方法有点长，这里就不贴代码了。请看下面的总体流程图：
 
-![实例化单例过程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springpreInstantiateSingletons.jpeg)
+![实例化单例过程](/image/springpreInstantiateSingletons.jpeg)
 
 最终，我们可以看出，Bean的创建是在自动装配工厂`AbstractAutowireCapableBeanFactory`中的`createBean()`方法完成。
 

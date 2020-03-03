@@ -15,7 +15,7 @@ description: IP协议
 
 用一个小案例来总结一下数据链路层和IP协议这两章书，由于自己也是似懂非懂，如有不对请各位看官轻拍。如下图所示：
 
-![数据包发送](https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-transfer.png)
+![数据包发送](/image/data-transfer.png)
 
 将IP数据包比如成一个小快递，由深圳某小渔村发送到帝都市某小渔村。我们梳理一下这个过程：
 

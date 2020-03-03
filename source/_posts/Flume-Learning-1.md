@@ -18,7 +18,7 @@ Apache Flume是一种分布式，可靠和可用的系统，用于高效收集�
 
 **Flume事件**被定义为具有字节有效载荷和可选的一组字符串属性的数据流的单位。 Flume Agent是一个（JVM）进程，它承载事件从外部源传递到下一个目标（跳）的组件。
 
-![Flume](https://raw.githubusercontent.com/rason/rason.github.io/master/image/flume1.png)
+![Flume](/image/flume1.png)
 
 
 Flume 消费由外部Source（如Web服务器）传递给它的事件。外部源将Flume 的事件以目标Flume Source识别的格式发送到Flume。

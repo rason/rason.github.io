@@ -159,7 +159,7 @@ springmvc就是通过读取这个配置文件来获取各个组件的实现方�
 
 在了解DispatcherServlet初始化过程之前，我们首先得了解一下它的继承结构。
 
-![DispatcherServlet继承结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcsnapshot2.png)
+![DispatcherServlet继承结构](/image/springmvcsnapshot2.png)
 
 在这棵继承树中，我们可以看到`DispatcherServlet`继承成与`FrameworkServlet`，而`FrameworkServlet`继承于`HttpServletBean`，我们分别来了解一下这两个类。
 
@@ -243,7 +243,7 @@ protected final void initServletBean() throws ServletException {
 
 由此，我们可以总结得出**SpringMVC的运行体系是由DispatcherServlet、组件和容器这三者共同构成的**。在这个运行体系中，**DispatcherServlet是逻辑处理的调度中心，组件则是被调度的操作对象。而容器在这里所起到的作用，是协助DispatcherServlet更好地对组件进行管理**。引用spring官方的示意图简单描述三者关系：
 
-![SpringMVC运行体系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcstruct.png)
+![SpringMVC运行体系](/image/springmvcstruct.png)
 
 三者之间的两两关系可以归纳为：
 
@@ -253,7 +253,7 @@ protected final void initServletBean() throws ServletException {
 
 明确了DispatcherServlet的继承体系和DispatcherServlet，容器，组件三者之间关系之后，用一张图来看看DispatcherServlet的初始化过程：
 
-![DispatcherServlet初始化过程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcinit.png)
+![DispatcherServlet初始化过程](/image/springmvcinit.png)
 
 细心的读者应该注意到了上图中左侧还有一个WebApplicationContext的初始化，应该会疑惑这个WebApplicationContext是干什么用的，如果你做过SpringMVC的开发应该曾经配置过这样一段代码：
 
@@ -270,10 +270,10 @@ protected final void initServletBean() throws ServletException {
 
 在上面的代码中，我们定义了一个Listener，它会在整个Web应用程序启动的时候运行一次，并初始化传统意义上的Spring的容器。这也是一般情况下，当并不使用SpringMVC作为我们的表示层解决方案，却希望在我们的Web应用程序中使用Spring相关功能时所采取的一种配置方式(比如配置使用第三方框架mybatis,shiro等)。 **ContextLoaderListener所初始化的容器，我们称之为Root WebApplicationContext；而DispatcherServlet所初始化的容器，是SpringMVC WebApplicationContext。**
 
-![Context](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvccontext.png)
+![Context](/image/springmvccontext.png)
 
 说到这里，SpringMVC的核心DispatcherServlet也差不多是了解了个大概了，再详细的就不再往下写了。简单地总结一下这篇文章，就是先介绍了DispatcherServlet的继承体系，然后从中道出了DispatcherServlet的初始化过程。而在初始化过程中最主要的就是在FrameworkServlet的初始化方法中初始化了WebApplicationContext，这个WebApplicationContext就是spring的容器，用于管理各个组件。最后缕清了一下WebApplicationContext，容器，组件这三者之间的关系。
 
 最后的最后，引用一个spring官方的图片来总结SpringMVC的架构来结束文章。
 
-![SpringMVC](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springmvcspringmvc.png)
+![SpringMVC](/image/springmvcspringmvc.png)

@@ -22,7 +22,7 @@ description: Algorithm 堆排序
 
 - 方法二：通过上面的方式当然可以实现堆有序，然而需要遍历整个数组效率就比较低了，如果通过sink()方式就更高效了，因为它无需遍历整个数组即可实现堆有序。举个例子：
 
-![使用下沉（sink）的方式无需遍历整个数组](https://raw.githubusercontent.com/rason/rason.github.io/master/image/HeapSort1)
+![使用下沉（sink）的方式无需遍历整个数组](/image/HeapSort1)
 
 如上图所示，我们依次对位置5，4，3，2，1的元素依次调用sink（）方法是不是就可以将数组堆有序了？
 

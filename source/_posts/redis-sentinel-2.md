@@ -20,7 +20,7 @@ Sentinel 配置文件中的 `down-after-milliseconds` 属性用于判断实例�
 
 比如，主服务器在 `down-after-milliseconds` 时间范围内没有返回有效响应，则数据结构会更新如下：
 
-![Sentinel network](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sri_s_down.png)
+![Sentinel network](/image/sri_s_down.png)
 
 **注意：**
 
@@ -58,7 +58,7 @@ Sentinel is-master-down-by-addr <ip> <port> <current_epoch> <runid>
 
 Sentinel 根据回复统计其他 Sentinel 判断主服务已下线的数量，当这一数量达到配置指定的判断客观下线所需的数量时，Sentinel 就会将主服务 sentinelRedisInstance 数据结构中的 flags 属性 SRI_O_DOWN 标识打开，表示主服务已经进入客观下线状态。
 
-![Sentinel network](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sri_o_down.png)
+![Sentinel network](/image/sri_o_down.png)
 
 
 **注意：** 不同的 Sentinel 配置判断客观下线的数量可能存在不同

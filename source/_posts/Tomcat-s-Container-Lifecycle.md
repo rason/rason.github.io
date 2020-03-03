@@ -29,7 +29,7 @@ description: Tomcat Container Lifecycle
 
 以上的内容一定很熟悉，因为[Tomcat架构](http://rason.me/2015/11/19/Tomcat-Architecture/)文章就介绍过，原来他们都实现了同一个接口，我们来看看Container接口里面都有些什么方法：
 
-![Container接口方法](https://raw.githubusercontent.com/rason/rason.github.io/master/image/container.png)
+![Container接口方法](/image/container.png)
 
 方法比较多，但从名字上我们大概就知道用途，不多做解析。我们可以看到有一个`addChild(Container child)`添加子容器的方法，从[Tomcat架构](http://rason.me/2015/11/19/Tomcat-Architecture/)文章中的构架图可以看出，Tomcat中的Container是一层接一层的。那么，Tomcat是怎么将这些容器组件有效地管理起来呢？
 
@@ -39,7 +39,7 @@ Container接口扩展于Lifecycle接口，因此可以知道Tomcat正是通过Li
 
 先看一下Lifecycle的结构和方法：
 
-![Lifecycle数据结构和方法](https://raw.githubusercontent.com/rason/rason.github.io/master/image/lifecycle.png)
+![Lifecycle数据结构和方法](/image/lifecycle.png)
 
 可以看出Lifecycle主要有**init，start，stop，destroy**四个过程。而对应的生命周期状态却有以下几种：
 
@@ -71,7 +71,7 @@ public enum LifecycleState {
 
 **Tomcat的启动是基于观察者模式设计的，所有的容器会继承Lifecycle接口，它管理着容器的整个生命周期，所有容器的修改和状态改变都会由它去通知已注册的观察者。**Tomcat的启动时序图如图：
 
-![Tomcat启动时序图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcat_start.png)
+![Tomcat启动时序图](/image/tomcat_start.png)
 
 有了Container和Lifecycle的基础之后，理解上图应该不是很困难，容器之间是层层关联起来的。
 

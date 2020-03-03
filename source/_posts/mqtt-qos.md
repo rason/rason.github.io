@@ -74,7 +74,7 @@ MQTT 发布消息 QoS 保证不是端到端的，是客户端与服务器之间�
 
 QoS 2 应该是最难理解的了，涉及了四次交互，如下图所示
 
-![QoS 2](https://raw.githubusercontent.com/rason/rason.github.io/master/image/qos2.png)
+![QoS 2](/image/qos2.png)
 
 简单来说，QoS 2 有点像分布式事务中 **两阶段提交** 的解决方案，第一阶段的请求响应只是将消息保存起来的，但还不能作为正式的消息去处理，相当于一个 **半提交** 的状态，第二阶段就是确认消息提交，可以进行处理了。
 

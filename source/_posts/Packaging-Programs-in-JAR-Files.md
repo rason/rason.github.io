@@ -38,13 +38,13 @@ description: 将程序打包到JAR文件中
 
 - 使用`jar cf`命令打包，如下图：
 
-![创建一个JAR文件](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf1.png)
+![创建一个JAR文件](/image/cf1.png)
 
 上面的`.`表示将当前文件夹下的内容作为input-file(s)，也可以使用通配符`*`达到同样的效果。
 
 - 另外，还可以使用选项`v`在打包过程中输入一些打包信息，如下图所示：
 
-![使用v输出打包信息](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf2.png)
+![使用v输出打包信息](/image/cf2.png)
 
 - 使用选项`m`指定入口类
 
@@ -54,7 +54,7 @@ description: 将程序打包到JAR文件中
 
 然后再进行打包工作，如下图所示：
 
-![指定入口类进行打包](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf3.png)
+![指定入口类进行打包](/image/cf3.png)
 
 打包完成之后，使用`java -jar`命令执行了一下这个jar文件，并将`rason`字符串作为参数传递给入口程序的main函数，输出结果正确。
 
@@ -62,7 +62,7 @@ description: 将程序打包到JAR文件中
 
 使用`jar tf jar-file`查看内容，如下图所示：
 
-![查看JAR文件内容](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tf.png)
+![查看JAR文件内容](/image/tf.png)
 
 ## 将classes添加到JAR文件的Classpath中
 
@@ -93,7 +93,7 @@ public class Test2 {
 
 **第二步：**对Test2.java类进行编译打包，如图所示：
 
-![Test2编译打包](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf-classpath1.png)
+![Test2编译打包](/image/cf-classpath1.png)
 
 **第三步：**工程1中的Test.java引用工程2中的Test2.java类
 
@@ -115,7 +115,7 @@ public class Test {
 
 **第四步：**不设置`Manifest.txt`中的`Class-Path`对Test.java进行编译、打包、执行，如下图所示：
 
-![不设置Manifest.txt中Class-Path的结果](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf-classpath2.png)
+![不设置Manifest.txt中Class-Path的结果](/image/cf-classpath2.png)
 
 发现报错，没有找到Test2.class的定义，证明不设置Class-Path是有问题的。
 
@@ -128,7 +128,7 @@ Main-Class: com.rason.algs4.binarysearch.Test
 Class-Path: Test2.jar
 ```
 
-![设置Manifest.txt中Class-Path的结果](https://raw.githubusercontent.com/rason/rason.github.io/master/image/cf-classpath3.png)
+![设置Manifest.txt中Class-Path的结果](/image/cf-classpath3.png)
 
 如下图所示，当我们设置了Class-Path后打包执行还是报错，是因为Test2.jar没有跟rason.jar在同一个目录下。使用`cp`命令将其移动到同一目录下，执行成功。
 

@@ -32,7 +32,7 @@ description: 二叉树中序遍历
 
 **注意：**这里要理解的是树，而不是孩子。举个例子：
 
-![二叉树](https://raw.githubusercontent.com/rason/rason.github.io/master/image/binaryTree)
+![二叉树](/image/binaryTree)
 
 <!-- more -->
 
@@ -79,7 +79,7 @@ public class Solution {
 
 后来，我干脆放弃上面那张图了，我为什么要按照上面那张那么复杂的图来想，我不会按照只有三个节点的二叉树的图来实现吗？这不就简单多了吗？
 
-![简单的二叉树](https://raw.githubusercontent.com/rason/rason.github.io/master/image/binaryTree2)
+![简单的二叉树](/image/binaryTree2)
 
 嘿嘿，我真的是太机智了，遍历上面只有三个节点的二叉树难道我不会？然后就吭哧吭哧的开始编码了。
 

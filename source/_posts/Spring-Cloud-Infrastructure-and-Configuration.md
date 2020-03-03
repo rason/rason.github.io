@@ -8,7 +8,7 @@ description: SpringCloud ConfigServer
 
 上一篇文章主要学习了使用`Eureka`作为服务的注册和发现中心，各个微服务注册到`Eureka`中可以互相发现并进行调用。今天将会继续学习另一个基础组件——配置中心。如下图所示：
 
-![模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Sample-ping-pong.png)
+![模型](/image/Sample-ping-pong.png)
 
 这个架构模型包含两个微服务：
 
@@ -150,7 +150,7 @@ send:
 
 启动之后我们在浏览器中访问[http://localhost:8761](http://localhost:8761)。在Eureka服务中我们可以看到配置服务`SAMPLE-CONFIG`已经注册到Eureka中。
 
-![Eureka界面](https://raw.githubusercontent.com/rason/rason.github.io/master/image/configserver.png)
+![Eureka界面](/image/configserver.png)
 
 配置服务会通过`/{application}/{profile}[/{label}`这样的端点模式为调用程序提供属性文件。
 

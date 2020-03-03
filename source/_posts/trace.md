@@ -43,7 +43,7 @@ sudo su es
 2. 启动 `STORAGE_TYPE=elasticsearch ES_HOSTS=http://127.0.0.1:9200 KAFKA_BOOTSTRAP_SERVERS=127.0.0.1:9092 java -jar zipkin.jar &`
 3. 检查 在浏览器中打开 `http://127.0.0.1:9411`
 
-![zipkin](https://raw.githubusercontent.com/rason/rason.github.io/master/image/zipkin.png)
+![zipkin](/image/zipkin.png)
 
 #### spring boot 微服务配置
 
@@ -103,7 +103,7 @@ spring:
 
 2. 根据 traceId 在 zipkin 中搜索
 
-![zipkin-search](https://raw.githubusercontent.com/rason/rason.github.io/master/image/zipkin-search.png)
+![zipkin-search](/image/zipkin-search.png)
 
 3. 检查内容是不是真的保存在 elasticsearch 中
 

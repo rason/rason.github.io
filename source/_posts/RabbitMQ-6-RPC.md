@@ -74,7 +74,7 @@ AMQP协议中定义了消息的一系列属性。除了下面的属性之外，�
 
 ## 概括
 
-![RPC](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-six.png)
+![RPC](/image/python-six.png)
 
 我们的RPC工作流程：
 

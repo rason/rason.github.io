@@ -17,7 +17,7 @@ description: 网站的高可用
 
 典型的网站设计通常基于分层模式：应用层、服务层、数据层。比如：
 
-![分层网站架构模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-three-level.png)
+![分层网站架构模型](/image/architecture-three-level.png)
 
 分层架构中不同层次的服务器具有不同的可用性特点，因此我们需要采用不同的方式达到各层高可用的目的，最终达成一个高可用架构。
 
@@ -76,7 +76,7 @@ description: 网站的高可用
 
 一个提供数据服务的存储系统无法同时满足**数据一致性（Consistency）、数据可用性（Availablity）、分区耐受性（Patition Tolerance,系统具有跨网络分区的伸缩性）**这三个条件。
 
-![CAP原理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/architecture-cap.png)
+![CAP原理](/image/architecture-cap.png)
 
 大型网站通过会选择强化分布式存储系统的可用性（A）和伸缩性（P），而在某种成都上放弃一致性（C）。
 

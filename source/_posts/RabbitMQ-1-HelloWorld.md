@@ -16,15 +16,15 @@ RabbitMQ和一般消息传递，会使用一些术语：
 
 - **生产**：发送消息的程序称为生产者。我们通常会画成这样：
 
-![生产者](https://raw.githubusercontent.com/rason/rason.github.io/master/image/producer.png)
+![生产者](/image/producer.png)
 
 - **队列**:相当于邮箱的名字。它存在于RabbitMQ中。虽然消息流经RabbitMQ和你的应用，但它们只能被保存在队列中。队列没有界限，你想要多少它就能存储多少消息，本质上是一个无限缓冲区。多个生产者可以发送消息到一个队列，多个消费者和从一个队列获取数据。一个队列我们可以画成这样：
 
-![队列](https://raw.githubusercontent.com/rason/rason.github.io/master/image/queue.png)
+![队列](/image/queue.png)
 
 - **消费**：消费跟接收具有类似的含义。一个消费者就是一个等待接受消息的程序。我们通常会画成这样：
 
-![消费者](https://raw.githubusercontent.com/rason/rason.github.io/master/image/consumer.png)
+![消费者](/image/consumer.png)
 
 <!-- more -->
 
@@ -34,13 +34,13 @@ RabbitMQ和一般消息传递，会使用一些术语：
 
 如下图所示，“P”代表生产者，“C”代表消费者。中间的盒子代表一个队列——RabbitMQ代表消费者保存消息的缓存区。
 
-![消息转发](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-one.png)
+![消息转发](/image/python-one.png)
 
 > 使用RabbitMQ我们需要导入其Java客户端库，自行搜索依赖版本添加到pom.xml文件中即可。
 
 ### 发送消息
 
-![发送消息](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sending.png)
+![发送消息](/image/sending.png)
 
 我们将发送者命名为`Send`，接收者命名为`Recv`。发送者将会连接到RabbitMQ，发送一条消息，然后退出。
 
@@ -92,7 +92,7 @@ public class Send {
 
 接收者的消息是由RabbitMQ推送过来的，所以不像发送者那样发布一条单一的消息，我们会让它一直运行着监听消息然后打印出来。
 
-![接收消息](https://raw.githubusercontent.com/rason/rason.github.io/master/image/receiving.png)
+![接收消息](/image/receiving.png)
 
 ```
 package com.rason.rabbitmq.helloworld.hello;

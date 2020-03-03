@@ -21,7 +21,7 @@ description: 地址空间
 
 如果没有存储抽象，那么呈现给我们程序员的存储器模型就是简单的物理内存：从0到某个上限地址集合，每一个地址对应一个可容纳一定数目二进制位的存储单元，通常是8个。如下图所示：
 
-![无存储抽象的简单物理内存模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract)
+![无存储抽象的简单物理内存模型](/image/no-abstract)
 
 在这种情况下，每个程序直接访问物理内存。比如到一个程序执行如下指令：
 
@@ -35,7 +35,7 @@ MOV REGISTER1,1000
 
 <!-- more -->
 
-![在只有操作系统和一个用户进程的情况下，组织内存的三种简单方法（也存在其他方案）](https://raw.githubusercontent.com/rason/rason.github.io/master/image/no-abstract-organization)
+![在只有操作系统和一个用户进程的情况下，组织内存的三种简单方法（也存在其他方案）](/image/no-abstract-organization)
 
 - 第一种方案一起被用于在大型机和小型个人计算机上，现在很少使用了。
 - 第二种方案被用于一些掌上电脑和嵌入式系统中。
@@ -52,7 +52,7 @@ MOV REGISTER1,1000
 
 第一种方式就是交换的概念，将在后面讨论。第二种方式通过划分内存块，每个内存块都分配一个保护键，如果运行中的进行访问保护键与其程序状态字（PSW）码不同的内存，硬件会捕获到这一事件，这样可以防止用户进程之间、用户进程和操作系统之间的互相干扰。然而，第二种解决方法还是有一个严重的缺陷，如下图所示：
 
-![重定位问题说明](https://raw.githubusercontent.com/rason/rason.github.io/master/image/redirect-problem)
+![重定位问题说明](/image/redirect-problem)
 
 上图中两个程序大小都为16KB，当我们将两个程序连续地装载到内存中，先运行第一个程序JMP24指令执行ADD操作，这时没有问题。然后CPU轮换到第二个程序，执行JMP28，然而地址28中装的是ADD指令，不是CMP指令。这样就导致了内存地址访问不正确，这个程序很可能在一秒内就崩溃了。
 
@@ -91,7 +91,7 @@ MOV REGISTER1,28
 
 使用交换技术，内存变化如下图所示：
 
-![内存分配情况随着进程进出而变化，空白区域表示未使用的内存](https://raw.githubusercontent.com/rason/rason.github.io/master/image/swapping)
+![内存分配情况随着进程进出而变化，空白区域表示未使用的内存](/image/swapping)
 
 上图中，进程A、B、C依次加载入内存；然后进程D想进入内存，发现内存不够用了，计算机将进程A先移出内存，然后将进程D加载入内存；最后，进程A又要进入内存，发现又不够用了，所以计算机把进程B移出，再将A重新加载入内存。
 
@@ -116,7 +116,7 @@ MOV REGISTER1,28
 
 使用位图方法时，内存可能被划分成小到几个字或大到几千字节的分配单元。每个分配单元对应于位图中的一位，0表示空闲，1表示占用（或者相反）。如下图所示：
 
-![两种方式跟踪内存使用情况](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tracking-memery)
+![两种方式跟踪内存使用情况](/image/tracking-memery)
 
 使用位图方法时，我们需要思考两个问题：
 

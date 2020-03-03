@@ -69,7 +69,7 @@ ScheduledExecutorService接口的返回实例就不一一说了，大家看下JD
 
 说到这里，大家肯定已经被线程池所用到的一些类会接口搞乱了，借用一张类图让大家理清一下结构：
 
-![线程池类图结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/threadpool.png)
+![线程池类图结构](/image/threadpool.png)
 
 类图还比较好理解，查看JDK源码直接从Executors入口，顺着查看很好理解，就不详说了。
 

@@ -39,7 +39,7 @@ description: 路由协议
 
 制定自己的路由策略，并以此为准在一个或多个网络群体中采用的小型单位叫做**自治系统（AS：Autonomous System）**或**路由选择域(Routing Domain)**。
 
-![EGP与IGP](https://raw.githubusercontent.com/rason/rason.github.io/master/image/EGP&IGP.png)
+![EGP与IGP](/image/EGP&IGP.png)
 
 上图中，区域网络与ISP（互联网服务提供商）就是自治系统的典型例子。
 
@@ -133,7 +133,7 @@ OSPF协议是“开放式最短路径优先(Open Shortest Path First)”的缩�
 
 OSPF提出了“区域（area）”的概念，每个区域中所有路由器维护着一个相同的链路状态数据库（LSDB）。区域又分为骨干区域（骨干区域的编号必须为0）和非骨干区域（非0编号区域），如果一个运行OSPF的网络只存在单一区域，则该区域可以是骨干区域或者非骨干区域。如果该网络存在多个区域，那么必须存在骨干区域，并且所有非骨干区域必须和骨干区域直接相连。如下图所示：
 
-![AS与区域](https://raw.githubusercontent.com/rason/rason.github.io/master/image/AS&AREA.png)
+![AS与区域](/image/AS&AREA.png)
 
 OSPF利用所维护的链路状态数据库，通过最短路径优先算法（SPF算法）计算得到路由表。OSPF的收敛速度较快。由于其特有的开放性以及良好的扩展性，目前OSPF协议在各种网络中广泛部署。
 
@@ -141,7 +141,7 @@ OSPF利用所维护的链路状态数据库，通过最短路径优先算法（S
 
 BGP（Border Gateway Protocol），边界网关协议是连接不同组织机构（或者说连接不同自治系统）的一种协议。因此，它属于外部网关协议（EGP）。只有BGP、RIP和OSPF共同进行路由控制，才能够进行整个互联网的路由控制。如下图所示：
 
-![BGP使用AS号管理网络信息](https://raw.githubusercontent.com/rason/rason.github.io/master/image/BGP.png)
+![BGP使用AS号管理网络信息](/image/BGP.png)
 
 ISP、区域网络等会将每个网络域编配成一个个自治系统进行管理。它们为每个自治系统分配一个16比特的AS编号。BGP就是根据这个编号进行相应的路由控制。
 

@@ -14,13 +14,13 @@ description: Microservices with Spring
 
 比如一个在线购物系统，使用微服务可以将其分成用户账户(user-accounts)，商品管理(product-catalog)，订单处理(order-processing)和购物车(shopping-carts)。如下图所示：
 
-![在线购物微服务系统](https://raw.githubusercontent.com/rason/rason.github.io/master/image/shopping-system.jpg)
+![在线购物微服务系统](/image/shopping-system.jpg)
 
 为了简单起见，本文只实现这个庞大系统的一部分——用户账户。
 
 Web-Application 使用RESTful API 请求Account-Service 微服务。我们还需要添加*发现服务*——使得其他进程可以找到对方。如下图所示：
 
-![用户账户微服务](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mini-system.jpg)
+![用户账户微服务](/image/mini-system.jpg)
 
 ## 服务注册
 
@@ -117,7 +117,7 @@ Eureka的默认端口是8761，这里我们将其修改为1111。通过注册代
 
 使用Spring配置应用程序时，我们强调松耦合和紧密衔接。现在我们将在**进程**互相协作上运用这一概念，而不是在相互作用的**组件**(Spring Beans)上。
 
-![松耦合和紧密衔接](https://raw.githubusercontent.com/rason/rason.github.io/master/image/beans-vs-processes.jpg)
+![松耦合和紧密衔接](/image/beans-vs-processes.jpg)
 
 在本例中，我们有一个简单的账户管理微服务，使用Spring Data 实现一个JPA `AccountRepository` 和使用Spring REST 提供RESTful 接口来获取账户信息。在大多数情况下这就是一个简单的Spring Boot应用。
 

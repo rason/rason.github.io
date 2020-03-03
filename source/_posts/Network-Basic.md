@@ -13,7 +13,7 @@ description: 网络基础知识
 
 OSI模型将通信协议进行了分层，目的是为了让比较复杂的网络协议更加简单化。每个分层都接收由它下一层提供的特定服务，并且为自己的上一层提供特定的服务。上下层之间进行交互时所遵循的约定叫做“接口”，同一层之间的交互所遵循的约定叫做“协议”。如下图所示：
 
-![分层模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-level.png)
+![分层模型](/image/networkprotocol-level.png)
 
 <!-- more -->
 
@@ -23,7 +23,7 @@ OSI模型将通信协议进行了分层，目的是为了让比较复杂的网�
 
 ## OSI模型
 
-![OSI模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-level-func.png)
+![OSI模型](/image/networkprotocol-level-func.png)
 
 - **应用层**：为应用程序提供服务并规定应用程序中通信相关的细节。
 - **表示层**：将设备固有的数据格式转换为网络标准传输格式，因为不同设备对同一比特流解析的结果可能会不同。
@@ -39,7 +39,7 @@ OSI模型将通信协议进行了分层，目的是为了让比较复杂的网�
 - 每个分层上，在处理上一层传过来的数据时可以附上当前分层的协议所必须的”首部“信息。
 - 接收端对收到的数据进行数据”首部“与”内容“的分离，再转发给上一层，并最终将发送端的数据恢复为原状。
 
-![OSI模型通信](https://raw.githubusercontent.com/rason/rason.github.io/master/image/networkprotocol-connection.png)
+![OSI模型通信](/image/networkprotocol-connection.png)
 
 ## 传输方式的分类
 
@@ -51,7 +51,7 @@ OSI模型将通信协议进行了分层，目的是为了让比较复杂的网�
 
 ## 网络的构成要素
 
-![网络设备及其作用](https://raw.githubusercontent.com/rason/rason.github.io/master/image/networknetwork-device.png)
+![网络设备及其作用](/image/networknetwork-device.png)
 
 - **中继器**：工作在OSI模型第1层，对减弱的信息进行放大和发送的设备。
 - **网桥**：工作在OSI模型第2层，根据数据帧的内容转发数据给相邻的其他网络，根据MAC地址处理。

@@ -98,11 +98,11 @@ struct sentinelRedisInstance {
 
 假设我们 sentinel.conf 配置文件中配置的 master 名字为 mymaster。
 
-![Sentinel deployment](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-deploy.png)
+![Sentinel deployment](/image/sentinel-deploy.png)
 
 上面是部署结构图，三个 Sentinel 和一主两备的 Redis 实例，下面是数据结构。
 
-![Sentinel data struct](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-datastruct.png)
+![Sentinel data struct](/image/sentinel-datastruct.png)
 
 ### 获取主服务器信息
 
@@ -126,7 +126,7 @@ Slave 服务器的信息就是通过命令连接来发现的，Sentinel 默认�
 
 从主服务器信息中获取到所有从服务器的 ip 和 port 之后，Sentinel 也会创建到从所有从服务器的命令连接和订阅连接，也就是说 Sentinel 对所有监控的 Redis 服务器（不管主从）都会建立命令连接和订阅连接。
 
-![Sentinel network](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-link.png)
+![Sentinel network](/image/sentinel-link.png)
 
 创建命令连接之后，也是十秒一次的频率向从服务器发送 INFO 命令获取相关信息：
 
@@ -161,7 +161,7 @@ PUBLISH `__sentinel__:hello` "<s_ip>,<s_port>,<s_runid>,<s_epoch>,<m_name>,<m_ip
 
 通过 `__sentinel__:hello` 频道发现了其他的 Sentinel ，那么为了和其他 Sentinel 通信，需要建立与其他 Sentinel 的命令连接。最终监控同一个主服务的多个 Sentinel 将形成互相连接的网络：
 
-![Sentinel network](https://raw.githubusercontent.com/rason/rason.github.io/master/image/sentinel-network.png)
+![Sentinel network](/image/sentinel-network.png)
 
 通过命令连接相连的各个 Sentinel 可以通过向其他 Sentinel 发送命令请求来进行信息交换，下一篇文章要介绍的检测主观下线、客观下线就是通过信息交换来实现的。
 

@@ -79,7 +79,7 @@ public class TopM{
 
 使用链表的方式也类似，你会发现有序和无序这两种方式，在insert()和delMin()这两个方法的实现中总有一个方法会比较复杂。即**插入元素和删除最大元素这两个操作之一在最坏情况下需要线性时间来完成**，如下图所示：
 
-![优先队列初级实现在最坏情况下运行时间的增长数量级](https://raw.githubusercontent.com/rason/rason.github.io/master/image/priorityqueue1)
+![优先队列初级实现在最坏情况下运行时间的增长数量级](/image/priorityqueue1)
 
 那么，有没有什么方式能够保证两种操作都能更快地进行操作？答案就是：**堆**。
 
@@ -214,5 +214,5 @@ public class MaxPQ<Key extends Comparable<Key>> {
 
 本文讨论的就是从N个输入中找到最大的M个元素所需成本的问题，如下图所示：
 
-![从N个输入中找到最大的M个元素所需成本](https://raw.githubusercontent.com/rason/rason.github.io/master/image/priorityqueue2)
+![从N个输入中找到最大的M个元素所需成本](/image/priorityqueue2)
 

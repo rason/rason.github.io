@@ -217,7 +217,7 @@ $ scp -r etc/ root@10.16.2.28:/home/laixs/hadoop-2.8.0/
 
 当所有节点的服务都启动起来之后，可以通过管理界面`http://10.16.1.24:50070`查看DataNode状态:
 
-![DataNode](https://raw.githubusercontent.com/rason/rason.github.io/master/image/datanode.png)
+![DataNode](/image/datanode.png)
 
 ## 测试MapReduce
 
@@ -227,7 +227,7 @@ $ scp -r etc/ root@10.16.2.28:/home/laixs/hadoop-2.8.0/
 $ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /test/ /test/out
 ```
 
-![YARN](https://raw.githubusercontent.com/rason/rason.github.io/master/image/yarn.png)
+![YARN](/image/yarn.png)
 
 作业执行完之后，可以通过`$ bin/hdfs dfs -cat /test/out/*`命令查看输出结果。
 

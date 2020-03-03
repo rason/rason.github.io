@@ -29,7 +29,7 @@ description: RabbitMQ教程
 
 下面的例子可以很简单地解析这两种用法：
 
-![Topic](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-five.png)
+![Topic](/image/python-five.png)
 
 在这个例子中，我们准备发送描述动物的信息。这些信息将会通过一个带有三个单词（两个点）的路由键发送。第一个单词描述的是速度，第二个单词描述的是颜色，第三个单词描述的是种类： `<speed>.<colour>.<species>`。
 

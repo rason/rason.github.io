@@ -27,13 +27,13 @@ description: 进程和线程
 
 进程的三种状态之间有四种可能的转换关系，如下图：
 
-![进程三种状态的转换](https://raw.githubusercontent.com/rason/rason.github.io/master/image/process-status)
+![进程三种状态的转换](/image/process-status)
 
 转换1和2是由进程调度程序引起的，进程调度程序是操作系统的一部分，进程甚至感觉不到调度程序的存在。**调度程序**的主要工作就是决定应当运行哪个进程、何时运行及它应该运行多长时间。我们可以想象系统的内部模型如下图：
 
 <!-- more -->
 
-![以进程构造的操作系统最底层处理中断和调度，在该层之上是顺序进程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/process-dispatcher)
+![以进程构造的操作系统最底层处理中断和调度，在该层之上是顺序进程](/image/process-dispatcher)
 
 操作系统的最底层是调度程序，在它上面有许多进程。所有关于中断处理、启动进程、停止进程的具体细节都隐藏在调度程序中。操作系统的其他部分被简单地组织成进程的形式。不过，很少有真实的系统是以这样的理想方式构造。
 
@@ -43,7 +43,7 @@ description: 进程和线程
 
 下图中展示一个典型系统中的关键字段：
 
-![典型的进程表表项中的一些字段](https://raw.githubusercontent.com/rason/rason.github.io/master/image/process-message)
+![典型的进程表表项中的一些字段](/image/process-message)
 
 ## 线程
 
@@ -59,7 +59,7 @@ description: 进程和线程
 
 举一个多线程的例子：Web服务器。如下图所示：
 
-![一个多线程的Web服务器](https://raw.githubusercontent.com/rason/rason.github.io/master/image/muti-thread-ws)
+![一个多线程的Web服务器](/image/muti-thread-ws)
 
 上图中，一个称为**分派程序**的线程从网络中读入工作请求。在检查请求之后，分派线程挑选一个空转的(即被阻塞的)**工作线程**，提交该请求。接着分派线程唤醒睡眠的工作线程，将它从阻塞状态转为就绪状态。
 
@@ -77,13 +77,13 @@ description: 进程和线程
 
 多道程序设计中，通过多个进程之间来回切换制造并行运行的假象。多线程的工作方式也是类似的，CPU在多个线程之间切换，制造线程并行运行的假象。
 
-![三个进程，每个进程有一个线程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/muti-process)
+![三个进程，每个进程有一个线程](/image/muti-process)
 
-![一个进程带三个线程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/muti-thread)
+![一个进程带三个线程](/image/muti-thread)
 
 进程中不同线程不像不同进程之间那样存在很大的独立性。**所有的线程都有完全一样的地址空间，这意味这它们也共享同样的全局变量**。这就是我们平时多线程编程中需要注意的问题了。
 
-![第一列给出了在一个进程中所有线程共享的内容，第二列给出了每个线程自己的内容](https://raw.githubusercontent.com/rason/rason.github.io/master/image/process-thread-msg)
+![第一列给出了在一个进程中所有线程共享的内容，第二列给出了每个线程自己的内容](/image/process-thread-msg)
 
 和传统进程一样（即只有一个线程的进程），线程可以处理若干种状态的任何一个：运行、阻塞、就绪或终止。线程状态之间的转换和进程状态之间的转换是一样的。
 

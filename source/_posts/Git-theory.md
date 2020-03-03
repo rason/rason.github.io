@@ -113,7 +113,7 @@ $ git cat-file -p master^{tree}
 
 从概念上说，Git保存的数据如下图：
 
-![tree](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitsource911-1.png)
+![tree](/image/gitsource911-1.png)
 
 我们也可以自己创建tree，通常Git会根据暂存区域或者index来创建并写入一个tree。因此要创建一个 tree 对象的话首先要通过将一些文件暂存从而创建一个 index 。可以使用 plumbing 命令 update-index 为一个单独文件 ── test.txt 文件的第一个版本 ──　创建一个 index　。通过该命令人为的将 test.txt 文件的首个版本加入到了一个新的暂存区域中。由于该文件原先并不在暂存区域中 (甚至就连暂存区域也还没被创建出来呢) ，必须传入 --add 参数;由于要添加的文件并不在当前目录下而是在数据库中，必须传入 --cacheinfo 参数。同时指定了文件模式，SHA-1 值和文件名：
 
@@ -170,7 +170,7 @@ $ git cat-file -p 3c4e9cd789d88d8d89c1073707c3585e41b0e614
 
 可以将 Git 用来包含这些内容的数据想象成如下图所示的样子：
 
-![trees](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitsource911-2.png)
+![trees](/image/gitsource911-2.png)
 
 ## commit（提交）对象
 
@@ -256,6 +256,6 @@ $ find .git/objects -type f
 
 如果你按照以上描述进行了操作，可以得到如下图所示的对象图：
 
-![commit](https://raw.githubusercontent.com/rason/rason.github.io/master/image/gitsource911-3.png)
+![commit](/image/gitsource911-3.png)
 
 ** 以上为Git-book学习笔记，详情请参考[Git-book](http://git-scm.com/book/zh/v1/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-Git-%E5%AF%B9%E8%B1%A1)。**

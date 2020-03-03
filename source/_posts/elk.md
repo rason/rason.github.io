@@ -41,7 +41,7 @@ Logstash 作为中心的控制器和日志数据路由。
 
 它可以从不同的数据源（使用**input**）对数据进行收集，然后使用**filters**对数据进行格式化等处理，最后数据流向各种输出端点（使用**output**）。如下图所示：
 
-![Logstash](https://raw.githubusercontent.com/rason/rason.github.io/master/image/logstash.png)
+![Logstash](/image/logstash.png)
 
 因此，使用Logstash其实非常简单，就是通过一个配置文件（比如logstash.conf）来对数据管道中的三个部分（**input - filter - output**）进行配置即可。
 
@@ -214,7 +214,7 @@ elasticsearch.url: "http://elasticsearch-host:9200"
 
 然后通过`bin/kibana`命令即可启动Kibana。
 
-![Kibana](https://raw.githubusercontent.com/rason/rason.github.io/master/image/kibana.png)
+![Kibana](/image/kibana.png)
 
 ## 总结
 

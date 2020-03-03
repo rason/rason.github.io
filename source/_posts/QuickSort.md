@@ -35,7 +35,7 @@ public static void sort(Comparable[] a,int lo,int hi){
 
 重点就在于partition()方法如何实现了。一般策略是先随意地取a[lo]作为切分元素，即那个将会被排定的元素，然后我们从数组的左端开始扫描知道找到一个大于等于它的元素；再从数组的右端开始从左扫描直到找到一个小于等于它的元素。这两个元素显然是没有排定的，因此我们交换它们的位置。如此继续，我们就可以保证左指针i的左侧元素都不大于切分元素，右指针j的右侧元素都不小于切分元素。当两个指针相遇时，我们只需要将切分元素a[lo]和左子数组最右侧元素a[j]交换然后返回j即可。切分过程如下图所示：
 
-![快速排序切分过程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/quicksort1)
+![快速排序切分过程](/image/quicksort1)
 
 <!-- more -->
 
@@ -106,7 +106,7 @@ public static int partition(Comparable[] a,int lo,int hi){
 
 一个简单的想法是将数组切分为三部分，分别对应小于、等于和大于切分元素的数组。切分过程如下图所示：
 
-![三向切分排序切分过程](https://raw.githubusercontent.com/rason/rason.github.io/master/image/quicksort2)
+![三向切分排序切分过程](/image/quicksort2)
 
 **三向切分的代码实现**
 

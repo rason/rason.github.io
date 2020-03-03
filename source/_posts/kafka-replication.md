@@ -48,7 +48,7 @@ Leader 副本分配完之后，依次分配 Follower 副本。如果分区 0 的
 
 最终一个 Topic 三个分区，三个副本分配的结果如下图所示：
 
-![Kafka Replication](https://raw.githubusercontent.com/rason/rason.github.io/master/image/kafka-replica.png)
+![Kafka Replication](/image/kafka-replica.png)
 
 这也解析了上面说到的为什么 Kafka 不需要读写分离，因为负载已经均衡到每一个 broker 上了。
 

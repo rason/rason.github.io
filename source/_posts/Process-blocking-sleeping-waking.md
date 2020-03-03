@@ -93,7 +93,7 @@ wake_up_interruptible( &wq );
 - 数据在tail索引处插入
 - 数据在head索引处删除
 
-![环形缓存](https://raw.githubusercontent.com/rason/rason.github.io/master/image/ringbuffer.png)
+![环形缓存](/image/ringbuffer.png)
 
 - 总有一个数组位置没有被使用
 - 当head == tail表示没有数据

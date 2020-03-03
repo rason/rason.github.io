@@ -117,7 +117,7 @@ application = get_wsgi_application()
 
 当显示以下内容，恭喜你成功了。如果不是，呵呵哒，自行Google排查问题咯。
 
-![成功页面](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-first_django_app.png)
+![成功页面](/image/python-first_django_app.png)
 
 好了，Django项目搭建完成，现在可以开始搭建我们的App了。
 

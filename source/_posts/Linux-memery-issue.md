@@ -67,17 +67,17 @@ description: Linux内存问题
 
 ## 逻辑地址->线性地址
 
-![逻辑地址->线性地址](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Logical-to-Linear.png)
+![逻辑地址->线性地址](/image/Logical-to-Linear.png)
 
 ## 线性地址->物理地址
 
-![线性地址->物理地址](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Linear-to-Physical.png)
+![线性地址->物理地址](/image/Linear-to-Physical.png)
 
 - CR3寄存器保存的是当前任务的页目录表的物理地址
 
 ## 页表项格式
 
-![页表项](https://raw.githubusercontent.com/rason/rason.github.io/master/image/PageTable-Entry.png)
+![页表项](/image/PageTable-Entry.png)
 
 ## 分配任务内存
 
@@ -207,7 +207,7 @@ struct vm_area_struct {
 
 ## 结构关系
 
-![任务内存结构关系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/mm_struct.png)
+![任务内存结构关系](/image/mm_struct.png)
 
 ## 编写一个内核模块vma.c查看虚拟内存区链表属性
 

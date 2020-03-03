@@ -8,7 +8,7 @@ description: SpringCloud Microservice
 
 上一篇博客已经将`Eureka`和`ConfigServe`搭建起来了，今天将开发两个简单的微服务，一个`pong`服务和一个调用`pong`服务的`ping`服务。
 
-![模型](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Sample-ping-pong.png)
+![模型](/image/Sample-ping-pong.png)
 
 ## Sample-Pong 微服务
 
@@ -260,7 +260,7 @@ public class PingApplication {
 
 都跑起来之后在Eureka界面可以看到已经注册的服务，如下图：
 
-![完整服务](https://raw.githubusercontent.com/rason/rason.github.io/master/image/eureka.png)
+![完整服务](/image/eureka.png)
 
 然后在浏览器中访问`http://localhost:8080/send`，即通过ping服务发送消息到pong服务，返回结果如下：
 

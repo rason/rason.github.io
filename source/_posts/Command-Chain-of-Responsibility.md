@@ -19,19 +19,19 @@ description: Command and Chain of Responsibility
 - **Receiver: 接收者**
 - **Client:客户类**
 
-![Command模式结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatternCommand.jpg)
+![Command模式结构](/image/designpatternCommand.jpg)
 
 <!-- more -->
 
 它们之间的调用关系大致如下图所示：
 
-![Command模式时序图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatternCommandSeq.jpg)
+![Command模式时序图](/image/designpatternCommandSeq.jpg)
 
 在Tomcat中，Connector和Container之间的调用就是典型的命令模式。
 
 在[Tomcat如何找到正确的Servlet](http://rason.me/2015/12/01/How-do-Tomcat-find-the-specific-servlet/)这篇文章中曾经引用了一张请求处理时序图，现简要截图如下：
 
-![Tomcat请求时序简图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/designpatterntomcatseq.png)
+![Tomcat请求时序简图](/image/designpatterntomcatseq.png)
 
 在这张图中，可以很显然地看出Connector与容器之间的信息交互通过了Http11Processor,这个Http11Processor就是具体的命令类。完整的关系如下：
 
@@ -56,7 +56,7 @@ description: Command and Chain of Responsibility
 
 Tomcat中的容器就是责任链模式，容器这方面的知识在Tomcat研究的时候已经比较熟悉了，在Tomcat请求时序图就完整地展示了责任链模式。
 
-![Tomcat请求处理时序图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcatrequest-process.png)
+![Tomcat请求处理时序图](/image/tomcatrequest-process.png)
 
 与标准的责任链模式不同的是，这里引入了Pipeline和Valve接口，扩展了这个链的功能，使得在链往下传的时候能够接收外界的干预。
 

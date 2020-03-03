@@ -8,7 +8,7 @@ description: RabbitMQ教程
 
 ## Work Queues
 
-![工作队列](https://raw.githubusercontent.com/rason/rason.github.io/master/image/python-two.png)
+![工作队列](/image/python-two.png)
 
 上一篇教程中我们编写程序从一个命名的queue中发送和接收消息。在这篇教程中，我们将创建一个工作队列，用于在多个工作者之间分配耗时的任务。
 
@@ -260,7 +260,7 @@ channel.basicPublish("", "task_queue",
 
 这是因为RabbitMQ只是在消息进入队列时分派消息，它不查看消费者的未确认消息的数量，它只是盲目地向第n个消费者分派第n个消息。
 
-![prefetch-count](https://raw.githubusercontent.com/rason/rason.github.io/master/image/prefetch-count.png)
+![prefetch-count](/image/prefetch-count.png)
 
 为了解决这个问题我们使用`basicQos`方法将`prefetchCount`的值设为1。这告诉RabbitMQ不要一次给一个工作者进程一个以上的消息。或者，换句话说，不要向工作者进程分派新消息，直到它处理并确认了前一个消息。取而代之，它会将其分派给下一个仍然不忙的工作者。
 

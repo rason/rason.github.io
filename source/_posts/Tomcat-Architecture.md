@@ -61,7 +61,7 @@ Connector是用于处理与客户端的通讯。在tomcat有多个可用的Conne
 
 根据以上分析，我们可以用一个图来表示上述关系：
 
-![Tomcat架构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tomcat.png)
+![Tomcat架构](/image/tomcat.png)
 
 ## Tomcat启动流程
 

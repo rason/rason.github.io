@@ -23,7 +23,7 @@ InputStreamReader和OutputStreamWriter类分别继承了Reader和Writer类，但
 
 InputStreamReader的类结构图如下：
 
-![InputStreamReader类结构图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-inputstreamreader.png)
+![InputStreamReader类结构图](/image/web-inputstreamreader.png)
 
 <!-- more -->
 
@@ -39,7 +39,7 @@ InputStreamReader继承了Reader类，并且持有InputStream的引用，这里�
 
 典型的装饰器模式类结构如下：
 
-![装饰器模式类结构图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-decorator.png)
+![装饰器模式类结构图](/image/web-decorator.png)
 
 图中角色描述如下：
 
@@ -52,7 +52,7 @@ InputStreamReader继承了Reader类，并且持有InputStream的引用，这里�
 
 FilterInputStream类结构图：
 
-![FilterInputStream类结构图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/FilterInputStream.png)
+![FilterInputStream类结构图](/image/FilterInputStream.png)
 
 InputStream类就是以抽象组件存在的，而FileInputStream就是具体组件，它实现了抽象组件的所有接口。FilterInputStream就是装饰角色，它实现了InputStream类的所有接口，并且持有InputStream的对象实例的引用，BufferedInputStream是具体的装饰器实现者，它给InputStream类附加了功能，这个装饰器的作用就是使得InputStream读取的数据保存在内存中，而提高读取的性能。与这个装饰器类有类似功能的还有LineNumberInputStream类，它的作用就是提高按行读取数据的功能，它们都让InputStream类增强了功能，或者提升了性能。
 

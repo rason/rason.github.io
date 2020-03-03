@@ -71,6 +71,6 @@ public class CustomSessionManager{
 
 综上，分布式Session的解决方案大致如图所示：
 
-![分布式Session管理](https://raw.githubusercontent.com/rason/rason.github.io/master/image/javaweb-distributed-session.png)
+![分布式Session管理](/image/javaweb-distributed-session.png)
 
 以上，本文只是一个非常简单的概要思路，并没有严格考虑很多问题，仅供开脑洞。

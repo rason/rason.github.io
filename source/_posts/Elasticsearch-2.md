@@ -55,7 +55,7 @@ GET /megacorp/employee/_search
 
 目前无需太多担心语法问题，后续会更详细地介绍。只需明确我们添加了一个 过滤器 用于执行一个范围查询，并复用之前的 match 查询。由于现在的查询请求JSON 太长了，直接在终端使用curl 输入将十分麻烦，所以我们可以使用Kibana 的 Console来进行查询。如下图所示：
 
-![复杂查询](https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-search.png)
+![复杂查询](/image/elasticsearch-search.png)
 
 现在结果只返回了一个雇员，叫 Jane Smith，32 岁。
 
@@ -67,7 +67,7 @@ GET /megacorp/employee/_search
 
 搜索一下所有喜欢攀岩(rock climbing) 的雇员：
 
-![全文搜索](https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-complex-search.png)
+![全文搜索](/image/elasticsearch-complex-search.png)
 
 返回结果中的`_score` 属性表示相关性得分。
 
@@ -83,7 +83,7 @@ Elasticsearch中的 相关性 概念非常重要，也是完全区别于传统�
 
 很简单，只需对`match`查询稍作调整，使用一个叫做`match_phrase`的查询：
 
-![短语搜索](https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-phrase-search.png)
+![短语搜索](/image/elasticsearch-phrase-search.png)
 
 这样，就只匹配含有“rock climbing” 这个短语的雇员。
 
@@ -91,7 +91,7 @@ Elasticsearch中的 相关性 概念非常重要，也是完全区别于传统�
 
 在实际的应用中，我们希望在搜索结果列表中高亮搜索关键字，使用Elasticsearch也很容易做到，只需增加一个新的`highlight` 参数：
 
-![高亮搜索](https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-highlight.png)
+![高亮搜索](/image/elasticsearch-highlight.png)
 
 当执行该查询时，返回结果与之前一样，与此同时结果中还多了一个叫做 highlight 的部分。
 
@@ -120,7 +120,7 @@ GET /megacorp/employee/_search
 
 按照提示，需要将interests 属性的fielddata 设置为true：
 
-![设置fielddata](https://raw.githubusercontent.com/rason/rason.github.io/master/image/elasticsearch-mapping.png)
+![设置fielddata](/image/elasticsearch-mapping.png)
 
 设置完之后再次运行上面的查询语句，返回结果：
 

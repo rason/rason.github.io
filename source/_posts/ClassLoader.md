@@ -128,7 +128,7 @@ findClass方法就是直接去查找资源，然后调用defineClass解析成JVM
 
 通常一个应用中类加载器的委托结构如下图所示：
 
-![应用中类加载器的委托层次](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-ClassLoaderLevel.png)
+![应用中类加载器的委托层次](/image/web-ClassLoaderLevel.png)
 
 其中App1ClassLoader和App2ClassLoader是应用中自定义的类加载器。有些文章把Bootstrap ClassLoader列在ExtClassLoader的上一级中，其实Bootstrap ClassLoader并不属于JVM的类委托层次，因为Bootstrap ClassLoader并没有遵循ClassLoader的加载规则。另外它并没有子类，ExtClassLoader的父类也不是Bootstrap ClassLoader，ExtClassLoader并没有父类，我们应用中能取到的顶层父类是ExtClassLoader。
 
@@ -144,7 +144,7 @@ JVM加载class文件到内存有两种方式。
 
 ClassLoader加载一个class文件到JVM时需要经过以下步骤：
 
-![JVM加载类的阶段](https://raw.githubusercontent.com/rason/rason.github.io/master/image/web-JVM-load.png)
+![JVM加载类的阶段](/image/web-JVM-load.png)
 
 - **第一阶段：找到.class文件并把这个文件包含的字节码加载到内存中。**
 - **第二阶段：分为三个步骤，分别是字节码验证，Class类数据结构分析及相应的内存分配和最后的符号表的链接。**

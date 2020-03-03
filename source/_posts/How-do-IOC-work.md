@@ -176,7 +176,7 @@ protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throw
 
 从上面的代码可知，该方法将完成加载，解析Bean的定义，也就是把用户定义的数据结构转化为IOC容器中的特定数据结构。Bean的解析和注册流程时序图如下图所示：
 
-![Bean解析注册时序图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/springloadBeanDefinitions.jpg)
+![Bean解析注册时序图](/image/springloadBeanDefinitions.jpg)
 
 创建BeanFactory后，添加一些Spring本身需要的工具类，这个操作在AbstractApplicationContext的prepareBeanFactory方法中完成。AbstractApplicationContext中refresh方法接下来的三行代码对Spring的功能扩展性起了至关重要的重要。
 

@@ -23,10 +23,10 @@ tags:
 ### PROPAGATION_NESTED 与 PROPAGATION_REQUIRES_NEW 的区别
 
 PROPAGATION_REQUIRES_NEW 是新开一个事务，是独立的，不会受外部事务的影响。当新开的事务开始执行时，外部事务会被挂起，内部事务结束了，外部事务继续执行。
-![PROPAGATION_REQUIRES_NEW](https://raw.githubusercontent.com/rason/rason.github.io/master/image/transaction-propagation-1.png)
+![PROPAGATION_REQUIRES_NEW](/image/transaction-propagation-1.png)
 
 PROPAGATION_NESTED 是一个 "嵌套的" 事务，它是已经存在事务的一个真正的子事务。嵌套事务开始执行时，它将取得一个 savepoint。如果这个嵌套事务失败，我们将回滚到此 savepoint。本质上，外部事务和嵌套事务属于同一个物理事务，使用保存点实现嵌套事务。嵌套事务和它的父事务是相依的，它的提交要和它的父事务一起。也就是说，如果父事务最后回滚，它也要回滚。如果子事务回滚或提交，不会导致父事务回滚或提交，但父事务回滚将导致子事务回滚。
-![PROPAGATION_NESTED](https://raw.githubusercontent.com/rason/rason.github.io/master/image/transaction-propagation-2.png)
+![PROPAGATION_NESTED](/image/transaction-propagation-2.png)
 
 ### PROPAGATION_NESTED 用法示例
 

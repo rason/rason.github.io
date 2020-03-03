@@ -17,7 +17,7 @@ description: 二叉查找树
 
 所以，当我们**中序遍历**一棵二叉查找树的键时结果应该是**有序**的。即如果我们将一棵二叉查找树的所有键投影到一条直线上，那么我们一定可以得到一条有序的键列。如下图所示：
 
-![二叉查找树](https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST)
+![二叉查找树](/image/BST)
 
 ### 数据表示
 
@@ -110,8 +110,8 @@ private Node put(Node node, Key k,Value v){
 
 使用二叉查找树的算法的运行时间取决于树的形状，而树的形状又取决于键被插入的先后顺序。最好的情况下，一棵含有N个结点的数是完全平衡的，每条空链接和根结点的距离都为～lgN。在最坏情况下，搜索路径上可能有N个结点。但在一般情况下树的形状和最好情况更接近。如下图所示：
 
-![最好和一般情况](https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST2)
-![最坏情况](https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST3)
+![最好和一般情况](/image/BST2)
+![最坏情况](/image/BST3)
 
 在大多数情况下我们可以假设键的分布是随机的，或者说它们的插入顺序是随机的。这样的模型，二叉查找树和快速排序几乎就是"双胞胎"。树的根结点就是快速排序中的第一个切分元素，这和快速排序中对子数组的递归排序完全对应。这使我们能够分析得到二叉查找树的一些性质。
 
@@ -296,4 +296,4 @@ public void keys(Node node, Queue<Key> queue, Key lo, Key hi){
 
 本文学习了二叉查找树数据结构，并基于二叉查找树实现了符号表相关操作。二叉查找树结合了二分查找的效率和链表的灵活性，是一种比较高效的实现方式。符号表的三种实现性能对比如下图：
 
-![简单的符号表实现的成本总结](https://raw.githubusercontent.com/rason/rason.github.io/master/image/BST4)
+![简单的符号表实现的成本总结](/image/BST4)

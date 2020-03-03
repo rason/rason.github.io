@@ -15,7 +15,7 @@ TCP/IP网络协议的出现背景就不细说了，随着分组交换技术的�
 
 这里所说的TCP/IP并不是简单地指TCP/IP两种协议，虽然有时候确实是指这两种协议。在很多情况下，它只是利用IP进行通信时所必须用到的协议群的统称。如下图：
 
-![TCP/IP协议群](https://raw.githubusercontent.com/rason/rason.github.io/master/image/TCP-IP-%20protocol.png)
+![TCP/IP协议群](/image/TCP-IP-%20protocol.png)
 
 TCP/IP协议由IETF（The Internet Engineering Task Force）国际互联网工程任务组讨论制定，那些需要标准化的协议，被列入RFC（Request For Comment）征求意见表文档并在互联网上公布。RFC不仅记录了协议的规范内容，还包含了协议的实现和运用的相关信息，以及实验方面的信息。
 
@@ -29,13 +29,13 @@ RFC信息可以通过[点击这里](http://www.rfc-editor.org/)查看。
 
 互联网原意是网际网，意指连接一个又一个的网络，每一个网络都是由骨干网（BackBone）和末端网（Stub）组成的。每个网络之间通过NOC（Network Operation Center网络操作中心）相连，如果网络的运营商不同，连接方式和使用方法也会不同，需要IX（Internet Exchange网络交换中心）的支持连接异构的网络。如下图所示：
 
-![互联网结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/Internet-structure.png)
+![互联网结构](/image/Internet-structure.png)
 
 ## TCP/IP协议分层模型
 
 下图是各个协议与OSI参考模型中各个分层之间的对应关系。
 
-![OSI参考模型与TCP/IP分层模型对应关系](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tcp-ip-osi.png)
+![OSI参考模型与TCP/IP分层模型对应关系](/image/tcp-ip-osi.png)
 
 - **硬件（物理层）**：负载数据传输的硬件，比如以太网或者电话线路等物理层的设备。
 
@@ -52,7 +52,7 @@ RFC信息可以通过[点击这里](http://www.rfc-editor.org/)查看。
 
 ### 数据包首部
 
-![数据包示意图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/data-package.png)
+![数据包示意图](/image/data-package.png)
 
 每个分层中，都会对所发送的数据附加一个首部，在这个首部中包含了该层必要的信息，如发送的目标地址以及协议相关信息。在下一层的角度看，从上一层收到的包全部都被认为是本层的数据。
 
@@ -78,13 +78,13 @@ IP包生成后，参考路由控制表决定接受此IP包的路由或主机。�
 
 从IP传过来的IP包，对于以太网驱动来说不过就是数据。给这数据附加上以太网首部并进行发送处理，以太网首部包含接收端MAC地址、发送端MAC地址以及标志以太网类型的以太网数据的协议。根据上述信息产生的以太网数据包通过物理层传输给接收端。
 
-![通信处理示意图](https://raw.githubusercontent.com/rason/rason.github.io/master/image/tcp-ip-connection.png)
+![通信处理示意图](/image/tcp-ip-connection.png)
 
 ### 经过数据链路的包
 
 分组数据包经过以太网的数据链路层时的大致流程如下图所示，该图对各个包首部做了简化。
 
-![包结构](https://raw.githubusercontent.com/rason/rason.github.io/master/image/package-data.png)
+![包结构](/image/package-data.png)
 
 每个包首部中至少都会包含两个信息：**一个是发送端和接收端地址，另一个是上一层的协议类型**。
 

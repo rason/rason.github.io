@@ -8,7 +8,7 @@ tags:
 
 #### 总体架构
 
-![Eureka Architecture](https://raw.githubusercontent.com/rason/rason.github.io/master/image/eureka_architecture.png)
+![Eureka Architecture](/image/eureka_architecture.png)
 
 上图是 Eureka 官方给出的架构图, 一共有三种角色:
 
@@ -35,7 +35,7 @@ com.netflix.eureka.resources.ApplicationResource#addInstance
 
 注册的过程比较简单, 先是注册到本节点, 然后调用 replicateToPeers 向其它 Eureka Server 节点做状态同步（异步操作）
 
-![Service Register](https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-register.png)
+![Service Register](/image/service-register.png)
 
 注册的服务信息保存在一个嵌套的 HashMap 中:
 
@@ -58,7 +58,7 @@ com.netflix.eureka.resources.InstanceResource#renewLease
 
 接口的实现跟 Register 基本保持一致, 先更新自身节点状态, 然后同步到其他节点.
 
-![Service Renew](https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-renew.png)
+![Service Renew](/image/service-renew.png)
 
 ##### 服务下线(Cancel)
 
@@ -68,7 +68,7 @@ Eureka 服务端会提供服务下线接口给服务提供者调用, 让它告�
 com.netflix.eureka.resources.InstanceResource#cancelLease
 ```
 
-![Service Cancel](https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-cancel.png)
+![Service Cancel](/image/service-cancel.png)
 
 ##### 服务获取
 
@@ -76,7 +76,7 @@ Eureka 服务端会提供接口让服务消费者调用, 用来获取注册在 E
 
 为了提高性能，服务列表在Eureka Server会缓存一份，同时每30秒更新一次.
 
-![Service Fetch](https://raw.githubusercontent.com/rason/rason.github.io/master/image/fetch-service.png)
+![Service Fetch](/image/fetch-service.png)
 
 ##### 服务剔除
 
@@ -84,7 +84,7 @@ Eureka 服务端会定时检查在一定时间内(默认是90秒)没有续约的
 
 失效时间可以通过 `eureka.instance.leaseExpirationDurationInSeconds` 进行配置，定期扫描时间可以通过 `eureka.server.evictionIntervalTimerInMs` 进行配置.
 
-![Service Eviction](https://raw.githubusercontent.com/rason/rason.github.io/master/image/service-eviction.png)
+![Service Eviction](/image/service-eviction.png)
 
 ##### 节点间服务同步
 
@@ -102,13 +102,13 @@ Eureka Server在启动后会调用 `EurekaClientConfig.getEurekaServerServiceUrl
 
 默认情况下是从 `eureka.client.serviceUrl` 配置项读取其他节点的地址, 如果希望灵活控制节点, 可以重写 `getEurekaServerServiceUrls` 方法从外部存储读取服务端地址列表.
 
-![Peer Discovery](https://raw.githubusercontent.com/rason/rason.github.io/master/image/peer-discovery.png)
+![Peer Discovery](/image/peer-discovery.png)
 
 ##### 节点初始化
 
 一个新的 Eureka 服务端节点启动时, 会从其他节点获取到所有的服务信息, 前提是 `register-with-eureka = true`, 当然这个配置项默认就是 true.
 
-![Server Init](https://raw.githubusercontent.com/rason/rason.github.io/master/image/server-init.png)
+![Server Init](/image/server-init.png)
 
 #### Service Provider
 
@@ -120,7 +120,7 @@ Eureka Server在启动后会调用 `EurekaClientConfig.getEurekaServerServiceUrl
 
 将服务注册到 Eureka Server 上, 首先需要配置 `eureka.client.registerWithEureka=true`. 注册过程很简单, 就是在服务启动的时候会有一个定时任务调用 Eureka Server 提供的注册接口.
 
-![Client Register](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-register.png)
+![Client Register](/image/client-register.png)
 
 ##### 服务续约(Renew)
 
@@ -129,19 +129,19 @@ Eureka Server在启动后会调用 `EurekaClientConfig.getEurekaServerServiceUrl
 - `instance.leaseRenewalIntervalInSeconds` 续约的频率, 就是多久发送一次续约请求, 默认 30 秒.
 - `instance.leaseExpirationDurationInSeconds` 服务时效时间, 就是多少秒内没有发送需求请求, Eureka Server 就认为服务提供者挂了.
 
-![Client Renew](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-renew.png)
+![Client Renew](/image/client-renew.png)
 
 ##### 服务下线(Cancel)
 
 在服务提供者 shut down 的时候，需要及时通知 Eureka Server 把自己剔除，从而避免客户端调用已经下线的服务。
 
-![Client Cancel](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-cancel.png)
+![Client Cancel](/image/client-cancel.png)
 
 ##### 怎么发现 Eureka Server
 
 服务提供者怎么知道 Eureka Server 的地址呢? 这个跟 Eureka Server 各个节点之间的发现是类似的, 默认也是从配置文件中读取, 灵活的话就是重写 `getEurekaServerServiceUrls` 方法.定期更新频率可以通过 `eureka.client.eurekaServiceUrlPollIntervalSeconds` 配置.
 
-![Client Discovery Server](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-discovery-server.png)
+![Client Discovery Server](/image/client-discovery-server.png)
 
 #### Server Consumer
 
@@ -151,13 +151,13 @@ Eureka Server在启动后会调用 `EurekaClientConfig.getEurekaServerServiceUrl
 
 Service Consumer 在启动时会从 Eureka Server 获取所有服务列表，并在本地 **缓存** . 需要注意的是，需要确保配置 `eureka.client.shouldFetchRegistry=true`.
 
-![Client Fetch Service](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-fetch-service.png)
+![Client Fetch Service](/image/client-fetch-service.png)
 
 ##### 服务更新
 
 由于在本地有一份缓存，所以需要定期更新，定期更新频率可以通过 `eureka.client.registryFetchIntervalSeconds` 配置.
 
-![Client Update Service](https://raw.githubusercontent.com/rason/rason.github.io/master/image/client-update-service.png)
+![Client Update Service](/image/client-update-service.png)
 
 ##### 怎么发现 Eureka Server
 

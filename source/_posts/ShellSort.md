@@ -231,4 +231,4 @@ shellSort time:31.0
 **一句话，希尔排序其实就是不断地改变步伐的插入排序，知道步伐为1排序就完成了。**
 
 借用网络上了一张动图，展示希尔排序的过程。
-![希尔排序](https://raw.githubusercontent.com/rason/rason.github.io/master/image/shell-sort-animation.gif)
+![希尔排序](/image/shell-sort-animation.gif)

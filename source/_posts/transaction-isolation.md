@@ -22,7 +22,7 @@ tags:
 
 我们先来看一下数据库定义的几种隔离级别，偷个懒直接网上找个图：
 
-![isolation-level](https://raw.githubusercontent.com/rason/rason.github.io/master/image/isolation-level.jpg)
+![isolation-level](/image/isolation-level.jpg)
 
 我们发现，隔离级别的关键字是**“读”**。也就是说，隔离级别的作用是为了有效保证并发**读取**数据的正确性。这就回答了第一个问题。
 

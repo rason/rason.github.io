@@ -117,7 +117,7 @@ public class Tranaction{
 
 **将大小为M的数组中的每个元素指向一条链表，链表中每个结点都存储了散列值为该元素的索引的键值对，这种方法就叫拉链法。**这种方法的基本思想就是选择足够大的M，使得所有链表都尽可能短以保证高效的查找。如下图所示：
 
-![标准索引用例使用基于拉链法的散列表](https://raw.githubusercontent.com/rason/rason.github.io/master/image/separate-chaining.png)
+![标准索引用例使用基于拉链法的散列表](/image/separate-chaining.png)
 
 在学习符号表的一开始，我们尝试过用链表的数据结构实现符号表API，现在我们就可以将链表实现的符号表作为M条链保存键值对了。代码如下：
 
@@ -202,7 +202,7 @@ public class SeparateChainingHashST<Key,Value> {
 - 未命中，键为空（该位置没有键）；
 - 继续查找，该位置的键和被查找的键不同。
 
-![标准索引用例使用的基于线性探测的符号表的轨迹](https://raw.githubusercontent.com/rason/rason.github.io/master/image/linear-probing.png)
+![标准索引用例使用的基于线性探测的符号表的轨迹](/image/linear-probing.png)
 
 **开放地址类的散列表的核心思想是与其将内存用作链表，不如将它们作为散列表的空元素。**我们可以使用并行数组，一条保存键，一条保存值，并像前面讨论的那样使用散列函数产生访问数据所需的数组索引来实现。代码如下：
 
@@ -319,7 +319,7 @@ public class LinearProbingHashST<Key,Value> {
 
 符号表的内容到现在为止就算是大概地学了一遍，那么我们应该使用符号表的哪种实现？下图总结了各种符号表的性能特点：
 
-![各种符号表实现的渐进性能总结](https://raw.githubusercontent.com/rason/rason.github.io/master/image/st-conclusion)
+![各种符号表实现的渐进性能总结](/image/st-conclusion)
 
 从上表可以看出，对于典型的应用程序，应该在散列表和二叉查找树之间进行选择。相对二叉查找树，散列表的有点在于代码更简单，且查找时间最优。二叉查找树相对于散列表的有点在于抽象结构更简单（不需要设计散列函数），红黑树可以保证最坏情况下的性能。大多数情况下，我们的第一选择都是散列表，在其它因素更重要的情况下才会选择红黑树。
 
