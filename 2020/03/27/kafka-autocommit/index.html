@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="与 kafka auto commit 两个配置：
+
+enable.auto.commit：是否开启自动提交
+auto.commit.interval.ms：自动提交时间间隔
+
+假设 enable.auto.commit 设置为 true，auto.commit.interval.ms 设置为 30">
+
+
+<link rel="alternate" href="/atom.xml" title="Rason&#39;s Blog" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>容易被误会的 kafka auto commit - Rason&#39;s Blog</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/style.css">
+<nav class="main-nav">
+	
+	    <a href="/">← Home</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+</nav>
+
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>容易被误会的 kafka auto commit</h1>
+        
+        <h2 class="headline">Mar 27 2020
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>与 kafka auto commit 两个配置：</p>
+<ul>
+<li><code>enable.auto.commit</code>：是否开启自动提交</li>
+<li><code>auto.commit.interval.ms</code>：自动提交时间间隔</li>
+</ul>
+<p>假设 <code>enable.auto.commit</code> 设置为 true，<code>auto.commit.interval.ms</code> 设置为 3000，试想一下会不会出现这样的问题：</p>
+<p><code>poll</code> 方法返回了 500 条数据，需要 5 秒钟才能处理完，假设在第 4 秒的时候应用挂了，offset 是不是在第 3 秒的时候已经被自动提交了，从而导致第 4 秒之后的数据“丢失”了？</p>
+<p>正确答案是：不会的！虽然 <code>auto.commit.interval.ms</code> 设置为 3000，但是检查时间间隔是否过了 3 秒是由 <code>poll</code> 方法去触发的，所以只要在记录还没处理完之前我们没有主动去调用 <code>poll</code> 方法，就算时间间隔到了，也不会去自动提交。</p>
+<h3 id="自动提交是在哪里执行的"><a href="#自动提交是在哪里执行的" class="headerlink" title="自动提交是在哪里执行的"></a>自动提交是在哪里执行的</h3><p>kafka consumer offset 的提交是有 <code>org.apache.kafka.clients.consumer.internals.ConsumerCoordinator</code> 来完成的，真正执行提交的有两个方法：</p>
+<ul>
+<li>同步提交：<code>org.apache.kafka.clients.consumer.internals.ConsumerCoordinator#maybeAutoCommitOffsetsSync</code></li>
+<li>异步提交：<code>org.apache.kafka.clients.consumer.internals.ConsumerCoordinator#maybeAutoCommitOffsetsAsync</code></li>
+</ul>
+<h4 id="同步提交"><a href="#同步提交" class="headerlink" title="同步提交"></a>同步提交</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private void maybeAutoCommitOffsetsSync(Timer timer) &#123;</span><br><span class="line">    if (autoCommitEnabled) &#123;</span><br><span class="line">        Map&lt;TopicPartition, OffsetAndMetadata&gt; allConsumedOffsets = subscriptions.allConsumed();</span><br><span class="line">        try &#123;</span><br><span class="line">            log.debug(&quot;Sending synchronous auto-commit of offsets &#123;&#125;&quot;, allConsumedOffsets);</span><br><span class="line">            if (!commitOffsetsSync(allConsumedOffsets, timer))</span><br><span class="line">                log.debug(&quot;Auto-commit of offsets &#123;&#125; timed out before completion&quot;, allConsumedOffsets);</span><br><span class="line">        &#125; catch (WakeupException | InterruptException e) &#123;</span><br><span class="line">            log.debug(&quot;Auto-commit of offsets &#123;&#125; was interrupted before completion&quot;, allConsumedOffsets);</span><br><span class="line">            // rethrow wakeups since they are triggered by the user</span><br><span class="line">            throw e;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            // consistent with async auto-commit failures, we do not propagate the exception</span><br><span class="line">            log.warn(&quot;Synchronous auto-commit of offsets &#123;&#125; failed: &#123;&#125;&quot;, allConsumedOffsets, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用这个方法，当我们开启了自动提交，就会触发一个同步提交。那么哪里会调用这个方法？</p>
+<ul>
+<li>加入一个消费者组之前：<code>org.apache.kafka.clients.consumer.internals.ConsumerCoordinator#onJoinPrepare</code></li>
+<li>关闭一个消费者之前：<code>org.apache.kafka.clients.consumer.internals.ConsumerCoordinator#close</code></li>
+</ul>
+<p>这两个触发点都跟我们要讨论的 <code>auto.commit.interval.ms</code> 问题无关，所以这里就不展开了。</p>
+<h4 id="异步提交"><a href="#异步提交" class="headerlink" title="异步提交"></a>异步提交</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void maybeAutoCommitOffsetsAsync(long now) &#123;</span><br><span class="line">    if (autoCommitEnabled) &#123;</span><br><span class="line">        nextAutoCommitTimer.update(now);</span><br><span class="line">        if (nextAutoCommitTimer.isExpired()) &#123;</span><br><span class="line">            nextAutoCommitTimer.reset(autoCommitIntervalMs);</span><br><span class="line">            doAutoCommitOffsetsAsync();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当 nextAutoCommitTimer 到期了就会执行 <code>doAutoCommitOffsetsAsync()</code> 方法进行异步提交，这个到期时间间隔就是 <code>auto.commit.interval.ms</code> 设置的间隔，所以我们只要跟踪 <code>maybeAutoCommitOffsetsAsync</code> 方法的调用方就知道什么时候会检查是否已经到期，从而进行自动异步提交。</p>
+<p>通过 IDEA 快捷键查看，也有两个地方调用：</p>
+<ul>
+<li>手动分配分区时：<code>org.apache.kafka.clients.consumer.KafkaConsumer#assign</code></li>
+<li>拉取数据时：<code>org.apache.kafka.clients.consumer.KafkaConsumer#poll(java.time.Duration)</code></li>
+</ul>
+<p>手动分配分区时调用是确保消费者之前分配的老分区 offset 的提交，也和 <code>auto.commit.interval.ms</code> 无关。所以，无论同步提交还是异步提交，跟 <code>auto.commit.interval.ms</code> 有关的只剩下 <code>org.apache.kafka.clients.consumer.KafkaConsumer#poll(java.time.Duration)</code> 方法了，只有这个方法在正常情况下会被多次调用的。</p>
+<p>这就验证了文章开头的问题，只要我们没有去调用 <code>poll</code> 方法，就算时间间隔到了，也无法触发自动提交。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Rason&#39;s Blog</span>
+            <span></span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" href="https://twitter.com/intent/tweet?text=http://ideajava.com/2020/03/27/kafka-autocommit/ - 容易被误会的 kafka auto commit @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  rason| Powered by Hexo 
+	
+	<a href="http://www.beian.miit.gov.cn" target="_blank">粤ICP备17046371号-1</a></p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant=""></script>
+	<script data-no-instant="">
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
